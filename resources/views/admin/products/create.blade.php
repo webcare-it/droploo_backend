@@ -194,7 +194,7 @@
                                             <select type="text" class="form-control" id="multipleTag" name="seo_keyword" multiple="multiple" value=""></select>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 additional-info-form">
+                                    <div class="col-md-12 additional-info-form mt-3">
                                         <div class="additional-info-wrapper">
                                             <div class="additional-info-title">
                                                 <h6 class="info-title">
