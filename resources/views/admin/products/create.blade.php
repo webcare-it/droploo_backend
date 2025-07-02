@@ -34,7 +34,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Priority</label>
-                                                    <input type="text" name="priority" value="{{ old('priority') }}" class="form-control" placeholder="Product priority"><br>
+                                                    <input type="text" name="priority" value="{{$product->priority + 1}}" class="form-control" placeholder="Product priority"><br>
                                                     <span style="color: red"> {{ $errors->has('priority') ? $errors->first('priority') : ' ' }}</span>
                                                 </div>
                                                 <div class="form-group">
