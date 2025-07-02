@@ -123,6 +123,7 @@ class ProductController extends Controller
         }
 
         $product->rating = $request->rating;
+        $product->drive_link = $request->drive_link;
         $product->name = $request->name;
         $product->vendor_id = $request->vendor_id;
         $product->slug = str_replace(' ', '-', strtolower($request->name));
@@ -255,12 +256,12 @@ class ProductController extends Controller
         ]);
 
         $image = $request->file('image');
-        $input['image'] = rand().'pro_main'.$request->name.'.'.$image->getClientOriginalExtension();
+        $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
         $destinationPath = 'product/images';
         $imgFile = Image::make($image->getRealPath());
         $imgFile->resize(240, 240, function ($constraint) {
             $constraint->aspectRatio();
-        })->save($destinationPath.'/'.$input['image']);
+        })->encode('webp', 90)->save($destinationPath.'/'.$input['image']);
         $image->move($destinationPath, $input['image']);
         $imageUrl = url($destinationPath.'/'.$input['image']);
 
@@ -296,6 +297,7 @@ class ProductController extends Controller
         }
 
         $product->rating = $request->rating;
+        $product->drive_link = $request->drive_link;
         $product->is_variable = true;
         $product->name = $request->name;
         $product->vendor_id = $request->vendor_id;
@@ -440,14 +442,14 @@ class ProductController extends Controller
                 unlink('product/images/'.$productUpdate->image);
             }
 
-            $updateImageName['image'] = rand().'pro_main'.$request->name.'.'.$imageUpdate->getClientOriginalExtension();
+            $updateImageName['image'] = rand().'pro_main'.$request->name.'.'.'webp';
             $updateDestinationPath = 'product/images';
 
             $imgFile = Image::make($imageUpdate->getRealPath());
 
             $imgFile->resize(240, 240, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save($updateDestinationPath.'/'.$updateImageName['image']);
+            })->encode('webp', 90)->save($updateDestinationPath.'/'.$updateImageName['image']);
             $imageUpdate->move($updateDestinationPath, $updateImageName['image']);
             $productUpdate->image = $updateImageName['image'];
             $imageUrl = url($updateDestinationPath.'/'.$updateImageName['image']);
@@ -465,6 +467,7 @@ class ProductController extends Controller
         }
 
         $productUpdate->rating = $request->rating;
+        $productUpdate->drive_link = $request->drive_link;
         $productUpdate->vendor_id = $request->vendor_id;
         $productUpdate->name = $request->name;
         $productUpdate->slug = str_replace(' ', '-', strtolower($request->name));
@@ -593,12 +596,12 @@ class ProductController extends Controller
 
         if(isset($request->image)){
             $image = $request->file('image');
-            $input['image'] = rand().'pro_main'.$request->name.'.'.$image->getClientOriginalExtension();
+            $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
             $destinationPath = 'product/images';
             $imgFile = Image::make($image->getRealPath());
             $imgFile->resize(240, 240, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save($destinationPath.'/'.$input['image']);
+            })->encode('webp', 90)->save($destinationPath.'/'.$input['image']);
             $image->move($destinationPath, $input['image']);
             $imageUrl = url($destinationPath.'/'.$input['image']);
             $product->image = $input['image'];
@@ -616,6 +619,7 @@ class ProductController extends Controller
         }
 
         $product->rating = $request->rating;
+        $product->drive_link = $request->drive_link;
         $product->name = $request->name;
         $product->slug = str_replace(' ', '-', strtolower($request->name));
         $product->cat_id = $request->cat_id;
@@ -791,19 +795,20 @@ class ProductController extends Controller
                 unlink('product/images/'.$productUpdate->image);
             }
 
-            $updateImageName['image'] = rand().'pro_main'.$request->name.'.'.$imageUpdate->getClientOriginalExtension();
+            $updateImageName['image'] = rand().'pro_main'.$request->name.'.'.'webp';
             $updateDestinationPath = 'product/images';
 
             $imgFile = Image::make($imageUpdate->getRealPath());
 
             $imgFile->resize(240, 240, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save($updateDestinationPath.'/'.$updateImageName['image']);
+            })->encode('webp', 90)->save($updateDestinationPath.'/'.$updateImageName['image']);
             $imageUpdate->move($updateDestinationPath, $updateImageName['image']);
             $productUpdate->image = $updateImageName['image'];
         }
 
         $productUpdate->name = $request->name;
+        $productUpdate->drive_link = $request->drive_link;
         $productUpdate->slug = str_replace(' ', '-', strtolower($request->name));
         $productUpdate->cat_id = $request->cat_id;
         $productUpdate->sub_cat_id = $request->sub_cat_id;
@@ -991,7 +996,7 @@ class ProductController extends Controller
 
          if ($request->hasFile('image')) {
              $image = $request->file('image');
-             $imageName = rand() . '_pro_main_' . str_replace(' ', '_', strtolower($request->name)) . '.' . $image->getClientOriginalExtension();
+             $imageName = rand() . '_pro_main_' . str_replace(' ', '_', strtolower($request->name)) . '.' . 'webp';
              $destinationPath = 'product/images'; // Ensure the directory exists
 
              // Move the image to the product folder
