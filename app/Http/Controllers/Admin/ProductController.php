@@ -81,7 +81,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $image = $request->file('image');
-        $input['image'] = rand().'pro_main'.$request->name.'.'.'.webp';
+        $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
         $destinationPath = 'product/images';
         $imgFile = Image::make($image->getRealPath());
         $imgFile->resize(240, 240, function ($constraint) {
@@ -174,7 +174,7 @@ class ProductController extends Controller
 
                 foreach ($imageGallery as $image) {
                     // Generate a unique name for the image
-                    $galleryImageName = rand() . $request->name . '.' . '.webp';
+                    $galleryImageName = rand() . $request->name . '.' . 'webp';
 
                     // Move the uploaded image directly to the target directory
                     $image->move('galleryImage', $galleryImageName);
