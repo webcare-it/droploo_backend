@@ -81,12 +81,12 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $image = $request->file('image');
-        $input['image'] = rand().'pro_main'.$request->name.'.'.$image->getClientOriginalExtension();
+        $input['image'] = rand().'pro_main'.$request->name.'.'.'.webp';
         $destinationPath = 'product/images';
         $imgFile = Image::make($image->getRealPath());
         $imgFile->resize(240, 240, function ($constraint) {
             $constraint->aspectRatio();
-        })->save($destinationPath.'/'.$input['image']);
+        })->encode('webp', 90)->save($destinationPath.'/'.$input['image']);
         $image->move($destinationPath, $input['image']);
         $imageUrl = url($destinationPath.'/'.$input['image']);
 
@@ -171,26 +171,26 @@ class ProductController extends Controller
 
             if ($request->gallery_image) {
                 $imageGallery = $request->gallery_image;
-            
+
                 foreach ($imageGallery as $image) {
                     // Generate a unique name for the image
-                    $galleryImageName = rand() . $request->name . '.' . $image->extension();
-            
+                    $galleryImageName = rand() . $request->name . '.' . '.webp';
+
                     // Move the uploaded image directly to the target directory
                     $image->move('galleryImage', $galleryImageName);
-            
+
                     // Generate the image URL
                     $imageUrl = url('galleryImage/' . $galleryImageName);
-            
+
                     // Save the image data in the database
                     $productGalleryImage = new ProductImage();
-            
+
                     if ($request->type) {
                         $productGalleryImage->product_id = $product->id;
                     } else {
                         $productGalleryImage->product_id = $product->id;
                     }
-            
+
                     $productGalleryImage->gallery_image = $galleryImageName;
                     $productGalleryImage->imageUrl = $imageUrl;
                     $productGalleryImage->save();
@@ -319,7 +319,7 @@ class ProductController extends Controller
 
         if(!empty($product)){
             if($request->gallery_image){
-                
+
                 $galleryImages = $request->file('gallery_image');
                 $prices = $request->input('price');
                 $colors = $request->input('color');
@@ -333,7 +333,7 @@ class ProductController extends Controller
                 //         $const->aspectRatio();
                 //     })->save('galleryImage'. '/'. $galleryImageName);
                 //     $imageUrl = url('galleryImage'.'/'.$galleryImageName);
-            
+
                 //     $productGalleryImage = new ProductImage();
                 //     $productGalleryImage->product_id = $product->id;  // assuming $product is available
                 //     $productGalleryImage->gallery_image = $galleryImageName;
@@ -347,13 +347,13 @@ class ProductController extends Controller
                 foreach ($galleryImages as $index => $image) {
                     // Generate a unique name for the image
                     $galleryImageName = rand() . $request->name . '.' . $image->extension();
-                
+
                     // Move the uploaded image directly to the target directory
                     $image->move('galleryImage', $galleryImageName);
-                
+
                     // Generate the image URL
                     $imageUrl = url('galleryImage/' . $galleryImageName);
-                
+
                     // Save the image data in the database
                     $productGalleryImage = new ProductImage();
                     $productGalleryImage->product_id = $product->id; // assuming $product is available
@@ -510,17 +510,17 @@ class ProductController extends Controller
         if ($request->gallery_image) {
             $imageGallery = $request->gallery_image;
             ProductImage::where('product_id', $productUpdate->id)->delete();
-        
+
             foreach ($imageGallery as $image) {
                 // Generate a unique file name
                 $galleryImageName = rand().$request->name.'.'.$image->extension();
-        
+
                 // Move the uploaded image to the desired directory
                 $image->move('galleryImage', $galleryImageName);
-        
+
                 // Generate the image URL
                 $imageUrl = url('galleryImage/' . $galleryImageName);
-        
+
                 // Save the image information to the database
                 $productGalleryImage = new ProductImage();
                 $productGalleryImage->product_id = $productUpdate->id;
@@ -656,7 +656,7 @@ class ProductController extends Controller
                 //         $const->aspectRatio();
                 //     })->save('galleryImage'. '/'. $galleryImageName);
                 //     $imageUrl = url('galleryImage'.'/'.$galleryImageName);
-            
+
                 //     $productGalleryImage = new ProductImage();
                 //     $productGalleryImage->product_id = $product->id;  // assuming $product is available
                 //     $productGalleryImage->gallery_image = $galleryImageName;
@@ -670,13 +670,13 @@ class ProductController extends Controller
                 foreach ($galleryImages as $index => $image) {
                     // Generate a unique file name
                     $galleryImageName = rand().$request->name.'.'.$image->extension();
-                
+
                     // Move the uploaded image to the desired directory
                     $image->move('galleryImage', $galleryImageName);
-                
+
                     // Generate the image URL
                     $imageUrl = url('galleryImage/' . $galleryImageName);
-                
+
                     // Create a new ProductImage record with additional attributes
                     $productGalleryImage = new ProductImage();
                     $productGalleryImage->product_id = $product->id; // assuming $product is available
@@ -948,14 +948,14 @@ class ProductController extends Controller
             if ($galleryImage->gallery_image && file_exists(('galleryImage/').$galleryImage['gallery_image'])){
                 unlink('galleryImage/'.$galleryImage->gallery_image);
             }
-    
+
             $galleryImageName = rand().$request->name.'.'.$request->image->extension();
                         $imgGallery = Image::make($request->image->path());
                         $imgGallery->resize(440, 440, function ($const) {
                             $const->aspectRatio();
                         })->save('galleryImage'. '/'. $galleryImageName);
                         $imageUrl = url('galleryImage'.'/'.$galleryImageName);
-    
+
             $galleryImage->gallery_image = $galleryImageName;
             $galleryImage->imageUrl = $imageUrl;
         }
@@ -983,31 +983,31 @@ class ProductController extends Controller
              'description' => 'required|string',
              'image' => 'required|image|max:2048',
          ]);
- 
+
          // Handle the file upload
          $imageUrl = null;
          $galleryImageUrl = null;
-         
+
          if ($request->hasFile('image')) {
              $image = $request->file('image');
              $imageName = rand() . '_pro_main_' . str_replace(' ', '_', strtolower($request->name)) . '.' . $image->getClientOriginalExtension();
              $destinationPath = 'product/images'; // Ensure the directory exists
- 
+
              // Move the image to the product folder
              $image->move($destinationPath, $imageName);
              $imageUrl = url('product/images/' . $imageName);
- 
+
              // Copy the same image for the gallery before it's moved
              $galleryImageName = rand() . '_gallery_' . str_replace(' ', '_', strtolower($request->name)) . '.' . $image->getClientOriginalExtension();
              $galleryDestinationPath = 'galleryImage';
- 
+
              // Make sure the original file exists before copying
              if (file_exists($destinationPath . '/' . $imageName)) {
                  copy($destinationPath . '/' . $imageName, $galleryDestinationPath . '/' . $galleryImageName);
                  $galleryImageUrl = url('galleryImage/' . $galleryImageName);
              }
          }
- 
+
          // Save the product in the database
          $product = new Product();
          $product->temp_id = $request->temp_id;
@@ -1025,7 +1025,7 @@ class ProductController extends Controller
          $product->imageUrl = $imageUrl;
         //  $product->rating = 5;
          $product->save();
- 
+
          // Save the gallery image
          if (!empty($product) && $galleryImageUrl) {
              $productGalleryImage = new ProductImage();
@@ -1034,7 +1034,7 @@ class ProductController extends Controller
              $productGalleryImage->imageUrl = $galleryImageUrl;
              $productGalleryImage->save();
          }
- 
+
          // Save Product Color
          if ($request->filled('color')) {
              $colorName = new ProductColor();
@@ -1042,7 +1042,7 @@ class ProductController extends Controller
              $colorName->color = $request->color;
              $colorName->save();
          }
- 
+
          // Save Product Size
          if ($request->filled('size')) {
              $sizeName = new ProductSize();
@@ -1050,11 +1050,11 @@ class ProductController extends Controller
              $sizeName->size = $request->size;
              $sizeName->save();
          }
-         
+
          // Return response to the frontend
          return response()->json(['success' => true, 'product' => $product], 200);
      }
- 
+
      public function storeCustomOrder(Request $request)
      {
          // Validate request data
@@ -1065,25 +1065,25 @@ class ProductController extends Controller
              'customer_address' => 'required|string',
              'cart' => 'required|array',
          ]);
- 
+
           //\Log::info('Cart Data:', ['cart' => $request->cart]);
- 
- 
+
+
          // Check the product is dropshipping...
          $firstProductId = $request->cart[0]['id'] ?? null;
          if (!$firstProductId) {
              return response()->json(['error' => 'No products are chosen!'], 400);
          }
- 
+
          $product = Product::where('id', $firstProductId)->orWhereRaw("CAST(temp_id AS CHAR) LIKE ?", ['%' . $firstProductId . '%'])->orderBy('created_at', 'desc')->first();
          if (!$product) {
              return response()->json(['error' => 'Product not found!'], 404);
          }
- 
+
          // Get total quantity and total cost
          $totalQty = count($request->cart);  // Use count() for arrays
          $totalCost = array_sum(array_column($request->cart, 'price')) + $request->customerArea;
-         
+
          $order = new Order();
          $order->is_dropshipping = $product->b_product_id != null;
          $order->name = $request->customer_name;
@@ -1098,10 +1098,10 @@ class ProductController extends Controller
          $order->qty = $totalQty;
          $order->payment_type = "cod";
          $order->order_type = "Manual";
- 
+
          $customerCheck = Order::where('phone', $request->customer_phone)->first();
          $order->customer_type = $customerCheck ? 'Old Customer' : 'New Customer';
- 
+
          // Assign to employee
          $session_user = session('id');
          if ($session_user != null) {
@@ -1110,20 +1110,20 @@ class ProductController extends Controller
          else{
              $order->employee_id = 1;
          }
- 
+
          $order->save();
- 
+
          // Save Order Details
          foreach ($request->cart as $cartItem) {
              $productValidity = Product::where('id', $cartItem['id'])
                                 ->orWhere('temp_id', $cartItem['id'])
                                 ->orderBy('created_at', 'desc')
                                 ->first();
-         
+
              if (!$productValidity) {
                  return response()->json(['error' => 'Product not found!'], 404);
              }
-         
+
              OrderDetails::create([
                  'order_id' => $order->id,
                  'product_id' => $productValidity->id,
@@ -1142,7 +1142,7 @@ class ProductController extends Controller
                  $product->save();
              }
          }
-         
+
          return response()->json(['success' => true, 'message' => 'Order successfully submitted!', 'order_id' => $order->orderId]);
      }
 }
