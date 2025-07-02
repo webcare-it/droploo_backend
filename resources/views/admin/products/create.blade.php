@@ -194,6 +194,18 @@
                                             <select type="text" class="form-control" id="multipleTag" name="seo_keyword" multiple="multiple" value=""></select>
                                         </div>
                                     </div>
+                                    <div class="col-md-12 additional-info-form">
+                                        <div class="additional-info-wrapper">
+                                            <div class="additional-info-title">
+                                                <h6 class="info-title">
+                                                    Product RAW Content
+                                                </h6>
+                                            </div>
+                                            <hr>
+                                            <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Google Drive Link ( Optional )</label><br>
+                                            <input type="text" class="form-control" name="drive_link">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-success mt-2 float-right">Submit</button>

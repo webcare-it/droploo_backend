@@ -109,13 +109,13 @@
                                                         <div style="display: inline-block; position: relative; margin: 5px;">
                                                             <img src="{{ asset('/galleryImage/'.$gallery->gallery_image) }}" height="100" width="100" style="border: 1px solid #ccc; border-radius: 5px;" />
                                                             <!-- Delete Icon -->
-                                                            <a href="{{url('/gallery-image/delete/'.$gallery->id)}}" 
-                                                               style="position: absolute; top: 5px; right: 5px; background: red; color: white; border-radius: 50%; padding: 5px; text-decoration: none;" 
+                                                            <a href="{{url('/gallery-image/delete/'.$gallery->id)}}"
+                                                               style="position: absolute; top: 5px; right: 5px; background: red; color: white; border-radius: 50%; padding: 5px; text-decoration: none;"
                                                                onclick="return confirm('Are you sure you want to delete this image?')">
                                                                 &times;
                                                             </a>
                                                             <!-- Edit Icon -->
-                                                            <a href="{{url('/gallery-image/edit/'.$gallery->id)}}" 
+                                                            <a href="{{url('/gallery-image/edit/'.$gallery->id)}}"
                                                                style="position: absolute; bottom: 5px; right: 5px; background: blue; color: white; border-radius: 50%; padding: 5px; text-decoration: none;">
                                                                 ✎
                                                             </a>
@@ -214,6 +214,18 @@
                                                     <option value="{{ $relatedproduct->id }}">{{ $relatedproduct->name }}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                        <div class="col-md-12 additional-info-form">
+                                            <div class="additional-info-wrapper">
+                                                <div class="additional-info-title">
+                                                    <h6 class="info-title">
+                                                        Product RAW Content
+                                                    </h6>
+                                                </div>
+                                                <hr>
+                                                <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Google Drive Link ( Optional )</label><br>
+                                                <input type="text" class="form-control" name="drive_link" value="{{$product->drive_link ?? null}}">
+                                            </div>
                                         </div>
 
                                         <div class="form-group mt-5">
