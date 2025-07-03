@@ -136,26 +136,41 @@ class OrderController extends Controller
 
     public function create(Request $request)
     {
-        // You can validate incoming data if needed
-        $validated = $request->validate([
-            'invoice_number'   => 'required|string',
-            'customer_name'    => 'required|string',
-            'customer_phone'   => 'required|string',
-            'delivery_area'    => 'required|string',
-            'customer_address' => 'required|string',
-            'price'            => 'required|numeric',
-            'discount'         => 'nullable|numeric',
-            'advance'          => 'nullable|numeric',
-            'product_quantity' => 'required|integer',
-            'payment_type'     => 'required|string',
-            'order_type'       => 'required|string',
-            'special_notes'    => 'nullable|string',
-            'payment_gateway'  => 'nullable|string',
-            'transaction_id'   => 'nullable|string',
-            'products'         => 'required|array',
+        // Step 1: Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'invoice_number'    => 'required|string|unique:orders,invoice_number',
+            'customer_name'     => 'required|string|max:255',
+            'customer_phone'    => 'required|string|max:20',
+            'delivery_area'     => 'required|string|max:255',
+            'customer_address'  => 'required|string',
+            'price'             => 'required|numeric',
+            'discount'          => 'nullable|numeric',
+            'advance'           => 'nullable|numeric',
+            'product_quantity'  => 'required|integer',
+            'payment_type'      => 'required|string',
+            'order_type'        => 'required|string',
+            'special_notes'     => 'nullable|string',
+            'payment_gateway'   => 'nullable|string',
+            'transaction_id'    => 'nullable|string',
+            'products'          => 'required|array|min:1',
+            'products.*.id'     => 'required|integer|exists:products,id',
+            'products.*.qty'    => 'required|integer|min:1',
+            'products.*.price'  => 'required|numeric',
+            'products.*.size'   => 'nullable|string',
+            'products.*.color'  => 'nullable|string',
         ]);
 
-        // Process order saving
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        // Step 2: Save Order
         $order = new Order();
         $order->invoice_number   = $validated['invoice_number'];
         $order->customer_name    = $validated['customer_name'];
@@ -173,7 +188,7 @@ class OrderController extends Controller
         $order->transaction_id   = $validated['transaction_id'] ?? null;
         $order->save();
 
-        // Save order items (if you have OrderDetail model)
+        // Step 3: Save Order Details
         foreach ($validated['products'] as $product) {
             $productOrder = new OrderDetails();
             $productOrder->order_id = $order->id;
@@ -185,10 +200,12 @@ class OrderController extends Controller
             $productOrder->save();
         }
 
+        // Step 4: Return response
         return response()->json([
-            'message' => 'Order has been created',
             'status' => true,
-            'order_id' => $order->id
+            'message' => 'Order created successfully',
+            'order_id' => $order->id,
+            'invoice_number' => $order->invoice_number
         ], 201);
     }
 
