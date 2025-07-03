@@ -34,7 +34,7 @@ class OrderController extends Controller
             'products.*.size' => 'sometimes',
             'products.*.color' => 'sometimes',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -42,7 +42,7 @@ class OrderController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-    
+
         try {
             DB::beginTransaction();
 
@@ -50,7 +50,7 @@ class OrderController extends Controller
             $data = $request->all();
             $firstProductId = $data['products'][0]['id'];
             $product = Product::find($firstProductId);
-            
+
             // Create Order
             $order = new Order();
             if($product->b_product_id == null){
@@ -68,25 +68,25 @@ class OrderController extends Controller
             $order->qty = $request->product_quantity;
             $order->payment_type = $request->payment_type;
             $order->order_type = $request->order_type;
-    
+
             $customerCheck = Order::where('phone', $request->customer_phone)->first();
             $order->customer_type = $customerCheck ? 'Old Customer' : 'New Customer';
-    
+
             // Assign to employee
             $users = Admin::where('name', '!=', 'admin')->where('is_active', 1)
                 ->whereDate('limit_updated_at', '!=', \Illuminate\Support\Carbon::today())->get();
-    
+
             $session_user = Session::get('id');
             if ($session_user && session('name') != 'admin') {
                 $order->employee_id = $session_user;
             } elseif ($users->isNotEmpty()) {
                 $randomUser = $users->random();
                 $order->employee_id = $randomUser->id;
-    
+
                 $assigned_employee_order = Order::where('employee_id', $randomUser->id)
                     ->whereDate('created_at', \Illuminate\Support\Carbon::today())
                     ->count();
-    
+
                 if ($assigned_employee_order >= $randomUser->order_limit) {
                     $randomUser->is_limit = true;
                     $randomUser->limit_updated_at = now();
@@ -96,9 +96,9 @@ class OrderController extends Controller
                 $admin = Admin::first();
                 $order->employee_id = $admin->id;
             }
-    
+
             $order->save();
-    
+
             // Create Order Details
             foreach ($request->products as $productData) {
                 $productOrder = new OrderDetails();
@@ -116,9 +116,9 @@ class OrderController extends Controller
             foreach($cartProducts as $product){
                 $product->delete();
             }
-    
+
             DB::commit();
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Order confirmed successfully',
@@ -134,11 +134,70 @@ class OrderController extends Controller
         }
     }
 
+    public function create(Request $request)
+    {
+        // You can validate incoming data if needed
+        $validated = $request->validate([
+            'invoice_number'   => 'required|string',
+            'customer_name'    => 'required|string',
+            'customer_phone'   => 'required|string',
+            'delivery_area'    => 'required|string',
+            'customer_address' => 'required|string',
+            'price'            => 'required|numeric',
+            'discount'         => 'nullable|numeric',
+            'advance'          => 'nullable|numeric',
+            'product_quantity' => 'required|integer',
+            'payment_type'     => 'required|string',
+            'order_type'       => 'required|string',
+            'special_notes'    => 'nullable|string',
+            'payment_gateway'  => 'nullable|string',
+            'transaction_id'   => 'nullable|string',
+            'products'         => 'required|array',
+        ]);
+
+        // Process order saving
+        $order = new Order();
+        $order->invoice_number   = $validated['invoice_number'];
+        $order->customer_name    = $validated['customer_name'];
+        $order->customer_phone   = $validated['customer_phone'];
+        $order->area             = $validated['delivery_area'];
+        $order->customer_address = $validated['customer_address'];
+        $order->price            = $validated['price'];
+        $order->discount         = $validated['discount'] ?? 0;
+        $order->advance          = $validated['advance'] ?? 0;
+        $order->product_quantity = $validated['product_quantity'];
+        $order->payment_type     = $validated['payment_type'];
+        $order->order_type       = $validated['order_type'];
+        $order->special_notes    = $validated['special_notes'] ?? null;
+        $order->payment_gateway  = $validated['payment_gateway'] ?? null;
+        $order->transaction_id   = $validated['transaction_id'] ?? null;
+        $order->save();
+
+        // Save order items (if you have OrderDetail model)
+        foreach ($validated['products'] as $product) {
+            $productOrder = new OrderDetails();
+            $productOrder->order_id = $order->id;
+            $productOrder->product_id = $product['id'];
+            $productOrder->qty = $product['qty'];
+            $productOrder->price = $product['price'];
+            $productOrder->size = $product['size'] ?? null;
+            $productOrder->color = $product['color'] ?? null;
+            $productOrder->save();
+        }
+
+        return response()->json([
+            'message' => 'Order has been created',
+            'status' => true,
+            'order_id' => $order->id
+        ], 201);
+    }
+
+
     public function orderDetails ($orderId)
     {
         try {
             $order = Order::with('orderDetails')->where('orderId', $orderId)->first();
-    
+
             if (!$order) {
                 return response()->json([
                     'success' => false,
@@ -146,7 +205,7 @@ class OrderController extends Controller
                     'data' => null
                 ], 404);
             }
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Order retrieved successfully',
