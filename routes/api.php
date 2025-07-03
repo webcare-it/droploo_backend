@@ -80,6 +80,7 @@ Route::post('/contact-store', [GeneralDataController::class, 'ContactStore']);
 Route::get('/offer-time', [GeneralDataController::class, 'getOfferTime']);
 
 //Products API...
+Route::get('/products', [ProductController::class, 'allProducts']);
 Route::get('/all-products', [ProductController::class, 'shopProducts']);
 Route::get('/type-products', [ProductController::class, 'getProducts']);
 Route::get('/product/details/{id}', [ProductController::class, 'getProductById']);
