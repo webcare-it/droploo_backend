@@ -137,25 +137,35 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         try {
-            $order = new Order();
-            $order->orderId   = $request->invoice_number;
-            $order->name    = $request->customer_name;
-            $order->phone   = $request->customer_phone;
-            $order->area             = $request->delivery_area;
-            $order->address = $request->customer_address;
-            $order->price            = $request->price;
-            $order->discount         = $request->discount ?? 0;
-            $order->advance          = $request->advance ?? 0;
-            $order->qty              = $request->product_quantity;
-            $order->payment_type     = $request->payment_type;
-            $order->order_type       = $request->order_type;
-            $order->customer_type       = 'guest';
+            // Check for existing order by invoice number
+            $order = Order::where('orderId', $request->invoice_number)->first();
+
+            if (!$order) {
+                $order = new Order();
+                $order->orderId = $request->invoice_number;
+            }
+
+            $order->name              = $request->customer_name;
+            $order->phone             = $request->customer_phone;
+            $order->area              = $request->delivery_area;
+            $order->address           = $request->customer_address;
+            $order->price             = $request->price;
+            $order->discount          = $request->discount ?? 0;
+            $order->advance           = $request->advance ?? 0;
+            $order->qty               = $request->product_quantity;
+            $order->payment_type      = $request->payment_type;
+            $order->order_type        = $request->order_type;
+            $order->customer_type     = 'guest';
             $order->pathao_special_note = $request->special_notes ?? null;
-            $order->payment_gateway  = $request->payment_gateway ?? null;
-            $order->transaction_id   = $request->transaction_id ?? null;
-            $order->order_status     = 'pending';
+            $order->payment_gateway   = $request->payment_gateway ?? null;
+            $order->transaction_id    = $request->transaction_id ?? null;
+            $order->order_status      = 'pending';
             $order->save();
 
+            // Delete previous details if updating
+            OrderDetails::where('order_id', $order->id)->delete();
+
+            // Re-insert order details
             foreach ($request->products as $productData) {
                 $product = Product::find($productData['id']);
 
@@ -170,20 +180,21 @@ class OrderController extends Controller
             }
 
             return response()->json([
-                'status'  => 'success',
-                'message' => 'Order has been created',
+                'status'   => 'success',
+                'message'  => $order->wasRecentlyCreated ? 'Order has been created' : 'Order has been updated',
                 'order_id' => $order->id,
             ]);
         } catch (\Throwable $e) {
             return response()->json([
-                'status'    => 'error',
-                'message'   => $e->getMessage(),
-                'file'      => $e->getFile(),
-                'line'      => $e->getLine(),
-                'trace'     => $e->getTraceAsString(),
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
             ], 500);
         }
     }
+
 
 
 
