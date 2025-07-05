@@ -138,11 +138,11 @@ class OrderController extends Controller
     {
         try {
             $order = new Order();
-            $order->invoice_number   = $request->invoice_number;
-            $order->customer_name    = $request->customer_name;
-            $order->customer_phone   = $request->customer_phone;
+            $order->orderId   = $request->invoice_number;
+            $order->name    = $request->customer_name;
+            $order->phone   = $request->customer_phone;
             $order->area             = $request->delivery_area;
-            $order->customer_address = $request->customer_address;
+            $order->address = $request->customer_address;
             $order->price            = $request->price;
             $order->discount         = $request->discount ?? 0;
             $order->advance          = $request->advance ?? 0;
@@ -157,7 +157,7 @@ class OrderController extends Controller
             $order->save();
 
             foreach ($request->products as $productData) {
-                $product = Product::where('b_product_id', $productData['id'])->first();
+                $product = Product::find($productData['id']);
 
                 $details = new OrderDetails();
                 $details->order_id   = $order->id;
