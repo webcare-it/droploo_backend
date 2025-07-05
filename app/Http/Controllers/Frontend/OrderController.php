@@ -144,7 +144,7 @@ class OrderController extends Controller
                 $order = new Order();
                 $order->orderId = $request->invoice_number;
             }
-
+            $order->orderId           = $order->orderId;
             $order->name              = $request->customer_name;
             $order->phone             = $request->customer_phone;
             $order->area              = $request->delivery_area;
