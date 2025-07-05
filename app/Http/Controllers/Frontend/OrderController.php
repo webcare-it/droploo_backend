@@ -136,48 +136,53 @@ class OrderController extends Controller
 
     public function create(Request $request)
     {
-        // Remove or comment this out:
-        // $validated = $request->validate([...]);
+        try {
+            $order = new Order();
+            $order->invoice_number   = $request->invoice_number;
+            $order->customer_name    = $request->customer_name;
+            $order->customer_phone   = $request->customer_phone;
+            $order->area             = $request->delivery_area;
+            $order->customer_address = $request->customer_address;
+            $order->price            = $request->price;
+            $order->discount         = $request->discount ?? 0;
+            $order->advance          = $request->advance ?? 0;
+            $order->qty              = $request->product_quantity;
+            $order->payment_type     = $request->payment_type;
+            $order->order_type       = $request->order_type;
+            $order->pathao_special_note = $request->special_notes ?? null;
+            $order->payment_gateway  = $request->payment_gateway ?? null;
+            $order->transaction_id   = $request->transaction_id ?? null;
+            $order->order_status     = 'pending';
+            $order->is_transferred   = false;
+            $order->save();
 
-        // Directly use $request->input() or $request->field_name
-        $order = new Order();
-        $order->invoice_number   = $request->invoice_number;
-        $order->customer_name    = $request->customer_name;
-        $order->customer_phone   = $request->customer_phone;
-        $order->area             = $request->delivery_area;
-        $order->customer_address = $request->customer_address;
-        $order->price            = $request->price;
-        $order->discount         = $request->discount ?? 0;
-        $order->advance          = $request->advance ?? 0;
-        $order->qty              = $request->product_quantity;
-        $order->payment_type     = $request->payment_type;
-        $order->order_type       = $request->order_type;
-        $order->pathao_special_note = $request->special_notes ?? null;
-        $order->payment_gateway  = $request->payment_gateway ?? null;
-        $order->transaction_id   = $request->transaction_id ?? null;
-        $order->order_status     = 'pending';
-        $order->is_transferred   = false;
-        $order->save();
+            foreach ($request->products as $productData) {
+                $product = Product::where('b_product_id', $productData['id'])->first();
 
-        // Save product details
-        foreach ($request->products as $productData) {
-            $product = Product::where('b_product_id', $productData['id'])->first();
+                $details = new OrderDetails();
+                $details->order_id   = $order->id;
+                $details->product_id = $product ? $product->id : null;
+                $details->price      = $productData['price'];
+                $details->color      = $productData['color'] ?? null;
+                $details->size       = $productData['size'] ?? null;
+                $details->qty        = $productData['qty'];
+                $details->save();
+            }
 
-            $details = new OrderDetails();
-            $details->order_id   = $order->id;
-            $details->product_id = $product ? $product->id : null;
-            $details->price      = $productData['price'];
-            $details->color      = $productData['color'] ?? null;
-            $details->size       = $productData['size'] ?? null;
-            $details->qty        = $productData['qty'];
-            $details->save();
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Order has been created',
+                'order_id' => $order->id,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status'    => 'error',
+                'message'   => $e->getMessage(),
+                'file'      => $e->getFile(),
+                'line'      => $e->getLine(),
+                'trace'     => $e->getTraceAsString(),
+            ], 500);
         }
-
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Order has been created',
-            'order_id' => $order->id,
-        ]);
     }
 
 
