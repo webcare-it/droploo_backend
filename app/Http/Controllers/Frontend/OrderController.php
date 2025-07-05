@@ -136,78 +136,50 @@ class OrderController extends Controller
 
     public function create(Request $request)
     {
-        // Step 1: Validate the incoming request
-        $validator = Validator::make($request->all(), [
-            'invoice_number'    => 'required|string|unique:orders,invoice_number',
-            'customer_name'     => 'required|string|max:255',
-            'customer_phone'    => 'required|string|max:20',
-            'delivery_area'     => 'required|string|max:255',
-            'customer_address'  => 'required|string',
-            'price'             => 'required|numeric',
-            'discount'          => 'nullable|numeric',
-            'advance'           => 'nullable|numeric',
-            'product_quantity'  => 'required|integer',
-            'payment_type'      => 'required|string',
-            'order_type'        => 'required|string',
-            'special_notes'     => 'nullable|string',
-            'payment_gateway'   => 'nullable|string',
-            'transaction_id'    => 'nullable|string',
-            'products'          => 'required|array|min:1',
-            'products.*.id'     => 'required|integer|exists:products,id',
-            'products.*.qty'    => 'required|integer|min:1',
-            'products.*.price'  => 'required|numeric',
-            'products.*.size'   => 'nullable|string',
-            'products.*.color'  => 'nullable|string',
-        ]);
+        // Remove or comment this out:
+        // $validated = $request->validate([...]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $validated = $validator->validated();
-
-        // Step 2: Save Order
+        // Directly use $request->input() or $request->field_name
         $order = new Order();
-        $order->invoice_number   = $validated['invoice_number'];
-        $order->customer_name    = $validated['customer_name'];
-        $order->customer_phone   = $validated['customer_phone'];
-        $order->area             = $validated['delivery_area'];
-        $order->customer_address = $validated['customer_address'];
-        $order->price            = $validated['price'];
-        $order->discount         = $validated['discount'] ?? 0;
-        $order->advance          = $validated['advance'] ?? 0;
-        $order->product_quantity = $validated['product_quantity'];
-        $order->payment_type     = $validated['payment_type'];
-        $order->order_type       = $validated['order_type'];
-        $order->special_notes    = $validated['special_notes'] ?? null;
-        $order->payment_gateway  = $validated['payment_gateway'] ?? null;
-        $order->transaction_id   = $validated['transaction_id'] ?? null;
+        $order->invoice_number   = $request->invoice_number;
+        $order->customer_name    = $request->customer_name;
+        $order->customer_phone   = $request->customer_phone;
+        $order->area             = $request->delivery_area;
+        $order->customer_address = $request->customer_address;
+        $order->price            = $request->price;
+        $order->discount         = $request->discount ?? 0;
+        $order->advance          = $request->advance ?? 0;
+        $order->qty              = $request->product_quantity;
+        $order->payment_type     = $request->payment_type;
+        $order->order_type       = $request->order_type;
+        $order->pathao_special_note = $request->special_notes ?? null;
+        $order->payment_gateway  = $request->payment_gateway ?? null;
+        $order->transaction_id   = $request->transaction_id ?? null;
+        $order->order_status     = 'pending';
+        $order->is_transferred   = false;
         $order->save();
 
-        // Step 3: Save Order Details
-        foreach ($validated['products'] as $product) {
-            $productOrder = new OrderDetails();
-            $productOrder->order_id = $order->id;
-            $productOrder->product_id = $product['id'];
-            $productOrder->qty = $product['qty'];
-            $productOrder->price = $product['price'];
-            $productOrder->size = $product['size'] ?? null;
-            $productOrder->color = $product['color'] ?? null;
-            $productOrder->save();
+        // Save product details
+        foreach ($request->products as $productData) {
+            $product = Product::where('b_product_id', $productData['id'])->first();
+
+            $details = new OrderDetails();
+            $details->order_id   = $order->id;
+            $details->product_id = $product ? $product->id : null;
+            $details->price      = $productData['price'];
+            $details->color      = $productData['color'] ?? null;
+            $details->size       = $productData['size'] ?? null;
+            $details->qty        = $productData['qty'];
+            $details->save();
         }
 
-        // Step 4: Return response
         return response()->json([
-            'status' => true,
-            'message' => 'Order created successfully',
+            'status'  => 'success',
+            'message' => 'Order has been created',
             'order_id' => $order->id,
-            'invoice_number' => $order->invoice_number
-        ], 201);
+        ]);
     }
+
 
 
     public function orderDetails ($orderId)
