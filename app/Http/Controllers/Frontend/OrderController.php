@@ -149,6 +149,7 @@ class OrderController extends Controller
             $order->qty              = $request->product_quantity;
             $order->payment_type     = $request->payment_type;
             $order->order_type       = $request->order_type;
+            $order->customer_type       = 'guest';
             $order->pathao_special_note = $request->special_notes ?? null;
             $order->payment_gateway  = $request->payment_gateway ?? null;
             $order->transaction_id   = $request->transaction_id ?? null;
