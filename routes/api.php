@@ -5,6 +5,7 @@ use App\Http\Controllers\Frontend\GeneralDataController;
 use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProductController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DropshipperController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,3 +101,5 @@ Route::get('/delete-cart/{id}', [ProductController::class, 'deleteCart']);
 
 //Order Details...
 Route::get('/order-details/{orderId}', [OrderController::class, 'orderDetails']);
+
+Route::post('/dropshipper/create', [DropshipperController::class, 'index']);

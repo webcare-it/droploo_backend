@@ -160,6 +160,7 @@ class OrderController extends Controller
             $order->payment_gateway   = $request->payment_gateway ?? null;
             $order->transaction_id    = $request->transaction_id ?? null;
             $order->order_status      = 'pending';
+            $order->dropshipper_id      = $request->dropshipper_id;
             $order->save();
 
             // Delete previous details if updating
