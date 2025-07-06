@@ -29,6 +29,7 @@ class DropshipperController extends Controller
             $dropshipper->address         = $request->address;
             $dropshipper->app_key         = $request->app_key;
             $dropshipper->app_secret      = $request->app_secret;
+            $dropshipper->is_approved      = 1;
             $dropshipper->save();
 
             return response()->json([
