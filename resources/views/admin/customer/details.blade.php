@@ -341,28 +341,27 @@
                                         <div class="col-md-6">
                                             @if ($order->discount != null && $order->advance == null)
                                                 <input class="form-control total_price" type="text" name="total_price"
-                                                    id="total_price" value="{{ $sum + $area - $order->discount }}">
+                                                       id="total_price" value="{{ (float) $sum + (float) $area - (float) $order->discount }}">
                                             @endif
 
                                             @if ($order->discount != null && $order->advance != null)
                                                 @php
-                                                    $x = $sum + $area;
-                                                    $y = $x - $order->discount;
-                                                    $z = $y - $order->advance;
-
+                                                    $x = (float) $sum + (float) $area;
+                                                    $y = $x - (float) $order->discount;
+                                                    $z = $y - (float) $order->advance;
                                                 @endphp
                                                 <input class="form-control total_price" type="text" name="total_price"
-                                                    id="total_price" value="{{ $z }}">
+                                                       id="total_price" value="{{ $z }}">
                                             @endif
 
                                             @if ($order->advance == null && $order->discount == null)
                                                 <input class="form-control total_price" type="text" name="total_price"
-                                                    id="total_price" value="{{ $sum + $area }}">
+                                                       id="total_price" value="{{ (float) $sum + (float) $area }}">
                                             @endif
 
                                             @if ($order->advance != null && $order->discount == null)
                                                 <input class="form-control total_price" type="text" name="total_price"
-                                                    id="total_price" value="{{ $order->price }}">
+                                                       id="total_price" value="{{ (float) $order->price }}">
                                             @endif
 
                                         </div>
