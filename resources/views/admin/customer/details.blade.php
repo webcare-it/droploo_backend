@@ -317,7 +317,7 @@
                                         <div class="col-md-6">
                                             <input class="form-control" type="text" name="discount"
                                                 onkeyup="orderDiscount(this.value)" id="discount"
-                                                value="{{ $order->discount ?? '' }}" placeholder="Enter Discount Price">
+                                                value="{{ $order->discount ?? 0 }}" placeholder="Enter Discount Price">
                                         </div>
                                     </div>
                                 </div>
@@ -329,7 +329,7 @@
                                         <div class="col-md-6">
                                             <input class="form-control" type="text" name="advance"
                                                 onkeyup="orderAdvance(this.value)" id="advance"
-                                                value="{{ $order->advance ?? '' }}" placeholder="Enter Advance Price">
+                                                value="{{ $order->advance ?? 0 }}" placeholder="Enter Advance Price">
                                         </div>
                                     </div>
                                 </div>
@@ -399,7 +399,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <input class="form-control total_price" type="text" name=""
-                                                    id="" value="{{ $order->transaction_id ?? '' }}" readonly>
+                                                    id="" value="{{ $order->transaction_id ?? 0 }}" readonly>
                                             </div>
                                         </div>
                                     </div>
