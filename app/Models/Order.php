@@ -45,7 +45,7 @@ class Order extends Model
 
     public function dropshipper()
     {
-        return $this->belongsTo(Dropshipper::class, 'dropshipper_id', 'id');
+        return $this->belongsTo(Dropshipper::class, 'dropshipper_id', 'dropshipper_id');
     }
 
     public function credits()
@@ -63,7 +63,7 @@ class Order extends Model
             return 'BM' . sprintf('%04d', $string+1);
         }
     }
-    
+
     public function notification()
     {
         return $this->morphOne(Notification::class, 'notifiable');
