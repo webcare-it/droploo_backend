@@ -54,7 +54,7 @@
                                             <label for="store">
                                                 Store <span style="color: red;">*</span>
                                             </label>
-                                            <input type="text" name="store" class="form-control" value="Nittoz.com"
+                                            <input type="text" name="store" class="form-control" value="droploo.com"
                                                 readonly>
                                         </div>
                                     </div>
