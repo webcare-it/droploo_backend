@@ -83,7 +83,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                                
+
                                                 @foreach ($all_orders as $order)
                                                     <tr>
                                                         <td>
@@ -100,7 +100,7 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <span class="badge bg-info" style="font-size: 12px; color: black">Nittoz</span><br/>
+                                                            <span class="badge bg-info" style="font-size: 12px; color: black">Droploo</span><br/>
                                                             <span style="font-size: 16px; font-weight:600;">{{ $order->orderId ?? 'No order id found' }}</span><br/>
                                                             <span class="badge rounded-pill bg-primary">{{ $order->order_type }}</span> <br/>
                                                             {{ $order->created_at->diffForHumans() }}

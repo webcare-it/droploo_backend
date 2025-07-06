@@ -57,10 +57,10 @@ class Order extends Model
     {
         $orderLastId = Order::orderBy('id', 'desc')->first();
         if (! $orderLastId) {
-            return'BM0001';
+            return'DL0001';
         } else {
             $string = preg_replace("/[^0-9\.]/", '', $orderLastId->id);
-            return 'BM' . sprintf('%04d', $string+1);
+            return 'DL' . sprintf('%04d', $string+1);
         }
     }
 
