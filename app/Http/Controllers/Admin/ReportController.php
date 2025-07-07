@@ -55,7 +55,7 @@ class ReportController extends Controller
                 $sql->where('employee_id', (int)$request->user_id);
             }
         }
-        
+
         else{
             $employee_id = Session::get('id');
             $sql = Order::with('orderDetails', 'admin')
@@ -273,7 +273,7 @@ class ReportController extends Controller
         // dd($delivered_orders);
         return view('admin.customer.dropshipper-delivery-order-list', compact('delivered_orders'));
     }
-    
+
     public function pendingPaymentOrder (Request $request)
     {
         if(session('name') == 'admin'){
@@ -715,7 +715,7 @@ class ReportController extends Controller
                 $query->where('order_status', 'complete')
                 ->orWhere('order_status', 'delivered');
             })
-            ->where('order_type', 'dropshipping')->where('is_deleted', '!=', true);
+            ->where('order_type', 'Dropshipping')->where('is_deleted', '!=', true);
             //Searching...
             if (isset($request->search)) {
                 $searchTerm = $request->search;
@@ -818,7 +818,7 @@ class ReportController extends Controller
 
         return view('admin.customer.order-list', compact('all_orders', 'users'));
     }
-    
+
         public function deletedOrder (Request $request)
     {
         if(session('name') == 'admin'){
@@ -962,7 +962,7 @@ class ReportController extends Controller
             $recipient_phone   = $orderDetails->phone;
             $recipient_address = $orderDetails->address;
             $note              = $request->notes;
-            
+
 
             // The headers
             $headers = [
@@ -1003,7 +1003,7 @@ class ReportController extends Controller
 
                     // return response()->json($responseData);
                 }
-            } 
+            }
             catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
             }
@@ -1035,7 +1035,7 @@ class ReportController extends Controller
         $this->setSuccessMessage('Order has been deleted');
         return redirect()->back();
     }
-    
+
     public function todayManual (Request $request)
     {
         if(session('name') == 'admin'){
@@ -1090,7 +1090,7 @@ class ReportController extends Controller
         $users = Admin::orderBy('id', 'desc')->where('id', '!=', session()->get('id'))->get();
         return view('admin.customer.order-manual-list', compact('orders', 'users'));
     }
-    
+
     public function todayOrders (Request $request)
     {
         if(session('name') == 'admin'){
@@ -1144,7 +1144,7 @@ class ReportController extends Controller
         $users = Admin::orderBy('id', 'desc')->where('id', '!=', session()->get('id'))->get();
         return view('admin.customer.order-today-list', compact('orders', 'users'));
     }
-    
+
     public function allManual (Request $request)
     {
         $currentMonth = Carbon::now()->format('m');
@@ -1205,7 +1205,7 @@ class ReportController extends Controller
         $users = Admin::orderBy('id', 'desc')->where('id', '!=', session()->get('id'))->get();
         return view('admin.customer.order-manual-list', compact('orders', 'users'));
     }
-    
+
     public function allWebsite (Request $request)
     {
         $currentMonth = Carbon::now()->format('m');
@@ -1266,7 +1266,7 @@ class ReportController extends Controller
         $users = Admin::orderBy('id', 'desc')->where('id', '!=', session()->get('id'))->get();
         return view('admin.customer.order-website-list', compact('orders', 'users'));
     }
-    
+
     public function todayCancel (Request $request)
     {
         if(session('name') == 'admin'){
@@ -1488,7 +1488,7 @@ class ReportController extends Controller
         $users = Admin::orderBy('id', 'desc')->where('id', '!=', session()->get('id'))->get();
         return view('admin.customer.delivery-order-list', compact('delivered_orders', 'users'));
     }
-    
+
     public function orderReturnList(Request $request)
     {
         if(session('name') == 'admin'){
@@ -1647,7 +1647,7 @@ class ReportController extends Controller
         $users = Admin::orderBy('id', 'desc')->where('id', '!=', session()->get('id'))->get();
         return view('admin.customer.order-missing', compact('orders', 'users'));
     }
-    
+
     //Pathao Webhook Implementation for Order Status....
     public function webHookForOrderStatus (Request $request)
     {
@@ -1736,7 +1736,7 @@ class ReportController extends Controller
         try {
             $order = Order::where('id', $id)->with('orderDetails', 'dropshipper')->first();
             $totalWholeSalePrice = 0;
-    
+
             foreach ($order->orderDetails as $detail) {
                 if ($detail->product->is_variable == 1) {
                     DB::rollBack();
@@ -1744,23 +1744,23 @@ class ReportController extends Controller
                 }
                 $totalWholeSalePrice += $detail->product->wholesale_price * $detail->qty;
             }
-            
+
             // dd($totalWholeSalePrice);
-    
+
             $payableAmount = $order->price - $totalWholeSalePrice;
-    
+
             // Update dropshipper's total credit within the transaction
             $dropshipper = Dropshipper::where('id', $order->dropshipper_id)->lockForUpdate()->first();
             $dropshipper->total_credit += $payableAmount;
             $dropshipper->save();
-    
+
             // Mark order as paid within the transaction
             $order->is_dpaid = true;
             $order->timestamps = false;
             $order->save();
-    
+
             DB::commit();
-    
+
             return response('Payment is done successfully', 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -1774,19 +1774,19 @@ class ReportController extends Controller
 
         try {
             $order = Order::where('id', $id)->with('orderDetails', 'dropshipper')->first();
-    
+
             // Update dropshipper's total credit within the transaction
             $dropshipper = Dropshipper::where('id', $order->dropshipper_id)->lockForUpdate()->first();
             $dropshipper->total_credit += $cod_amount;
             $dropshipper->save();
-    
+
             // Mark order as paid within the transaction
             $order->is_dpaid = true;
             $order->timestamps = false;
             $order->save();
-    
+
             DB::commit();
-    
+
             return response('Payment is done successfully', 200);
         } catch (\Exception $e) {
             DB::rollBack();
