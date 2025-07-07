@@ -1048,9 +1048,11 @@ class ReportController extends Controller
 
                     if (isset($responseData['consignment'])) {
                         $consignmentId = $responseData['consignment']['consignment_id'];
+                        $tracking_code = $responseData['consignment']['tracking_code'];
 
                         // ✅ Save consignment ID to order
                         $orderDetails->consignmentId = $consignmentId;
+                        $orderDetails->tracking_code = $tracking_code;
                         $orderDetails->save();
 
                         // return response()->json([

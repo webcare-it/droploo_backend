@@ -142,22 +142,22 @@ class OrderController extends Controller
             $selectedOrders = Order::with('orderDetails', 'admin')->whereIn('id', $selectedOrderIds)->get();
 
             //Update order_status as delivered...
-            foreach ($selectedOrderIds as $orderId) {
-                $order = Order::find($orderId);
-                //dd($order);
-                if ($order) {
-                    $order->is_printed = true;
-                    $order->order_status = 'delivered';
-                    $order->save();
-                    //Notification...
-                    $notification = new Notification();
-                    $notification->message = 'Order with invoice id'.' '.$order->orderId.' '. 'is made status delivered by'.' '.Session::get('name');
-                    $notification->specific_user_id = Session::get('id');
-                    $notification->notification_for = "user";
-                    $order->notification()->save($notification);
-                    //Notification...
-                }
-            }
+//            foreach ($selectedOrderIds as $orderId) {
+//                $order = Order::find($orderId);
+//                //dd($order);
+//                if ($order) {
+//                    $order->is_printed = true;
+//                    $order->order_status = 'delivered';
+//                    $order->save();
+//                    //Notification...
+//                    $notification = new Notification();
+//                    $notification->message = 'Order with invoice id'.' '.$order->orderId.' '. 'is made status delivered by'.' '.Session::get('name');
+//                    $notification->specific_user_id = Session::get('id');
+//                    $notification->notification_for = "user";
+//                    $order->notification()->save($notification);
+//                    //Notification...
+//                }
+//            }
             //Update order_status as delivered...
 
             return view('admin.pdf', compact('selectedOrders'));
