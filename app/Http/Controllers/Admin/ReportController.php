@@ -1058,6 +1058,19 @@ class ReportController extends Controller
                             $orderDetails->tracking_code = $tracking_code;
                             $orderDetails->save();
 
+                            $appKey    = $orderDetails->dropshipper->app_key;
+                            $appSecret = $orderDetails->dropshipper->app_secret;
+                            $userName  = $orderDetails->dropshipper->user_name;
+
+                            Http::withHeaders([
+                                'App-Secret' => $appSecret,
+                                'App-Key'    => $appKey,
+                                'Username'   => $userName,
+                            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/tracking', [
+                                'tracking_code'         => $orderDetails->tracking_code,
+                                'invoice_number' => $orderDetails->orderId,
+                            ]);
+
                             // return response()->json([
                             //     'message' => 'Order sent to Steadfast successfully',
                             //     'consignment_id' => $consignmentId,

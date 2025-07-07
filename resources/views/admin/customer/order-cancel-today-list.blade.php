@@ -100,7 +100,7 @@
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td>
                                                         <span class="badge bg-info"
-                                                            style="font-size: 12px; color: black">Nittoz</span><br />
+                                                            style="font-size: 12px; color: black">Droploo</span><br />
                                                         <span
                                                             style="font-size: 16px; font-weight:600;">{{ $order->orderId ?? 'No order id found' }}</span><br />
                                                         <span
