@@ -715,7 +715,7 @@ class ReportController extends Controller
                 $query->where('order_status', 'complete')
                 ->orWhere('order_status', 'delivered');
             })
-            ->where('order_type', 'Dropshipping')->where('is_deleted', '!=', true);
+            ->where('order_type', 'dropshipping')->where('is_deleted', '!=', true);
             //Searching...
             if (isset($request->search)) {
                 $searchTerm = $request->search;
@@ -952,8 +952,8 @@ class ReportController extends Controller
             $apiEndpoint = 'https://portal.steadfast.com.bd/api/v1/create_order';
 
             // API-Key and Secret-Key
-            $apiKey = 'qgrekxhk42fltdzmhz1niddrt1oynvjo';
-            $secretKey = 'qidnt9hraaguttg5arcrpsne';
+            $apiKey = 'workktmej9fc6f26elkfyh9zckskxqe4';
+            $secretKey = 'kjfkz2lkd2iitg07qsyd9gys';
 
             // The request parameters
             $invoice           = $orderDetails->orderId;
