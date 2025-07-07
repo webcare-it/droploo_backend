@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Codeboxr\PathaoCourier\Facade\PathaoCourier;
+use Illuminate\Support\Facades\Log;
 use Session;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -643,6 +644,59 @@ class ReportController extends Controller
         $cancelOrderStatus->notification()->save($notification);
         //Notification...
         return redirect()->back()->with('success', 'Order has been complete');
+    }
+    public function deliveredStatus($id)
+    {
+        $orderStatus = Order::with('dropshipper', 'orderDetails.product')->find($id);
+        $orderStatus->order_status = 'delivered';
+        $orderStatus->save();
+
+        $appKey    = $orderStatus->dropshipper->app_key;
+        $appSecret = $orderStatus->dropshipper->app_secret;
+        $userName  = $orderStatus->dropshipper->user_name;
+        $invoice_number = $orderStatus->orderId;
+
+        // Step 1: Calculate total wholesale cost
+        $totalWholesaleCost = 0;
+
+        foreach ($orderStatus->orderDetails as $detail) {
+            if ($detail->product && $detail->product->wholesale_price) {
+                $totalWholesaleCost += $detail->product->wholesale_price * $detail->qty;
+            }
+        }
+        $orderTotal = $orderStatus->price - $orderStatus->area;
+
+        // Step 2: Calculate profit
+        $grandTotal = $orderTotal - $totalWholesaleCost;
+        $profit_amount = $grandTotal + $orderStatus->area;
+
+        // Step 3: Send profit to balance API
+        $balanceResponse = Http::withHeaders([
+            'App-Secret' => $appSecret,
+            'App-Key'    => $appKey,
+            'Username'   => $userName,
+        ])->post('https://dropshipper.droploo.com/api/dropshipper/profit/update', [
+            'amount'         => $profit_amount,
+            'type'           => 'credit',
+            'reason'         => 'Profit balance add for invoice #' . $invoice_number,
+            'invoice_number' => $invoice_number,
+        ]);
+
+        if (!$balanceResponse->ok()) {
+            Log::warning('Profit balance add failed for invoice #' . $invoice_number, [
+                'status' => $balanceResponse->status(),
+                'body'   => $balanceResponse->body(),
+            ]);
+        }
+
+        // Notification
+        $notification = new Notification();
+        $notification->message = 'Order with invoice id ' . $orderStatus->orderId . ' is made status complete by ' . Session::get('name');
+        $notification->specific_user_id = Session::get('id');
+        $notification->notification_for = "user";
+        $orderStatus->notification()->save($notification);
+
+        return redirect()->back()->with('success', 'Order has been completed');
     }
 
     public function invoiceList (Request $request)

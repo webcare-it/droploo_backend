@@ -153,6 +153,11 @@
                                                                             Complete
                                                                         </a>
                                                                     </li>
+                                                                    <li class="action-btn-list-item">
+                                                                        <a href="{{url('/status/delivered/'.$order->id)}}" class="action-btn-link">
+                                                                            Delivered
+                                                                        </a>
+                                                                    </li>
                                                                 </ul>
                                                             </div>
                                                         </td>

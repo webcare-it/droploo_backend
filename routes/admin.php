@@ -61,7 +61,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::post('/process-selected-orders',[\App\Http\Controllers\Admin\OrderController::class, 'processSelectedOrders'])->name('process.selected.orders');
     Route::post('/process-selected-dropshipper-orders',[\App\Http\Controllers\Admin\OrderController::class, 'processDropshipperSelectedOrders'])->name('process.selected.dropshipper.orders');
     Route::get('/download/order-csv/{id}',[\App\Http\Controllers\Admin\OrderController::class, 'downloadCSV'])->name('download.orders.csv');
-    
+
     Route::get('/admin/customer/review', [\App\Http\Controllers\Admin\OrderController::class, 'customerReview']);
     Route::get('/add/customer/review', [\App\Http\Controllers\Admin\OrderController::class, 'customerReviewForm']);
     Route::post('/admin/customer/review/store', [\App\Http\Controllers\Admin\OrderController::class, 'customerReviewStore']);
@@ -102,6 +102,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     // Route::get('/status/hold/form/{orderId}', [\App\Http\Controllers\Admin\ReportController::class, 'showHoldReasonForm']);
     // Route::post('/status/hold', [\App\Http\Controllers\Admin\ReportController::class, 'holdNoteStore']);
     Route::get('/status/complete/{id}', [\App\Http\Controllers\Admin\ReportController::class, 'completeStatus']);
+    Route::get('/status/delivered/{id}', [\App\Http\Controllers\Admin\ReportController::class, 'deliveredStatus']);
     Route::post('/order/update', [\App\Http\Controllers\Admin\ReportController::class, 'statusUpdate']);
 
     Route::get('/status/cancel/form/{orderId}', [\App\Http\Controllers\Admin\ReportController::class, 'showCancelReasonForm']);
@@ -167,7 +168,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::get('/banner/edit/{id}', [\App\Http\Controllers\Admin\SettingController::class, 'bannerEdit']);
     Route::post('/banner/update/{banner}', [\App\Http\Controllers\Admin\SettingController::class, 'bannerUpdate']);
     Route::get('/banner/delete/{banner}', [\App\Http\Controllers\Admin\SettingController::class, 'bannerDelete']);
-    
+
     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'generalSetting']);
     Route::post('/settings/update', [\App\Http\Controllers\Admin\SettingController::class, 'updateGeneralSetting']);
 
@@ -254,7 +255,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     //Pathao API Implementation...
     Route::get('/get-zones/{cityId}', [\App\Http\Controllers\Admin\OrderController::class, 'zoneList']);
     //Pathao API Implementation...
-    
+
     //Expenses...
     Route::get('/expenses', [\App\Http\Controllers\Admin\AdminController::class, 'expenseList']);
     Route::get('/add-expense', [\App\Http\Controllers\Admin\AdminController::class, 'showAddxpenseForm']);
@@ -262,7 +263,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::get('/edit-expense/{id}', [\App\Http\Controllers\Admin\AdminController::class, 'editExpense']);
     Route::post('/update-expense/{id}', [\App\Http\Controllers\Admin\AdminController::class, 'updateExpense']);
     //Expenses...
-    
+
     //Payment Reports...
     Route::get('/payment-reports', [\App\Http\Controllers\Admin\AdminController::class, 'paymentList']);
     //Payment Reports
