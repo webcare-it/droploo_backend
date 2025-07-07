@@ -279,6 +279,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                @php
+                                    $area = $order->area
+                                @endphp
                                 <div class="mt-3 mb-3">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -286,7 +289,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input class="form-control" type="number" name="area" id="area"
-                                                value="{{ $area = $order->area }}">
+                                                value="{{ $area }}">
                                         </div>
                                     </div>
                                 </div>
@@ -375,7 +378,7 @@
                                                 <strong>Charge</strong>
                                             </div>
                                             <div class="col-md-6">
-                                                <input class="form-control total_price" type="text" name=""
+                                                <input class="form-control total_price" type="text" name="area"
                                                     id="" value="{{ $order->area }}" readonly>
                                             </div>
                                         </div>
