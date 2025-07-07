@@ -664,11 +664,12 @@ class ReportController extends Controller
                 $totalWholesaleCost += $detail->product->wholesale_price * $detail->qty;
             }
         }
-        $orderTotal = $orderStatus->price - $orderStatus->area;
+        $orderTotal = (float)$orderStatus->price - (float)$orderStatus->area;
 
         // Step 2: Calculate profit
-        $grandTotal = $orderTotal - $totalWholesaleCost;
-        $profit_amount = $grandTotal + $orderStatus->area;
+        $grandTotal = $orderTotal - (float)$totalWholesaleCost;
+        $profit_amount = $grandTotal + (float)$orderStatus->area;
+
 
         // Step 3: Send profit to balance API
         $balanceResponse = Http::withHeaders([
