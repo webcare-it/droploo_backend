@@ -93,6 +93,7 @@ Route::get('/product-search/{p_name}', [ProductController::class, 'getProductsSe
 //Add to Cart & Checkout...
 Route::post('/product/add-to-cart/{id}', [ProductController::class, 'productAddtoCart']);
 Route::post('/confirm-order', [OrderController::class, 'confirmOrder']);
+
 Route::post('/product/create-order', [OrderController::class, 'create']);
 
 Route::get('/cart-products-count/{ip}', [ProductController::class, 'countCartProducts']);

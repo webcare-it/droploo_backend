@@ -101,14 +101,14 @@
                                                 <tr style="background-color: rgb(109, 98, 98)">
                                                 @else
                                                     <tr>
-                                            @endif            
+                                            @endif
                                                     <td>
                                                         <input type="checkbox" name="id[]" id="id{{ $order->id }}" value="{{ $order->id }}" />
                                                     </td>
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td>
                                                         <span class="badge bg-info"
-                                                            style="font-size: 12px; color: black">Nittoz</span><br />
+                                                            style="font-size: 12px; color: black">Droploo</span><br />
                                                         <span
                                                             style="font-size: 16px; font-weight:600;">{{ $order->orderId ?? 'No order id found' }}</span><br />
                                                         <span
@@ -209,7 +209,7 @@
 
                                                     </td>
                                                 </tr>
-                                                
+
                                             @endforeach
                                         </tbody>
                                     </table>
