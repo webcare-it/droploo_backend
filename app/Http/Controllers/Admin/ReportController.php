@@ -949,7 +949,7 @@ class ReportController extends Controller
         if($request->courier == 'Steadfast'){
             $orderDetails = Order::find($id);
             // API endpoint
-            $apiEndpoint = 'https://portal.steadfast.com.bd/api/v1/create_order';
+            $apiEndpoint = 'https://portal.packzy.com/api/v1/create_order';
 
             // API-Key and Secret-Key
             $apiKey = 'workktmej9fc6f26elkfyh9zckskxqe4';
@@ -969,6 +969,7 @@ class ReportController extends Controller
                 'Api-Key' => $apiKey,
                 'Secret-Key' => $secretKey,
                 'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
             ];
 
             // The request payload
@@ -983,25 +984,33 @@ class ReportController extends Controller
             ];
 
             try {
-                // Make the API call using GuzzleHttp
+                // ✅ Send the POST request
                 $response = Http::withHeaders($headers)->post($apiEndpoint, $payload);
 
-                // Process the API response as needed
-                $responseData = $response->json();
+                // ✅ Check if request was successful
+                if ($response->successful()) {
+                    $responseData = $response->json();
 
-                // Check if the response has the "consignment" key
-                if (isset($responseData['consignment'])) {
-                    $consignmentData = $responseData['consignment'];
-                    $consignmentId   = $consignmentData['consignment_id'];
-                    $trackingCode   = $consignmentData['tracking_code'];
+                    if (isset($responseData['consignment'])) {
+                        $consignmentId = $responseData['consignment']['consignment_id'];
 
-                    $orderDetails->consignmentId = $consignmentId;
-                    $orderDetails->tracking_link = "https://steadfast.com.bd/t/".$trackingCode;
-                    $orderDetails->save();
+                        // ✅ Save consignment ID to order
+                        $orderDetails->consignmentId = $consignmentId;
+                        $orderDetails->save();
 
-                    // Do something with $consignmentId or other data
-
-                    // return response()->json($responseData);
+                        // return response()->json([
+                        //     'message' => 'Order sent to Steadfast successfully',
+                        //     'consignment_id' => $consignmentId,
+                        // ]);
+                    } else {
+                        return response()->json(['error' => 'Consignment ID not found in response'], 422);
+                    }
+                } else {
+                    return response()->json([
+                        'error' => 'API call failed',
+                        'status' => $response->status(),
+                        'body' => $response->body()
+                    ], 500);
                 }
             }
             catch (\Exception $e) {
