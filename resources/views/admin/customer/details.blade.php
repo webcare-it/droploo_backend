@@ -279,9 +279,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                @php
-                                    $area = $order->area
-                                @endphp
                                 <div class="mt-3 mb-3">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -289,7 +286,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <input class="form-control" type="number" name="area" id="area"
-                                                value="{{ $area }}">
+                                                value="{{ $area = $order->area }}">
                                         </div>
                                     </div>
                                 </div>
