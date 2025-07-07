@@ -1101,7 +1101,7 @@ class ReportController extends Controller
                 'App-Secret' => $appSecret,
                 'App-Key'    => $appKey,
                 'Username'   => $userName,
-            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/tracking', [
+            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/tracking-code', [
                 'tracking_code'         => $orderDetails->tracking_code,
                 'invoice_number' => $orderDetails->orderId,
             ]);
