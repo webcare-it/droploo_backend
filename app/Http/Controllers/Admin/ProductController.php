@@ -131,7 +131,7 @@ class ProductController extends Controller
         $product->sub_cat_id = $request->sub_cat_id;
         $product->qty = $request->qty;
         $product->buy_price = $request->buy_price;
-        $product->wholesale_price = $request->buy_price;
+        $product->wholesale_price = $request->wholesale_price;
         $product->regular_price = $request->regular_price;
         if ($request->discount_price){
             $product->discount_price = $request->discount_price;
@@ -306,7 +306,7 @@ class ProductController extends Controller
         $product->sub_cat_id = $request->sub_cat_id;
         $product->qty = $request->qty;
         $product->buy_price = $request->buy_price;
-        $product->wholesale_price = $request->buy_price;
+        $product->wholesale_price = $request->wholesale_price;
         $product->regular_price = $request->regular_price;
         if ($request->discount_price){
             $product->discount_price = $request->discount_price;

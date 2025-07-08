@@ -67,11 +67,11 @@
                                                     <input type="number" name="qty" value="{{ $product->qty }}" class="form-control" placeholder="Product qty"><br>
                                                     <span style="color: red"> {{ $errors->has('qty') ? $errors->first('qty') : ' ' }}</span>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Buy Price</label>
-                                                    <input type="number" name="buy_price" value="{{ $product->buy_price }}" class="form-control" placeholder="Product buy price">
-                                                    <span style="color: red"> {{ $errors->has('buy_price') ? $errors->first('buy_price') : ' ' }}</span>
-                                                </div>
+{{--                                                <div class="form-group">--}}
+{{--                                                    <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Wholesale Price</label>--}}
+{{--                                                    <input type="number" name="buy_price" value="{{ $product->buy_price }}" class="form-control" placeholder="Product Wholesale price">--}}
+{{--                                                    <span style="color: red"> {{ $errors->has('buy_price') ? $errors->first('buy_price') : ' ' }}</span>--}}
+{{--                                                </div>--}}
                                                 <div class="form-group">
                                                     <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Wholesale Price</label>
                                                     <input type="number" name="wholesale_price" value="{{ $product->wholesale_price }}" class="form-control" placeholder="Product buy price">
@@ -109,26 +109,26 @@
                                                 @foreach ($product->productImages as $image)
                                                 <div style="display: inline-block; text-align: center; margin: 10px; position: relative;">
                                                     <img src="{{ asset('galleryImage/'.$image->gallery_image) }}" height="100" width="100" alt="Product Image">
-                                                
+
                                                     <!-- Delete Icon -->
-                                                    <a href="{{url('/gallery-image/delete/'.$image->id)}}" 
-                                                        style="position: absolute; top: 5px; right: 5px; background: red; color: white; border-radius: 50%; padding: 5px; text-decoration: none;" 
+                                                    <a href="{{url('/gallery-image/delete/'.$image->id)}}"
+                                                        style="position: absolute; top: 5px; right: 5px; background: red; color: white; border-radius: 50%; padding: 5px; text-decoration: none;"
                                                         onclick="return confirm('Are you sure you want to delete this image?')">
                                                         &times;
                                                     </a>
-                                                
+
                                                     <!-- Edit Icon -->
-                                                    <a href="{{url('/gallery-image/edit/'.$image->id)}}" 
+                                                    <a href="{{url('/gallery-image/edit/'.$image->id)}}"
                                                         style="position: absolute; bottom: 5px; right: 5px; background: blue; color: white; border-radius: 50%; padding: 5px; text-decoration: none;">
                                                         ✎
                                                     </a>
-                                                
+
                                                     <div>
                                                         <span>Price: {{$image->price ?? "N/A"}}</span><br>
                                                         <span>Color: {{$image->color ?? "N/A"}}</span><br>
                                                         <span>Size: {{$image->size ?? "N/A"}}</span>
                                                     </div>
-                                                </div>                                                
+                                                </div>
                                                 @endforeach
                                                 <div class="input-group mb-3">
                                                     <input type="file" name="gallery_image[]" id="gallery_image" class="form-control">
@@ -234,10 +234,10 @@
             html += '<i class="bx bx-minus" aria-hidden="true" style="margin-left: 7px;"></i>';
             html += '</button>';
             html += '</div>';
-    
+
             $('#newRow').append(html);
         });
-    
+
         // remove row
         $(document).on('click', '#remove', function () {
             $(this).closest('#removeRow').remove();

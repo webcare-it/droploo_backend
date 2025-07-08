@@ -58,11 +58,11 @@
                                                     <input type="number" name="qty" value="{{ $product->qty }}" class="form-control" placeholder="Product qty">
                                                     <span style="color: red"> {{ $errors->has('qty') ? $errors->first('qty') : ' ' }}</span>
                                                 </div>
-                                               <div class="form-group">
-                                                   <label>Buy Price</label>
-                                                    <input type="number" name="buy_price" value="{{ $product->buy_price }}" class="form-control" placeholder="Product buy price">
-                                                    <span style="color: red"> {{ $errors->has('buy_price') ? $errors->first('buy_price') : ' ' }}</span>
-                                               </div>
+{{--                                               <div class="form-group">--}}
+{{--                                                   <label>Buy Price</label>--}}
+{{--                                                    <input type="number" name="buy_price" value="{{ $product->buy_price }}" class="form-control" placeholder="Product buy price">--}}
+{{--                                                    <span style="color: red"> {{ $errors->has('buy_price') ? $errors->first('buy_price') : ' ' }}</span>--}}
+{{--                                               </div>--}}
                                                <div class="form-group">
                                                 <label>Wholesale Price</label>
                                                  <input type="number" name="wholesale_price" value="{{ $product->wholesale_price }}" class="form-control" placeholder="Product buy price">
