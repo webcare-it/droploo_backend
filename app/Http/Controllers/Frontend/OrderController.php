@@ -154,28 +154,6 @@ class OrderController extends Controller
                 ], 401);
             }
 
-            // Step 2: Check invoice in balance log via external API
-            $apiResponse = Http::get('https://dropshipper.droploo.com/api/check-invoice', [
-                'invoice_number' => $request->invoice_number
-            ]);
-
-            if ($apiResponse->failed() || !$apiResponse['dropshipperBalanceLog']) {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Invoice not found in balance log.'
-                ], 404);
-            }
-
-            $balanceLog = $apiResponse['dropshipperBalanceLog'];
-
-            // Step 3: Validate balance log amount with delivery_area
-            if ($balanceLog['amount'] != $request->delivery_area) {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Amount does not match delivery area.'
-                ], 400);
-            }
-
             // Step 4: Get dropshipper info to verify balance
             $dropshipperInfoResponse = Http::withHeaders([
                 'App-Secret' => $dropshipper->app_secret,
