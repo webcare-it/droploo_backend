@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Cart;
+use App\Models\Dropshipper;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -137,37 +140,109 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         try {
-            // Check for existing order by invoice number
+            // Step 1: Validate dropshipper auth headers
+            $dropshipper = Dropshipper::where('app_key', $request->header('App-Key'))
+                ->where('app_secret', $request->header('App-Secret'))
+                ->where('user_name', $request->header('Username'))
+                ->where('is_approved', 1)
+                ->first();
+
+            if (!$dropshipper) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Unauthorized dropshipper credentials.'
+                ], 401);
+            }
+
+            // Step 2: Check invoice in balance log via external API
+            $apiResponse = Http::get('https://dropshipper.droploo.com/api/check-invoice', [
+                'invoice_number' => $request->invoice_number
+            ]);
+
+            if ($apiResponse->failed() || !$apiResponse['dropshipperBalanceLog']) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Invoice not found in balance log.'
+                ], 404);
+            }
+
+            $balanceLog = $apiResponse['dropshipperBalanceLog'];
+
+            // Step 3: Validate balance log amount with delivery_area
+            if ($balanceLog['amount'] != $request->delivery_area) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Amount does not match delivery area.'
+                ], 400);
+            }
+
+            // Step 4: Get dropshipper info to verify balance
+            $dropshipperInfoResponse = Http::withHeaders([
+                'App-Secret' => $dropshipper->app_secret,
+                'App-Key'    => $dropshipper->app_key,
+                'Username'   => $dropshipper->user_name,
+            ])->get('http://dropshipper.droploo.com/api/dropshipper/info');
+
+            if (!$dropshipperInfoResponse->ok()) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Failed to fetch dropshipper info.',
+                    'details' => $dropshipperInfoResponse->body()
+                ], $dropshipperInfoResponse->status());
+            }
+
+            $dropshipperData = $dropshipperInfoResponse['dropshipper'] ?? null;
+
+            if (!$dropshipperData) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Dropshipper info is invalid.'
+                ], 400);
+            }
+
+            // Step 5: Determine delivery cost
+            $delivery_area = ((int)$request->delivery_area <= 80) ? 'Inside-Dhaka' : 'Outside-Dhaka';
+            $deliveryCost = $delivery_area === 'Inside-Dhaka' ? 60 : 120;
+
+            if ((int)$dropshipperData['balance'] < $deliveryCost) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Insufficient balance for delivery charge.'
+                ], 400);
+            }
+
+            // Proceed with order creation
             $order = Order::where('orderId', $request->invoice_number)->first();
 
             if (!$order) {
                 $order = new Order();
                 $order->orderId = $request->invoice_number;
             }
-            $order->orderId           = $order->orderId;
-            $order->name              = $request->customer_name;
-            $order->phone             = $request->customer_phone;
-            $order->area              = $request->delivery_area;
-            $order->address           = $request->customer_address;
-            $order->price             = $request->price;
-            $order->discount          = $request->discount ?? 0;
-            $order->advance           = $request->advance ?? 0;
-            $order->qty               = $request->product_quantity;
-            $order->payment_type      = $request->payment_type;
-            $order->delivery_charge_type      = $request->delivery_charge_type;
-            $order->order_type        = $request->order_type;
-            $order->customer_type     = 'guest';
-            $order->pathao_special_note = $request->special_notes ?? null;
-            $order->payment_gateway   = $request->payment_gateway ?? null;
-            $order->transaction_id    = $request->transaction_id ?? null;
-            $order->order_status      = 'pending';
-            $order->dropshipper_id      = $request->dropshipper_id;
+
+            $order->orderId              = $order->orderId;
+            $order->name                 = $request->customer_name;
+            $order->phone                = $request->customer_phone;
+            $order->area                 = $request->delivery_area;
+            $order->address              = $request->customer_address;
+            $order->price                = $request->price;
+            $order->discount             = $request->discount ?? 0;
+            $order->advance              = $request->advance ?? 0;
+            $order->qty                  = $request->product_quantity;
+            $order->payment_type         = $request->payment_type;
+            $order->delivery_charge_type = $request->delivery_charge_type;
+            $order->order_type           = $request->order_type;
+            $order->customer_type        = 'guest';
+            $order->pathao_special_note  = $request->special_notes ?? null;
+            $order->payment_gateway      = $request->payment_gateway ?? null;
+            $order->transaction_id       = $request->transaction_id ?? null;
+            $order->order_status         = 'pending';
+            $order->dropshipper_id       = $request->dropshipper_id;
             $order->save();
 
-            // Delete previous details if updating
+            // Clear previous order details
             OrderDetails::where('order_id', $order->id)->delete();
 
-            // Re-insert order details
+            // Insert new details
             foreach ($request->products as $productData) {
                 $product = Product::find($productData['id']);
 
@@ -181,9 +256,30 @@ class OrderController extends Controller
                 $details->save();
             }
 
+            // Step 8: Deduct delivery cost from balance
+            $balanceResponse = Http::withHeaders([
+                'App-Secret' => $dropshipper->app_secret,
+                'App-Key'    => $dropshipper->app_key,
+                'Username'   => $dropshipper->user_name,
+            ])->post('https://dropshipper.droploo.com/api/dropshipper/update-balance', [
+                'amount'         => $deliveryCost,
+                'type'           => 'debit',
+                'reason'         => 'Delivery charge for invoice #' . $order->orderId,
+                'invoice_number' => $order->orderId,
+            ]);
+
+            if (!$balanceResponse->ok()) {
+                Log::warning('Failed to deduct delivery charge.', [
+                    'invoice' => $order->orderId,
+                    'status'  => $balanceResponse->status(),
+                    'body'    => $balanceResponse->body()
+                ]);
+            }
+
+            // Step 9: Final API response
             return response()->json([
                 'status'   => 'success',
-                'message'  => $order->wasRecentlyCreated ? 'Order has been created' : 'Order has been updated',
+                'message'  => $order->wasRecentlyCreated ? 'Order created successfully.' : 'Order updated successfully.',
                 'order_id' => $order->id,
             ]);
         } catch (\Throwable $e) {
@@ -192,7 +288,6 @@ class OrderController extends Controller
                 'message' => $e->getMessage(),
                 'file'    => $e->getFile(),
                 'line'    => $e->getLine(),
-                'trace'   => $e->getTraceAsString(),
             ], 500);
         }
     }
