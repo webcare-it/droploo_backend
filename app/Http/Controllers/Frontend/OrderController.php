@@ -237,7 +237,7 @@ class OrderController extends Controller
                 'App-Key'    => $dropshipper->app_key,
                 'Username'   => $dropshipper->user_name,
             ])->post('https://dropshipper.droploo.com/api/dropshipper/update-balance', [
-                'amount'         => $deliveryCost,
+                'amount'         => $order->area,
                 'type'           => 'debit',
                 'reason'         => 'Delivery charge for invoice #' . $order->orderId,
                 'invoice_number' => $order->orderId,
