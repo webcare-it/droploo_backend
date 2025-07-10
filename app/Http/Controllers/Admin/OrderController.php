@@ -189,7 +189,7 @@ class OrderController extends Controller
                 //dd($order);
                 if ($order) {
                     $order->is_printed = true;
-                    $order->order_status = 'delivered';
+                    $order->order_status = 'complete';
                     $order->save();
                     //Notification...
                     $notification = new Notification();
