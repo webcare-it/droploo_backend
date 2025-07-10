@@ -178,11 +178,8 @@ class OrderController extends Controller
                 ], 400);
             }
 
-            // Step 5: Determine delivery cost
-            $delivery_area = ((int)$request->delivery_area <= 80) ? 'Inside-Dhaka' : 'Outside-Dhaka';
-            $deliveryCost = $delivery_area === 'Inside-Dhaka' ? 60 : 120;
 
-            if ((int)$dropshipperData['balance'] < $deliveryCost) {
+            if ((int)$dropshipperData['balance'] < $request->delivery_cost) {
                 return response()->json([
                     'status'  => 'error',
                     'message' => 'Insufficient balance for delivery charge.'
@@ -200,7 +197,7 @@ class OrderController extends Controller
             $order->orderId              = $order->orderId;
             $order->name                 = $request->customer_name;
             $order->phone                = $request->customer_phone;
-            $order->area                 = $request->delivery_area;
+            $order->area                 = $request->delivery_cost;
             $order->address              = $request->customer_address;
             $order->price                = $request->price;
             $order->discount             = $request->discount ?? 0;
