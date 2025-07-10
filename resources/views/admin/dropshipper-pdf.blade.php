@@ -30,7 +30,7 @@
     @foreach ($selectedOrders as $order)
     <div style="display: flex;align-items: center;justify-content: space-between;margin-bottom: 25px">
         <div style="width: 35%">
-            <img src="{{ asset('/frontend/dropshipper/images/'.$order->dropshipper->image) }}" style="max-height: 100px; width: 100px;" alt="logo" />
+            <img src="{{ $order->dropshipper->image }}" style="max-height: 100px; width: 100px;" alt="logo" />
         </div>
         <div style="width: 65%">
             <p style="margin-bottom: 0;font-size: 18px;font-weight: 600;color: #000;">
