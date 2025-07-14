@@ -41,7 +41,7 @@
                         </div>
                         <div class="card-footer">
                             <div class="text-right">
-                                <a href="{{url('dropshipper-orders/'.$dropshipper->id)}}" class="btn btn-sm btn-primary">
+                                <a href="{{url('dropshipper-orders/'.$dropshipper->dropshipper_id)}}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-user"></i> View Orders
                                 </a>
                             </div>
