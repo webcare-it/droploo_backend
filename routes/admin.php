@@ -13,6 +13,37 @@ Route::group(['prefix' => 'admin'], function(){
     Route::group(['middleware' => 'isAdmin'], function(){
         Route::get('/dashboard', [\App\Http\Controllers\Auth\AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::post('/logout', [\App\Http\Controllers\Auth\AdminController::class, 'logout'])->name('admin.logout');
+
+        Route::get('migrate', function() {
+            $exitCode = Artisan::call('migrate');
+
+            if ($exitCode === 0) {
+                $output = Artisan::output();
+                return response()->json(['status' => 'success', 'message' => $output]);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Migration failed'], 500);
+            }
+        })->name('migrate');
+        Route::get('migrate-seed', function() {
+            $exitCode = Artisan::call('migrate --seed');
+
+            if ($exitCode === 0) {
+                $output = Artisan::output();
+                return response()->json(['status' => 'success', 'message' => $output]);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Migration failed'], 500);
+            }
+        })->name('migrate-seed');
+        Route::get('migrate-rollback', function() {
+            $exitCodeRollBack = Artisan::call('migrate:rollback');
+
+            if ($exitCodeRollBack === 0) {
+                $output = Artisan::output();
+                return response()->json(['status' => 'success', 'message' => $output]);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Migration failed'], 500);
+            }
+        })->name('migrate-rollback');
     });
 });
 

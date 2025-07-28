@@ -320,32 +320,13 @@ class ProductController extends Controller
         $product->imageUrl = $imageUrl;
         $product->save();
 
-        if(!empty($product)){
-            if($request->gallery_image){
-
+        if (!empty($product)) {
+            if ($request->hasFile('gallery_image')) {
                 $galleryImages = $request->file('gallery_image');
-                $prices = $request->input('price');
                 $colors = $request->input('color');
                 $sizes = $request->input('size');
-
-                //Old Version of gallery Image...
-                // foreach ($galleryImages as $index => $image) {
-                //     $galleryImageName = rand().$request->name.'.'.$image->extension();
-                //     $imgGallery = Image::make($image->path());
-                //     $imgGallery->resize(440, 440, function ($const) {
-                //         $const->aspectRatio();
-                //     })->save('galleryImage'. '/'. $galleryImageName);
-                //     $imageUrl = url('galleryImage'.'/'.$galleryImageName);
-
-                //     $productGalleryImage = new ProductImage();
-                //     $productGalleryImage->product_id = $product->id;  // assuming $product is available
-                //     $productGalleryImage->gallery_image = $galleryImageName;
-                //     $productGalleryImage->price = $prices[$index];
-                //     $productGalleryImage->color = $colors[$index];
-                //     $productGalleryImage->size = $sizes[$index];
-                //     $productGalleryImage->imageUrl = $imageUrl;
-                //     $productGalleryImage->save();
-                // }
+                $prices = $request->input('price');
+                $wholesalePrices = $request->input('wholesale_price');
 
                 foreach ($galleryImages as $index => $image) {
                     // Generate a unique name for the image
@@ -357,40 +338,15 @@ class ProductController extends Controller
                     // Generate the image URL
                     $imageUrl = url('galleryImage/' . $galleryImageName);
 
-                    // Save the image data in the database
                     $productGalleryImage = new ProductImage();
-                    $productGalleryImage->product_id = $product->id; // assuming $product is available
+                    $productGalleryImage->product_id = $product->id;
                     $productGalleryImage->gallery_image = $galleryImageName;
-                    $productGalleryImage->price = $prices[$index];
-                    $productGalleryImage->color = $colors[$index];
-                    $productGalleryImage->size = $sizes[$index];
                     $productGalleryImage->imageUrl = $imageUrl;
+                    $productGalleryImage->size = $sizes[$index] ?? null;
+                    $productGalleryImage->color = $colors[$index] ?? null;
+                    $productGalleryImage->price = $prices[$index] ?? 0;
+                    $productGalleryImage->wholesale_price = $wholesalePrices[$index] ?? 0;
                     $productGalleryImage->save();
-                }
-            }
-        }
-
-        // Product color
-        if($request->filled('color')){
-            $colors = $request->color;
-            if (is_array($colors) || is_object($colors)){
-                foreach ($colors as $key => $color){
-                    $colorName = new ProductColor();
-                    $colorName->product_id = $product->id;
-                    $colorName->color = $color;
-                    $colorName->save();
-                }
-            }
-        }
-        // Product size
-        if ($request->filled('size')) {
-            $sizes = $request->input('size');
-            if (is_array($sizes) || is_object($sizes)) {
-                foreach ($sizes as $size) {
-                    $sizeName = new ProductSize();
-                    $sizeName->product_id = $product->id;
-                    $sizeName->size = $size;
-                    $sizeName->save();
                 }
             }
         }
@@ -649,27 +605,10 @@ class ProductController extends Controller
                 }
                 //Delete Previous Image...
                 $galleryImages = $request->file('gallery_image');
+                $wholesalePrices = $request->input('wholesale_price_variable');
                 $prices = $request->input('price');
                 $colors = $request->input('color');
                 $sizes = $request->input('size');
-
-                //Old Version Gallery Image..
-                // foreach ($galleryImages as $index => $image) {
-                //     $galleryImageName = rand().$request->name.'.'.$image->extension();
-                //     $imgGallery = Image::make($image->path());
-                //     $imgGallery->resize(440, 440, function ($const) {
-                //         $const->aspectRatio();
-                //     })->save('galleryImage'. '/'. $galleryImageName);
-                //     $imageUrl = url('galleryImage'.'/'.$galleryImageName);
-
-                //     $productGalleryImage = new ProductImage();
-                //     $productGalleryImage->product_id = $product->id;  // assuming $product is available
-                //     $productGalleryImage->gallery_image = $galleryImageName;
-                //     $productGalleryImage->price = $prices[$index];
-                //     $productGalleryImage->color = $colors[$index];
-                //     $productGalleryImage->size = $sizes[$index];
-                //     $productGalleryImage->imageUrl = $imageUrl;
-                //     $productGalleryImage->save();
                 // }
 
                 foreach ($galleryImages as $index => $image) {
@@ -687,6 +626,7 @@ class ProductController extends Controller
                     $productGalleryImage->product_id = $product->id; // assuming $product is available
                     $productGalleryImage->gallery_image = $galleryImageName;
                     $productGalleryImage->price = $prices[$index];
+                    $productGalleryImage->wholesale_price = $wholesalePrices[$index];
                     $productGalleryImage->color = $colors[$index];
                     $productGalleryImage->size = $sizes[$index];
                     $productGalleryImage->imageUrl = $imageUrl;
@@ -965,6 +905,7 @@ class ProductController extends Controller
             $galleryImage->gallery_image = $galleryImageName;
             $galleryImage->imageUrl = $imageUrl;
         }
+        $galleryImage->wholesale_price = $request->wholesale_price;
         $galleryImage->price = $request->price;
         $galleryImage->color = $request->color;
         $galleryImage->size = $request->size;

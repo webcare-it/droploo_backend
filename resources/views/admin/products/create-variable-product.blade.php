@@ -65,8 +65,8 @@
                                                     <span style="color: red"> {{ $errors->has('qty') ? $errors->first('qty') : ' ' }}</span>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Wholesale Price</label>
-                                                    <input type="number" name="wholesale_price" value="{{ old('wholesale_price') }}" class="form-control" placeholder="Product Wholesale price">
+                                                    <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Wholesale Price <small style="color: red; font-size: 18px;">*</small></label>
+                                                    <input type="number" name="wholesale_price" value="{{ old('wholesale_price') }}" class="form-control" placeholder="Product Wholesale price" required>
                                                     <span style="color: red"> {{ $errors->has('wholesale_price') ? $errors->first('wholesale_price') : ' ' }}</span>
                                                 </div>
                                                 <div class="form-group">
@@ -96,17 +96,46 @@
                                                     <input type="file" name="image" id="image" class="form-control"><br>
                                                     <span style="color: red"> {{ $errors->has('image') ? $errors->first('image') : ' ' }}</span>
                                                 </div>
-                                                <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Gallery Image, Price, Color, and Size <small style="color: red; font-size: 18px;">*</small></label>
-                                                <div class="input-group mb-3">
-                                                    <input type="file" name="gallery_image[]" id="gallery_image" class="form-control">
-                                                    <input type="text" name="price[]" id="price" class="form-control" placeholder="Price">
-                                                    <input type="text" name="color[]" id="color" class="form-control" placeholder="Product color">
-                                                    <input type="text" name="size[]" id="size" class="form-control" placeholder="Product size">
-                                                    <button class="btn btn-sm btn-primary" type="button" id="addMore">
-                                                        <i class="bx bx-plus-circle" aria-hidden="true" style="margin-left: 7px;"></i>
-                                                    </button>
+                                                <label style="padding-bottom: 5px; font-weight: 600; font-size: 15px; letter-spacing: 1px;">
+                                                    Gallery Image, Price, Color, and Size
+                                                    <small style="color: red; font-size: 18px;">*</small>
+                                                </label>
+
+                                                <div class="row g-2 align-items-center mb-3">
+                                                    <!-- Gallery Image -->
+                                                    <div class="col-md-3">
+                                                        <input type="file" name="gallery_image[]" class="form-control" required>
+                                                    </div>
+
+                                                    <!-- Wholesale Price -->
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price" required>
+                                                    </div>
+
+                                                    <!-- Retail Price -->
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="price[]" class="form-control" placeholder="Price">
+                                                    </div>
+
+                                                    <!-- Color -->
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="color[]" class="form-control" placeholder="Product Color">
+                                                    </div>
+
+                                                    <!-- Size -->
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="size[]" class="form-control" placeholder="Product Size">
+                                                    </div>
+
+                                                    <!-- Add More Button -->
+                                                    <div class="col-md-1">
+                                                        <button class="btn btn-sm btn-primary" type="button" id="addMore">
+                                                            <i class="bx bx-plus-circle" style="margin-left: 3px;"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                                 <span style="color: red"> {{ $errors->has('gallery_image') ? $errors->first('gallery_image') : ' ' }}</span>
+                                                <span style="color: red"> {{ $errors->has('wholesale_price') ? $errors->first('wholesale_price') : ' ' }}</span>
                                                 <span style="color: red"> {{ $errors->has('price') ? $errors->first('price') : ' ' }}</span>
                                                 <span style="color: red"> {{ $errors->has('color') ? $errors->first('color') : ' ' }}</span>
                                                 <span style="color: red"> {{ $errors->has('size') ? $errors->first('size') : ' ' }}</span>
@@ -201,24 +230,38 @@
         });
     </script>
     <script>
-        $('#addMore').click(function(){
-            let html = '';
-            html += '<div class="input-group mb-3" id="removeRow">';
-            html += '<input type="file" name="gallery_image[]" id="gallery_image" class="form-control">';
-            html += '<input type="text" name="price[]" id="price" class="form-control" placeholder="Price">';
-            html += '<input type="text" name="color[]" id="color" class="form-control" placeholder="Product color">';
-            html += '<input type="text" name="size[]" id="size" class="form-control" placeholder="Product size">';
-            html += '<button class="btn btn-sm btn-danger" type="button" id="remove">';
-            html += '<i class="bx bx-minus" aria-hidden="true" style="margin-left: 7px;"></i>';
-            html += '</button>';
-            html += '</div>';
+        $('#addMore').click(function () {
+            let html = `
+            <div class="row g-2 align-items-center mb-2 removeRow">
+                <div class="col-md-3">
+                    <input type="file" name="gallery_image[]" class="form-control" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="price[]" class="form-control" placeholder="Price">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="color[]" class="form-control" placeholder="Color">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="size[]" class="form-control" placeholder="Size">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-sm btn-danger remove" type="button">
+                        <i class="bx bx-minus"></i>
+                    </button>
+                </div>
+            </div>
+        `;
 
             $('#newRow').append(html);
         });
 
-        // remove row
-        $(document).on('click', '#remove', function () {
-            $(this).closest('#removeRow').remove();
+        // Remove row
+        $(document).on('click', '.remove', function () {
+            $(this).closest('.removeRow').remove();
         });
     </script>
 @endpush
