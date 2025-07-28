@@ -66,8 +66,8 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Wholesale Price</label>
-                                                    <input type="number" name="buy_price" value="{{ old('wholesale_price') }}" class="form-control" placeholder="Product Wholesale price">
-                                                    <span style="color: red"> {{ $errors->has('buy_price') ? $errors->first('wholesale_price') : ' ' }}</span>
+                                                    <input type="number" name="wholesale_price" value="{{ old('wholesale_price') }}" class="form-control" placeholder="Product Wholesale price">
+                                                    <span style="color: red"> {{ $errors->has('wholesale_price') ? $errors->first('wholesale_price') : ' ' }}</span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Common Price <small style="color: red; font-size: 18px;">*</small></label>
