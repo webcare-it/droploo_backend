@@ -134,12 +134,12 @@
                                                 <div class="row g-2 align-items-center mb-3">
                                                     <!-- Gallery Image -->
                                                     <div class="col-md-3">
-                                                        <input type="file" name="gallery_image[]" class="form-control" required>
+                                                        <input type="file" name="gallery_image[]" class="form-control">
                                                     </div>
 
                                                     <!-- Wholesale Price -->
                                                     <div class="col-md-2">
-                                                        <input type="text" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price" required>
+                                                        <input type="text" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price">
                                                     </div>
 
                                                     <!-- Retail Price -->
@@ -252,10 +252,10 @@
             let html = `
             <div class="row g-2 align-items-center mb-2 removeRow">
                 <div class="col-md-3">
-                    <input type="file" name="gallery_image[]" class="form-control" required>
+                    <input type="file" name="gallery_image[]" class="form-control">
                 </div>
                 <div class="col-md-2">
-                    <input type="text" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price" required>
+                    <input type="text" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price">
                 </div>
                 <div class="col-md-2">
                     <input type="text" name="price[]" class="form-control" placeholder="Price">
