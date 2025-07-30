@@ -824,6 +824,19 @@ class ProductController extends Controller
         return redirect('/page/products')->with('success', 'Product has been successfully updated.');
     }
 
+    public function duplicate($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $newProduct = $product->replicate(); // clone all fields except id
+        $newProduct->name = $product->name . ' (Copy)';
+        $newProduct->slug = Str::slug($newProduct->name . '-' . time()); // ensure unique slug
+        $newProduct->priority = $product->priority + 1;
+        $newProduct->save();
+
+        return redirect()->back()->with('success', 'Product duplicated successfully');
+    }
+
     public function productQtyUpdate(Request $request, $id)
     {
         $productQty = Product::find($id);

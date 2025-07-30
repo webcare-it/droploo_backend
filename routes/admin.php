@@ -56,6 +56,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     //General routing
     Route::get('/category-wise-subcategory/{id}', [\App\Http\Controllers\Admin\SubcategoryController::class, 'categoryWiseSubcategory']);
     //Product routing
+    Route::get('/products/duplicate/{id}', [ProductController::class, 'duplicate'])->name('products.duplicate');
     Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('products.index');
     Route::get('/admin/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])->name('admin.products.create');
     Route::get('/admin/variable-products/create', [\App\Http\Controllers\Admin\ProductController::class, 'createVariableProduct'])->name('admin.variable.products.create');

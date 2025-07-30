@@ -70,6 +70,10 @@
                                                     <i class="bx bx-edit-alt" style="font-size: 20px; color: rgb(244, 247, 248);"></i>
                                                 </a>
                                                 @endif
+                                                {{-- Duplicate --}}
+                                                <a href="{{ route('products.duplicate', ['id' => $product->id]) }}" class="badge rounded-pill bg-secondary" title="Duplicate Product">
+                                                    <i class="bx bx-copy-alt" style="font-size: 20px; color: white;"></i>
+                                                </a>
                                                 @if($product->status == 1)
                                                     <a href="{{ route('products.active', ['id' => $product->id]) }}" class="badge rounded-pill bg-success">
                                                         <i class="bx bx-up-arrow-alt" style="font-size: 20px; color: rgb(239, 241, 241);"></i>
