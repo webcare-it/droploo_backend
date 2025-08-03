@@ -834,6 +834,49 @@ class ProductController extends Controller
         $newProduct->priority = $product->priority + 1;
         $newProduct->save();
 
+        // Duplicate main product
+        $newProduct = $product->replicate(); // Clone all fields except ID
+        $newProduct->name = $product->name . ' (Copy)';
+        $newProduct->slug = Str::slug($newProduct->name . '-' . time());
+        $newProduct->priority = $product->priority + 1;
+        $newProduct->save();
+
+        // === Duplicate Product Images ===
+        $productImages = ProductImage::where('product_id', $product->id)->get();
+        foreach ($productImages as $img) {
+            $newImage = new ProductImage();
+            $newImage->product_id = $newProduct->id;
+            $newImage->gallery_image = $img->gallery_image; // Optionally re-copy the image if needed
+            $newImage->save();
+        }
+
+        // === Duplicate Product Colors ===
+        $productColors = ProductColor::where('product_id', $product->id)->get();
+        foreach ($productColors as $color) {
+            $newColor = new ProductColor();
+            $newColor->product_id = $newProduct->id;
+            $newColor->color = $color->color;
+            $newColor->save();
+        }
+
+        // === Duplicate Product Sizes ===
+        $productSizes = ProductSize::where('product_id', $product->id)->get();
+        foreach ($productSizes as $size) {
+            $newSize = new ProductSize();
+            $newSize->product_id = $newProduct->id;
+            $newSize->size = $size->size;
+            $newSize->save();
+        }
+
+        // === Duplicate Related Products ===
+        $relatedProducts = RelatedProduct::where('product_id', $product->id)->get();
+        foreach ($relatedProducts as $related) {
+            $newRelated = new RelatedProduct();
+            $newRelated->product_id = $newProduct->id;
+            $newRelated->related_product_id = $related->related_product_id;
+            $newRelated->save();
+        }
+
         return redirect()->back()->with('success', 'Product duplicated successfully');
     }
 
