@@ -564,13 +564,18 @@ class ProductController extends Controller
             $product->imageUrl = $imageUrl;
         }
 
-        if(isset($request->priority)){
-            $checkPriority = Product::where('priority', $request->priority)->where('id', '!=', $product->id)->first();
-            if($checkPriority == null){
+        if ($request->has('priority')) {
+            // Only run the check if the new priority is different from the existing one
+            if ($product->priority != $request->priority) {
+                $checkPriority = Product::where('priority', $request->priority)
+                    ->where('id', '!=', $product->id)
+                    ->first();
+
+                if ($checkPriority) {
+                    return redirect()->back()->with('error', 'Priority already exists!');
+                }
+
                 $product->priority = $request->priority;
-            }
-            elseif($checkPriority != null){
-                return redirect()->back()->with('error', 'Priority already exist!!');
             }
         }
 
