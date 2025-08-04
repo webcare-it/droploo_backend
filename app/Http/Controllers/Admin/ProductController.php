@@ -828,12 +828,6 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        $newProduct = $product->replicate(); // clone all fields except id
-        $newProduct->name = $product->name . ' (Copy)';
-        $newProduct->slug = Str::slug($newProduct->name . '-' . time()); // ensure unique slug
-        $newProduct->priority = $product->priority + 1;
-        $newProduct->save();
-
         // Duplicate main product
         $newProduct = $product->replicate(); // Clone all fields except ID
         $newProduct->name = $product->name . ' (Copy)';
