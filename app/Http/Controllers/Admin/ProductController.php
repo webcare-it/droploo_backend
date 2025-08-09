@@ -76,6 +76,7 @@ class ProductController extends Controller
             'subcategories' => Subcategory::orderBy('created_at', 'desc')->get(),
             'brands' => Brand::orderBy('created_at', 'desc')->get(),
             'vendors' => Supplier::orderBy('shop_name', 'asc')->where('is_approved', true)->get(),
+            'product' => Product::latest()->first()
         ]);
     }
 
