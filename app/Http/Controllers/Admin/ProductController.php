@@ -83,17 +83,20 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $image = $request->file('image');
-        $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
+        
         $destinationPath = 'product/images';
          if (!file_exists($destinationPath)) {
             mkdir($destinationPath, 0777, true);
         }
+        // Create a safe filename
+        $safeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
+        $filename = rand() . '_pro_main_' . $safeName . '.webp';
         $imgFile = Image::make($image->getRealPath());
         $imgFile->resize(240, 240, function ($constraint) {
             $constraint->aspectRatio();
-        })->encode('webp', 90)->save($destinationPath.'/'.$input['image']);
-        $image->move($destinationPath, $input['image']);
-        $imageUrl = url($destinationPath.'/'.$input['image']);
+        })->encode('webp', 90)->save($destinationPath.'/'.$filename);
+        $image->move($destinationPath, $filename);
+        $imageUrl = url($destinationPath.'/'.$filename);
 
         if($request->type){
             //dd($request->type);
@@ -145,7 +148,7 @@ class ProductController extends Controller
         $product->long_description = $request->long_description;
         $product->policy = $request->policy;
         $product->product_type = $request->product_type;
-        $product->image = $input['image'];
+        $product->image = $filename;
         $product->imageUrl = $imageUrl;
         $product->save();
 
@@ -260,17 +263,20 @@ class ProductController extends Controller
         ]);
 
         $image = $request->file('image');
-        $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
+        
         $destinationPath = 'product/images';
          if (!file_exists($destinationPath)) {
         mkdir($destinationPath, 0777, true);
     }
+    // Create a safe filename
+        $safeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
+        $filename = rand() . '_pro_main_' . $safeName . '.webp';
         $imgFile = Image::make($image->getRealPath());
         $imgFile->resize(240, 240, function ($constraint) {
             $constraint->aspectRatio();
-        })->encode('webp', 90)->save($destinationPath.'/'.$input['image']);
-        $image->move($destinationPath, $input['image']);
-        $imageUrl = url($destinationPath.'/'.$input['image']);
+        })->encode('webp', 90)->save($destinationPath.'/'.$filename);
+        $image->move($destinationPath, $filename);
+        $imageUrl = url($destinationPath.'/'.$filename);
 
         if($request->type){
             //dd($request->type);
@@ -323,7 +329,7 @@ class ProductController extends Controller
         $product->long_description = $request->long_description;
         $product->policy = $request->policy;
         $product->product_type = $request->product_type;
-        $product->image = $input['image'];
+        $product->image = $filename;
         $product->imageUrl = $imageUrl;
         $product->save();
 
@@ -405,20 +411,23 @@ class ProductController extends Controller
                 unlink('product/images/'.$productUpdate->image);
             }
 
-            $updateImageName['image'] = rand().'pro_main'.$request->name.'.'.'webp';
+            
             $updateDestinationPath = 'product/images';
              if (!file_exists($updateDestinationPath)) {
         mkdir($updateDestinationPath, 0777, true);
     }
+    // Create a safe filename
+        $safeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
+        $updateImageName = rand() . '_pro_main_' . $safeName . '.webp';
 
             $imgFile = Image::make($imageUpdate->getRealPath());
 
             $imgFile->resize(240, 240, function ($constraint) {
                 $constraint->aspectRatio();
-            })->encode('webp', 90)->save($updateDestinationPath.'/'.$updateImageName['image']);
-            $imageUpdate->move($updateDestinationPath, $updateImageName['image']);
-            $productUpdate->image = $updateImageName['image'];
-            $imageUrl = url($updateDestinationPath.'/'.$updateImageName['image']);
+            })->encode('webp', 90)->save($updateDestinationPath.'/'.$updateImageName);
+            $imageUpdate->move($updateDestinationPath, $updateImageName);
+            $productUpdate->image = $updateImageName;
+            $imageUrl = url($updateDestinationPath.'/'.$updateImageName);
             $productUpdate->imageUrl = $imageUrl;
         }
 
@@ -562,18 +571,21 @@ class ProductController extends Controller
 
         if(isset($request->image)){
             $image = $request->file('image');
-            $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
+            
             $destinationPath = 'product/images';
             if (!file_exists($destinationPath)) {
         mkdir($destinationPath, 0777, true);
     }
+    // Create a safe filename
+        $safeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
+        $updateImageName = rand() . '_pro_main_' . $safeName . '.webp';
             $imgFile = Image::make($image->getRealPath());
             $imgFile->resize(240, 240, function ($constraint) {
                 $constraint->aspectRatio();
-            })->encode('webp', 90)->save($destinationPath.'/'.$input['image']);
-            $image->move($destinationPath, $input['image']);
-            $imageUrl = url($destinationPath.'/'.$input['image']);
-            $product->image = $input['image'];
+            })->encode('webp', 90)->save($destinationPath.'/'.$updateImageName);
+            $image->move($destinationPath, $updateImageName);
+            $imageUrl = url($destinationPath.'/'.$updateImageName);
+            $product->image = $updateImageName;
             $product->imageUrl = $imageUrl;
         }
 
