@@ -85,6 +85,9 @@ class ProductController extends Controller
         $image = $request->file('image');
         $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
         $destinationPath = 'product/images';
+         if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
         $imgFile = Image::make($image->getRealPath());
         $imgFile->resize(240, 240, function ($constraint) {
             $constraint->aspectRatio();
@@ -259,6 +262,9 @@ class ProductController extends Controller
         $image = $request->file('image');
         $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
         $destinationPath = 'product/images';
+         if (!file_exists($destinationPath)) {
+        mkdir($destinationPath, 0777, true);
+    }
         $imgFile = Image::make($image->getRealPath());
         $imgFile->resize(240, 240, function ($constraint) {
             $constraint->aspectRatio();
@@ -401,6 +407,9 @@ class ProductController extends Controller
 
             $updateImageName['image'] = rand().'pro_main'.$request->name.'.'.'webp';
             $updateDestinationPath = 'product/images';
+             if (!file_exists($updateDestinationPath)) {
+        mkdir($updateDestinationPath, 0777, true);
+    }
 
             $imgFile = Image::make($imageUpdate->getRealPath());
 
@@ -555,6 +564,9 @@ class ProductController extends Controller
             $image = $request->file('image');
             $input['image'] = rand().'pro_main'.$request->name.'.'.'webp';
             $destinationPath = 'product/images';
+            if (!file_exists($destinationPath)) {
+        mkdir($destinationPath, 0777, true);
+    }
             $imgFile = Image::make($image->getRealPath());
             $imgFile->resize(240, 240, function ($constraint) {
                 $constraint->aspectRatio();
