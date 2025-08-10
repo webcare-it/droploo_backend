@@ -186,6 +186,14 @@ class OrderController extends Controller
                 ], 400);
             }
 
+            // After getting $dropshipperData and before balance check
+            if ($request->delivery_cost < 60) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Delivery cost must be at least 60.'
+                ], 400);
+            }
+
             // Proceed with order creation
             $order = Order::where('orderId', $request->invoice_number)->first();
 
