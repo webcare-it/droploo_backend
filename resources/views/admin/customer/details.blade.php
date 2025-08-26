@@ -151,8 +151,8 @@
                                             <label for="pathao_special_note">
                                                 Special Notes
                                             </label>
-                                            <textarea class="form-control" rows="4" name="pathao_special_note">{{ $order->pathao_special_note ?? 'No Notes' }}</textarea>
-                                            @if ($order->order_type == 'dropshipping' || $order->order_type == 'Dropshipping')
+{{--                                            <textarea class="form-control" rows="4" name="pathao_special_note">{{ $order->pathao_special_note ?? 'No Notes' }}</textarea>--}}
+                                            @if ($order->order_type == 'Dropshipping')
                                                 <textarea class="form-control" style="display: none" rows="4" name="notes">
                                             প্রথমে এই সাব মার্চেন্ট
                                             নাম্বারে কল করবেন
