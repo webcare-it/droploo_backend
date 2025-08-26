@@ -1098,6 +1098,7 @@ class ReportController extends Controller
         $orderDetails->pathao_zone_id = $request->zone;
         $orderDetails->pathao_city_name = $request->city_name;
         $orderDetails->pathao_zone_name = $request->zone_name;
+        $orderDetails->notes = $request->notes;
         $orderDetails->pathao_special_note = $request->pathao_special_note;
         $orderDetails->otherCourierDetails = $request->otherCourierDetails;
         $orderDetails->delivery_charge_type = $request->delivery_charge_type;
