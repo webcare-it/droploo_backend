@@ -1002,93 +1002,96 @@ class ReportController extends Controller
             $orderDetails->save();
         }
 
-        if($request->courier == 'Steadfast'){
-            $orderDetails = Order::find($id);
+        if ($orderDetails->courier != 'Steadfast')
+        {
+            if($request->courier == 'Steadfast'){
+                $orderDetails = Order::find($id);
 
-            if (empty($orderDetails->consignmentId))
-            {
-                // API endpoint
-                $apiEndpoint = 'https://portal.packzy.com/api/v1/create_order';
+                if (empty($orderDetails->consignmentId))
+                {
+                    // API endpoint
+                    $apiEndpoint = 'https://portal.packzy.com/api/v1/create_order';
 
-                // API-Key and Secret-Key
-                $apiKey = 'workktmej9fc6f26elkfyh9zckskxqe4';
-                $secretKey = 'kjfkz2lkd2iitg07qsyd9gys';
+                    // API-Key and Secret-Key
+                    $apiKey = 'workktmej9fc6f26elkfyh9zckskxqe4';
+                    $secretKey = 'kjfkz2lkd2iitg07qsyd9gys';
 
-                // The request parameters
-                $invoice           = $orderDetails->orderId;
-                $cod_amount        = (int) $orderDetails->price;
-                $recipient_name    = $orderDetails->name;
-                $recipient_phone   = $orderDetails->phone;
-                $recipient_address = $orderDetails->address;
-                $note              = $request->steadfast_notes;
+                    // The request parameters
+                    $invoice           = $orderDetails->orderId;
+                    $cod_amount        = (int) $orderDetails->price;
+                    $recipient_name    = $orderDetails->name;
+                    $recipient_phone   = $orderDetails->phone;
+                    $recipient_address = $orderDetails->address;
+                    $note              = $request->steadfast_notes;
 
 
-                // The headers
-                $headers = [
-                    'Api-Key' => $apiKey,
-                    'Secret-Key' => $secretKey,
-                    'Content-Type' => 'application/json',
-                    'Accept'       => 'application/json',
-                ];
+                    // The headers
+                    $headers = [
+                        'Api-Key' => $apiKey,
+                        'Secret-Key' => $secretKey,
+                        'Content-Type' => 'application/json',
+                        'Accept'       => 'application/json',
+                    ];
 
-                // The request payload
-                $payload = [
-                    'invoice'           => $invoice,
-                    'cod_amount'        => $cod_amount,
-                    'recipient_name'    => $recipient_name,
-                    'recipient_phone'   => $recipient_phone,
-                    'recipient_address' => $recipient_address,
-                    'note'              => $note,
-                    // Add any other parameters as needed
-                ];
+                    // The request payload
+                    $payload = [
+                        'invoice'           => $invoice,
+                        'cod_amount'        => $cod_amount,
+                        'recipient_name'    => $recipient_name,
+                        'recipient_phone'   => $recipient_phone,
+                        'recipient_address' => $recipient_address,
+                        'note'              => $note,
+                        // Add any other parameters as needed
+                    ];
 
-                try {
-                    // ✅ Send the POST request
-                    $response = Http::withHeaders($headers)->post($apiEndpoint, $payload);
+                    try {
+                        // ✅ Send the POST request
+                        $response = Http::withHeaders($headers)->post($apiEndpoint, $payload);
 
-                    // ✅ Check if request was successful
-                    if ($response->successful()) {
-                        $responseData = $response->json();
+                        // ✅ Check if request was successful
+                        if ($response->successful()) {
+                            $responseData = $response->json();
 
-                        if (isset($responseData['consignment'])) {
-                            $consignmentId = $responseData['consignment']['consignment_id'];
-                            $tracking_code = $responseData['consignment']['tracking_code'];
+                            if (isset($responseData['consignment'])) {
+                                $consignmentId = $responseData['consignment']['consignment_id'];
+                                $tracking_code = $responseData['consignment']['tracking_code'];
 
-                            // ✅ Save consignment ID to order
-                            $orderDetails->consignmentId = $consignmentId;
-                            $orderDetails->tracking_code = $tracking_code;
-                            $orderDetails->save();
+                                // ✅ Save consignment ID to order
+                                $orderDetails->consignmentId = $consignmentId;
+                                $orderDetails->tracking_code = $tracking_code;
+                                $orderDetails->save();
 
-                            $appKey    = $orderDetails->dropshipper->app_key;
-                            $appSecret = $orderDetails->dropshipper->app_secret;
-                            $userName  = $orderDetails->dropshipper->user_name;
+                                $appKey    = $orderDetails->dropshipper->app_key;
+                                $appSecret = $orderDetails->dropshipper->app_secret;
+                                $userName  = $orderDetails->dropshipper->user_name;
 
-                            Http::withHeaders([
-                                'App-Secret' => $appSecret,
-                                'App-Key'    => $appKey,
-                                'Username'   => $userName,
-                            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/tracking-code', [
-                                'tracking_code'         => $orderDetails->tracking_code,
-                                'invoice_number' => $orderDetails->orderId,
-                            ]);
+                                Http::withHeaders([
+                                    'App-Secret' => $appSecret,
+                                    'App-Key'    => $appKey,
+                                    'Username'   => $userName,
+                                ])->post('https://dropshipper.droploo.com/api/dropshipper/order/tracking-code', [
+                                    'tracking_code'         => $orderDetails->tracking_code,
+                                    'invoice_number' => $orderDetails->orderId,
+                                ]);
 
-                            // return response()->json([
-                            //     'message' => 'Order sent to Steadfast successfully',
-                            //     'consignment_id' => $consignmentId,
-                            // ]);
+                                // return response()->json([
+                                //     'message' => 'Order sent to Steadfast successfully',
+                                //     'consignment_id' => $consignmentId,
+                                // ]);
+                            } else {
+                                return response()->json(['error' => 'Consignment ID not found in response'], 422);
+                            }
                         } else {
-                            return response()->json(['error' => 'Consignment ID not found in response'], 422);
+                            return response()->json([
+                                'error' => 'API call failed',
+                                'status' => $response->status(),
+                                'body' => $response->body()
+                            ], 500);
                         }
-                    } else {
-                        return response()->json([
-                            'error' => 'API call failed',
-                            'status' => $response->status(),
-                            'body' => $response->body()
-                        ], 500);
                     }
-                }
-                catch (\Exception $e) {
-                    return response()->json(['error' => $e->getMessage()], 500);
+                    catch (\Exception $e) {
+                        return response()->json(['error' => $e->getMessage()], 500);
+                    }
                 }
             }
         }
