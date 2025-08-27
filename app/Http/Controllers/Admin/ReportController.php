@@ -926,6 +926,7 @@ class ReportController extends Controller
 
     public function userOrderUpdate(Request $request, $id)
     {
+
         $product = Product::find($request->related_product_id);
 
         if($product){
@@ -1019,7 +1020,7 @@ class ReportController extends Controller
                 $recipient_name    = $orderDetails->name;
                 $recipient_phone   = $orderDetails->phone;
                 $recipient_address = $orderDetails->address;
-                $note              = $request->notes;
+                $note              = $request->steadfast_notes;
 
 
                 // The headers
@@ -1098,7 +1099,7 @@ class ReportController extends Controller
         $orderDetails->pathao_zone_id = $request->zone;
         $orderDetails->pathao_city_name = $request->city_name;
         $orderDetails->pathao_zone_name = $request->zone_name;
-        $orderDetails->notes = $request->notes;
+        $orderDetails->notes = $request->steadfast_notes;
         $orderDetails->pathao_special_note = $request->pathao_special_note;
         $orderDetails->otherCourierDetails = $request->otherCourierDetails;
         $orderDetails->delivery_charge_type = $request->delivery_charge_type;
