@@ -246,11 +246,9 @@ class OrderController extends Controller
                 $product = Product::find($productData['id']);
 
                 if ($product && $order->price < $product->wholesale_price) {
-                    // Difference between wholesale and actual price
-                    $difference = $product->wholesale_price - $order->price;
 
                     // Add difference to deduction
-                    $deductAmount += $difference;
+                    $deductAmount += $product->wholesale_price;
                 }
             }
 
