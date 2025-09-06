@@ -238,21 +238,21 @@ class OrderController extends Controller
                 $details->qty        = $productData['qty'];
                 $details->save();
             }
-            
 
+            // Step 8: Deduct delivery cost from balance
             $balanceResponse = Http::withHeaders([
                 'App-Secret' => $dropshipper->app_secret,
                 'App-Key'    => $dropshipper->app_key,
                 'Username'   => $dropshipper->user_name,
             ])->post('https://dropshipper.droploo.com/api/dropshipper/update-balance', [
-                'amount'         => $deductAmount,
+                'amount'         => $order->area,
                 'type'           => 'debit',
-                'reason'         => 'Delivery charge & wholesale adjustment for invoice #' . $order->orderId,
+                'reason'         => 'Delivery charge for invoice #' . $order->orderId,
                 'invoice_number' => $order->orderId,
             ]);
 
             if (!$balanceResponse->ok()) {
-                Log::warning('Failed to deduct delivery/wholesale charge.', [
+                Log::warning('Failed to deduct delivery charge.', [
                     'invoice' => $order->orderId,
                     'status'  => $balanceResponse->status(),
                     'body'    => $balanceResponse->body()
