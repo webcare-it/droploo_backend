@@ -154,7 +154,7 @@ class OrderController extends Controller
                 ], 401);
             }
 
-            // Step 4: Get dropshipper info to verify balance
+            // Step 2: Get dropshipper info
             $dropshipperInfoResponse = Http::withHeaders([
                 'App-Secret' => $dropshipper->app_secret,
                 'App-Key'    => $dropshipper->app_key,
@@ -178,15 +178,7 @@ class OrderController extends Controller
                 ], 400);
             }
 
-
-            if ((int)$dropshipperData['balance'] < $request->delivery_cost) {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Insufficient balance for delivery charge.'
-                ], 400);
-            }
-
-            // After getting $dropshipperData and before balance check
+            // Step 3: Minimum delivery cost
             if ($request->delivery_cost < 60) {
                 return response()->json([
                     'status'  => 'error',
@@ -194,7 +186,26 @@ class OrderController extends Controller
                 ], 400);
             }
 
-            // Proceed with order creation
+            // Step 4: Calculate deduction before saving order
+            $deductAmount = $request->area; // base delivery charge
+            foreach ($request->products as $productData) {
+                $product = Product::find($productData['id']);
+                if ($product && $request->price < $product->wholesale_price) {
+                    $deductAmount += ($product->wholesale_price - $request->price);
+                }
+            }
+
+            // Step 5: Check if dropshipper has enough balance
+            if ((int)$dropshipperData['balance'] < $deductAmount) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Insufficient balance for delivery + wholesale adjustment.',
+                    'required_amount' => $deductAmount,
+                    'current_balance' => $dropshipperData['balance'],
+                ], 400);
+            }
+
+            // Step 6: Save order only if balance check passed
             $order = Order::where('orderId', $request->invoice_number)->first();
 
             if (!$order) {
@@ -202,7 +213,6 @@ class OrderController extends Controller
                 $order->orderId = $request->invoice_number;
             }
 
-            $order->orderId              = $order->orderId;
             $order->name                 = $request->customer_name;
             $order->phone                = $request->customer_phone;
             $order->area                 = $request->delivery_cost;
@@ -222,13 +232,11 @@ class OrderController extends Controller
             $order->dropshipper_id       = $dropshipper->dropshipper_id;
             $order->save();
 
-            // Clear previous order details
+            // Clear old details
             OrderDetails::where('order_id', $order->id)->delete();
 
-            // Insert new details
             foreach ($request->products as $productData) {
                 $product = Product::find($productData['id']);
-
                 $details = new OrderDetails();
                 $details->order_id   = $order->id;
                 $details->product_id = $product ? $product->id : null;
@@ -239,31 +247,31 @@ class OrderController extends Controller
                 $details->save();
             }
 
-            // Step 8: Deduct delivery cost from balance
+            // Step 7: Deduct final amount
             $balanceResponse = Http::withHeaders([
                 'App-Secret' => $dropshipper->app_secret,
                 'App-Key'    => $dropshipper->app_key,
                 'Username'   => $dropshipper->user_name,
             ])->post('https://dropshipper.droploo.com/api/dropshipper/update-balance', [
-                'amount'         => $order->area,
+                'amount'         => $deductAmount,
                 'type'           => 'debit',
-                'reason'         => 'Delivery charge for invoice #' . $order->orderId,
+                'reason'         => 'Delivery + wholesale adjustment for invoice #' . $order->orderId,
                 'invoice_number' => $order->orderId,
             ]);
 
             if (!$balanceResponse->ok()) {
-                Log::warning('Failed to deduct delivery charge.', [
+                Log::warning('Failed to deduct balance.', [
                     'invoice' => $order->orderId,
                     'status'  => $balanceResponse->status(),
                     'body'    => $balanceResponse->body()
                 ]);
             }
 
-            // Step 9: Final API response
             return response()->json([
                 'status'   => 'success',
                 'message'  => $order->wasRecentlyCreated ? 'Order created successfully.' : 'Order updated successfully.',
                 'order_id' => $order->id,
+                'deducted' => $deductAmount,
             ]);
         } catch (\Throwable $e) {
             return response()->json([
@@ -274,6 +282,7 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
 
 
 
