@@ -187,7 +187,7 @@ class OrderController extends Controller
             }
 
             // Step 4: Calculate deduction before saving order
-            $deductAmount = $request->area; // base delivery charge
+            $deductAmount = $request->delivery_cost; // base delivery charge
             foreach ($request->products as $productData) {
                 $product = Product::find($productData['id']);
                 if ($product && $request->price < $product->wholesale_price) {
