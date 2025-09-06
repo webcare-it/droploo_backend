@@ -238,19 +238,7 @@ class OrderController extends Controller
                 $details->qty        = $productData['qty'];
                 $details->save();
             }
-
-            // Step 8: Deduct delivery cost (and maybe extra if price < wholesale)
-            $deductAmount = $order->area; // base = delivery charge
-
-            foreach ($request->products as $productData) {
-                $product = Product::find($productData['id']);
-
-                if ($product && $order->price < $product->wholesale_price) {
-
-                    // Add difference to deduction
-                    $deductAmount += $product->wholesale_price;
-                }
-            }
+            
 
             $balanceResponse = Http::withHeaders([
                 'App-Secret' => $dropshipper->app_secret,
