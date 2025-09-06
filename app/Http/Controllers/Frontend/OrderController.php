@@ -239,20 +239,34 @@ class OrderController extends Controller
                 $details->save();
             }
 
-            // Step 8: Deduct delivery cost from balance
+            // Step 8: Deduct delivery cost (and maybe extra if price < wholesale)
+            $deductAmount = $order->area; // base = delivery charge
+
+            foreach ($request->products as $productData) {
+                $product = Product::find($productData['id']);
+
+                if ($product && $order->price < $product->wholesale_price) {
+                    // Difference between wholesale and actual price
+                    $difference = $product->wholesale_price - $order->price;
+
+                    // Add difference to deduction
+                    $deductAmount += $difference;
+                }
+            }
+
             $balanceResponse = Http::withHeaders([
                 'App-Secret' => $dropshipper->app_secret,
                 'App-Key'    => $dropshipper->app_key,
                 'Username'   => $dropshipper->user_name,
             ])->post('https://dropshipper.droploo.com/api/dropshipper/update-balance', [
-                'amount'         => $order->area,
+                'amount'         => $deductAmount,
                 'type'           => 'debit',
-                'reason'         => 'Delivery charge for invoice #' . $order->orderId,
+                'reason'         => 'Delivery charge & wholesale adjustment for invoice #' . $order->orderId,
                 'invoice_number' => $order->orderId,
             ]);
 
             if (!$balanceResponse->ok()) {
-                Log::warning('Failed to deduct delivery charge.', [
+                Log::warning('Failed to deduct delivery/wholesale charge.', [
                     'invoice' => $order->orderId,
                     'status'  => $balanceResponse->status(),
                     'body'    => $balanceResponse->body()
