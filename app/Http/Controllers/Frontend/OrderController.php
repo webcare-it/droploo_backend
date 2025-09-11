@@ -195,6 +195,19 @@ class OrderController extends Controller
                 }
             }
 
+            // Step 4.1: Validate all products before creating order
+            foreach ($request->products as $productData) {
+                $product = Product::find($productData['id']);
+
+                if (!$product || $product->status == 0) {
+                    return response()->json([
+                        'status'  => 'error',
+                        'message' => "Product with ID {$productData['id']} is not available."
+                    ], 400);
+                }
+            }
+
+
             // Step 5: Check if dropshipper has enough balance
             if ((int)$dropshipperData['balance'] < $deductAmount) {
                 return response()->json([
