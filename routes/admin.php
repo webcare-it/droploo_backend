@@ -115,6 +115,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::get('/order/delivery', [\App\Http\Controllers\Admin\ReportController::class, 'ordersDelivery']);
     Route::get('/dropshipper-order/delivery', [\App\Http\Controllers\Admin\ReportController::class, 'dropshipperOrdersDelivery']);
     Route::get('/all-orders', [\App\Http\Controllers\Admin\ReportController::class, 'allOrders']);
+    Route::get('/search-result', [\App\Http\Controllers\Admin\ReportController::class, 'searchResult']);
     Route::get('/order/pending-payment', [\App\Http\Controllers\Admin\ReportController::class, 'pendingPaymentOrder']);
     Route::get('/today-manual', [\App\Http\Controllers\Admin\ReportController::class, 'todayManual']);
     Route::get('/today-orders', [\App\Http\Controllers\Admin\ReportController::class, 'todayOrders']);

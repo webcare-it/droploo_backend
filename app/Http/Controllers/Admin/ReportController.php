@@ -874,7 +874,70 @@ class ReportController extends Controller
         return view('admin.customer.order-list', compact('all_orders', 'users'));
     }
 
-        public function deletedOrder (Request $request)
+    public function searchResult(Request $request)
+    {
+        if(session('name') == 'admin'){
+            $sql = Order::with('orderDetails', 'admin')
+                ->orderBy('id', 'desc')
+                ->where('is_deleted', '!=', true);
+
+            // Searching...
+            if (!empty($request->search)) {
+                $searchTerm = $request->search;
+                $sql->where(function ($query) use ($searchTerm) {
+                    $query->where('orderId', 'LIKE', "%{$searchTerm}%")
+                        ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+                });
+            }
+
+            if (!empty($request->from)) {
+                $sql->whereDate('created_at', '>=', $request->from);
+            }
+
+            if (!empty($request->to)) {
+                $sql->whereDate('created_at', '<=', $request->to);
+            }
+
+            if (!empty($request->user_id)) {
+                $sql->where('employee_id', (int)$request->user_id);
+            }
+        }
+        else{
+            $employee_id = Session::get('id');
+            $sql = Order::with('orderDetails', 'admin')
+                ->where('employee_id', $employee_id)
+                ->orderBy('created_at', 'desc')
+                ->where('is_deleted', '!=', true);
+
+            // Searching...
+            if (!empty($request->search)) {
+                $searchTerm = $request->search;
+                $sql->where(function ($query) use ($searchTerm) {
+                    $query->where('phone', 'LIKE', "%{$searchTerm}%")
+                        ->orWhere('orderId', 'LIKE', "%{$searchTerm}%");
+                });
+            }
+
+            if (!empty($request->from)) {
+                $sql->whereDate('created_at', '>=', $request->from);
+            }
+
+            if (!empty($request->to)) {
+                $sql->whereDate('created_at', '<=', $request->to);
+            }
+        }
+
+        $all_orders = $sql->paginate(100);
+
+        $users = Admin::orderBy('id', 'desc')
+            ->where('id', '!=', session()->get('id'))
+            ->get();
+
+        return view('admin.customer.search-list', compact('all_orders', 'users'));
+    }
+
+
+    public function deletedOrder (Request $request)
     {
         if(session('name') == 'admin'){
             $sql = Order::with('orderDetails', 'admin')->where('is_deleted', true)->orderBy('id', 'desc');
