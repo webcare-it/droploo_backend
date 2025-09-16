@@ -17,7 +17,7 @@
                                 </div>
                                 <div class="col-md-4"></div>
                                 <div class="col-md-4">
-                                    <form action="{{ url('/search-result') }}" method="GET">
+                                    <form action="{{ url('/all-orders') }}" method="GET">
                                         @csrf
                                         <div class="input-group mb-3">
                                             <input type="text" name="search" class="form-control" placeholder="Search...">
