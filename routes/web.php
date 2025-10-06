@@ -22,7 +22,6 @@ Route::get('clear', function () {
     \Artisan::call('view:clear');
     \Artisan::call('optimize');
 
-    $this->setSuccessMessage('All cache cleared successfully!');
     return redirect()->back()->with('success', 'All cache cleared successfully!');
 })->name('clear.cache');
 
