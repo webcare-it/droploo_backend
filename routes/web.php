@@ -14,13 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 //Config cache clear
+//Config cache clear
 Route::get('clear', function () {
     \Artisan::call('cache:clear');
     \Artisan::call('config:clear');
     \Artisan::call('route:clear');
     \Artisan::call('view:clear');
     \Artisan::call('optimize');
-    dd("All clear!");
+
+    $this->setSuccessMessage('All cache cleared successfully!');
+    return redirect()->back()->with('success', 'All cache cleared successfully!');
 });
 
 Route::get('migrate', function (){
