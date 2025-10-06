@@ -11,7 +11,7 @@
             <div class="top-menu ms-auto">
                 <ul class="navbar-nav align-items-center">
                     <li>
-                        <a href="{{url('clear')}}" target="_blank" class="btn btn-danger w-100">
+                        <a href="{{route('clear.cache')}}" class="btn btn-danger w-100">
                             Clear Cache
                         </a>
                     </li>

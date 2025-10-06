@@ -24,7 +24,7 @@ Route::get('clear', function () {
 
     $this->setSuccessMessage('All cache cleared successfully!');
     return redirect()->back()->with('success', 'All cache cleared successfully!');
-});
+})->name('clear.cache');
 
 Route::get('migrate', function (){
     \Artisan::call('migrate');
