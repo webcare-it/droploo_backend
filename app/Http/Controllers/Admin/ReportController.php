@@ -1147,6 +1147,31 @@ class ReportController extends Controller
                                 'invoice_number' => $orderDetails->orderId,
                             ]);
 
+                            $invoice_number = $orderDetails->orderId;
+
+                            // Step 1: Calculate total wholesale cost
+                            $totalWholesaleCost = 0;
+
+                            foreach ($orderDetails->orderDetails as $detail) {
+                                if ($detail->product && $detail->product->wholesale_price) {
+                                    $totalWholesaleCost += $detail->product->wholesale_price * $detail->qty;
+                                }
+                            }
+                            $orderTotal = (float)$orderDetails->price - (float)$orderDetails->area;
+
+                            // Step 2: Calculate profit
+                            $grandTotal = $orderTotal - (float)$totalWholesaleCost;
+                            $profit_amount = $grandTotal + (float)$orderDetails->area;
+
+                            Http::withHeaders([
+                                'App-Secret' => $appSecret,
+                                'App-Key'    => $appKey,
+                                'Username'   => $userName,
+                            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/estimated/profit/add', [
+                                'profit_amount'         => $profit_amount,
+                                'invoice_number'        => $invoice_number,
+                            ]);
+
                             // return response()->json([
                             //     'message' => 'Order sent to Steadfast successfully',
                             //     'consignment_id' => $consignmentId,
