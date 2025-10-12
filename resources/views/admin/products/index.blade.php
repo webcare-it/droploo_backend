@@ -20,6 +20,15 @@
                                     <h5 class="mb-1">Products</h5>
                                 </div>
                                 <div class="ms-auto">
+                                    <form action="" method="GET">
+                                        @csrf
+                                        <div class="input-group mb-3">
+                                            <input type="text" name="search" class="form-control" placeholder="Search Products..."/>
+                                            <button type="submit" class="input-group-text bg-primary text-white">Search</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="ms-auto">
                                     <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm">Add new</a>
                                 </div>
                             </div>
