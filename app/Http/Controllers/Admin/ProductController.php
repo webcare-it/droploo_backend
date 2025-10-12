@@ -46,10 +46,26 @@ class ProductController extends Controller
         $this->brand = $brand;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::orderBy('created_at', 'desc')->where('is_page_product', 0)->paginate(30);
-        return view('admin.products.index', compact('products'));
+        $search = $request->input('search');
+
+        $productsQuery = Product::orderBy('created_at', 'desc')
+            ->where('is_page_product', 0);
+
+        if ($search) {
+            $productsQuery->where('name', 'like', "%{$search}%");
+            $products = $productsQuery->get(); // get all, no pagination
+        } else {
+            $products = $productsQuery->paginate(30); // paginate normally
+        }
+
+        // Check if AJAX request
+        if ($request->ajax()) {
+            return view('admin.includes.product-table', compact('products'))->render();
+        }
+
+        return view('admin.products.index', compact('products', 'search'));
     }
 
     public function pageProductIndex ()
@@ -83,7 +99,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $image = $request->file('image');
-        
+
         $destinationPath = 'product/images';
          if (!file_exists($destinationPath)) {
             mkdir($destinationPath, 0777, true);
@@ -263,7 +279,7 @@ class ProductController extends Controller
         ]);
 
         $image = $request->file('image');
-        
+
         $destinationPath = 'product/images';
          if (!file_exists($destinationPath)) {
         mkdir($destinationPath, 0777, true);
@@ -411,7 +427,7 @@ class ProductController extends Controller
                 unlink('product/images/'.$productUpdate->image);
             }
 
-            
+
             $updateDestinationPath = 'product/images';
              if (!file_exists($updateDestinationPath)) {
         mkdir($updateDestinationPath, 0777, true);
@@ -571,7 +587,7 @@ class ProductController extends Controller
 
         if(isset($request->image)){
             $image = $request->file('image');
-            
+
             $destinationPath = 'product/images';
             if (!file_exists($destinationPath)) {
         mkdir($destinationPath, 0777, true);

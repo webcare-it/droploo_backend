@@ -24,7 +24,7 @@
                                         @csrf
                                         <div class="input-group mb-3">
                                             <input type="text" name="search" class="form-control" placeholder="Search Products..."/>
-                                            <button type="submit" class="input-group-text bg-primary text-white">Search</button>
+{{--                                            <button type="submit" class="input-group-text bg-primary text-white">Search</button>--}}
                                         </div>
                                     </form>
                                 </div>
@@ -108,4 +108,24 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('input[name="search"]').on('keyup', function() {
+                let query = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('products.index') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(data) {
+                        // Replace table with returned HTML
+                        $('.table-responsive').html(data);
+                    }
+                });
+            });
+        });
+    </script>
+
 @endsection
