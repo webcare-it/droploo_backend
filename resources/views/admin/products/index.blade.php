@@ -20,7 +20,7 @@
                                     <h5 class="mb-1">Products</h5>
                                 </div>
                                 <div class="ms-auto">
-                                    <form action="" method="GET">
+                                    <form action="javascript:void(0)" method="GET">
                                         @csrf
                                         <div class="input-group mb-3">
                                             <input type="text" name="search" class="form-control" placeholder="Search Products..."/>
