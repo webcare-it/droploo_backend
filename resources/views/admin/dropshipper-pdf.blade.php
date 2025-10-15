@@ -17,7 +17,6 @@
             color: #000;
             margin: 10px;
             background: #fff;
-            font-size: 13px; /* ✅ Global font size */
         }
 
         .invoice-container {
@@ -54,6 +53,7 @@
 
         .invoice-header p.note {
             font-weight: 600;
+            font-size: 12px;
             background: #ffe4ec;
             color: #c2185b;
             padding: 5px 8px;
@@ -76,14 +76,14 @@
             font-weight: 700;
             border-bottom: 1px solid #f48fb1;
             margin-bottom: 3px;
-            font-size: 13px; /* same as base */
+            font-size: 13px;
         }
 
         .info-box p {
+            font-size: 13px;
             font-weight: 600;
             margin: 0;
             line-height: 1.3;
-            font-size: 13px; /* uniform */
         }
 
         table.invoice-table {
@@ -95,16 +95,16 @@
         .invoice-table th {
             background-color: #fce4ec;
             border: 1px solid #f48fb1;
+            font-size: 11px;
             font-weight: 700;
             text-align: left;
-            padding: 4px 6px;
-            font-size: 13px;
+            padding: 3px 5px;
         }
 
         .invoice-table td {
             border: 1px solid #ddd;
-            padding: 4px 6px;
             font-size: 13px;
+            padding: 3px 5px;
         }
 
         .totals {
@@ -114,11 +114,12 @@
 
         .totals td {
             text-align: right;
-            padding: 3px 4px;
+            padding: 2px 3px;
             font-weight: 600;
         }
 
         .totals tr:last-child td {
+            font-size: 13px;
             color: #c2185b;
             font-weight: 700;
         }
@@ -128,7 +129,6 @@
             body {
                 margin: 5mm;
                 zoom: 1;
-                font-size: 13px;
             }
 
             @page {
