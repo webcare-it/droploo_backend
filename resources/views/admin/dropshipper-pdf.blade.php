@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="X-UA-Compatible" content="IE-edge" />
-    <title>Invoice</title>
+    <title>4-Invoice Print</title>
 
     <link
         rel="stylesheet"
@@ -15,208 +15,195 @@
         body {
             font-family: "Open Sans", sans-serif;
             color: #000;
-            margin: 25px;
+            margin: 10px;
+            background: #fff;
+        }
+
+        .invoice-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            page-break-after: auto;
+        }
+
+        .invoice-box {
+            width: 48%; /* 2 invoices per row */
+            border: 2px solid #f48fb1;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            page-break-inside: avoid;
         }
 
         .invoice-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #f48fb1;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            border-bottom: 2px dashed #f48fb1;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .invoice-header img {
-            max-height: 90px;
-            border-radius: 10px;
+            max-height: 50px;
+            width: auto;
+            border-radius: 6px;
         }
 
         .invoice-header p.note {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 12px;
             background: #ffe4ec;
             color: #c2185b;
-            padding: 10px 15px;
-            border-radius: 8px;
-        }
-
-        .info-section {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            padding: 5px 8px;
+            border-radius: 5px;
+            text-align: right;
+            margin: 0;
         }
 
         .info-box {
-            width: 32%;
+            margin-bottom: 8px;
         }
 
         .info-box h6 {
             font-weight: 700;
-            border-bottom: 2px solid #f48fb1;
-            padding-bottom: 5px;
-            margin-bottom: 8px;
+            border-bottom: 1px solid #f48fb1;
+            margin-bottom: 3px;
+            font-size: 12px;
         }
 
         .info-box p {
-            font-size: 15px;
+            font-size: 11px;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin: 0;
+            line-height: 1.3;
         }
 
         table.invoice-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
 
         .invoice-table th {
             background-color: #fce4ec;
             border: 1px solid #f48fb1;
-            font-size: 16px;
+            font-size: 11px;
             font-weight: 700;
             text-align: left;
-            padding: 10px;
+            padding: 3px 5px;
         }
 
         .invoice-table td {
             border: 1px solid #ddd;
-            font-size: 15px;
-            padding: 8px 10px;
+            font-size: 11px;
+            padding: 3px 5px;
         }
 
-        .invoice-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .totals {
+            width: 100%;
+            font-size: 11px;
         }
 
         .totals td {
-            border: none !important;
             text-align: right;
+            padding: 2px 3px;
             font-weight: 600;
         }
 
         .totals tr:last-child td {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 12px;
             color: #c2185b;
+            font-weight: 700;
         }
 
-        hr {
-            border-top: 2px dashed #f48fb1;
-            margin: 40px 0;
-        }
-
-        /* ✅ Print: Keep original size and layout, no auto-scaling, no page breaks */
+        /* ✅ Print settings: no auto-fit, no page breaks, 4 invoices per page */
         @media print {
             body {
-                margin: 0;
-                zoom: 1; /* keeps natural scaling */
-            }
-
-            .invoice-header p.note {
-                background: none;
-                color: #c2185b;
-            }
-
-            hr {
-                border-top: 1px dashed #bbb;
-                margin: 25px 0;
-                page-break-after: auto; /* prevent forced breaks */
+                margin: 5mm;
+                zoom: 1;
             }
 
             @page {
-                size: auto; /* no auto-fit to A4 */
-                margin: 10mm;
+                size: auto;
+                margin: 5mm;
+            }
+
+            .invoice-box {
+                break-inside: avoid;
             }
         }
     </style>
 </head>
 
 <body>
-@foreach ($selectedOrders as $order)
-    <div class="invoice-header">
-        <div>
-            <img src="{{ $order->dropshipper->image }}" alt="logo" />
+<div class="invoice-container">
+    @foreach ($selectedOrders as $order)
+        <div class="invoice-box">
+            <div class="invoice-header">
+                <img src="{{ $order->dropshipper->image }}" alt="logo" />
+                <p class="note">
+                    আগে পণ্য দেখে নিন, তারপর টাকা দিন।
+                </p>
+            </div>
+
+            <div class="info-box">
+                <h6>Customer Info</h6>
+                <p>{{ $order->name }}</p>
+                <p>{{ $order->phone }}</p>
+                <p>{{ $order->address }}</p>
+            </div>
+
+            <div class="info-box">
+                <h6>Order Info</h6>
+                <p><strong>#:</strong> {{ $order->orderId }}</p>
+                @if ($order->courier_name == 'Pathao')
+                    <p><strong>Courier:</strong> Pathao → {{ $order->pathao_city_name }} → {{ $order->pathao_zone_name }}</p>
+                @endif
+            </div>
+
+            <table class="invoice-table">
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>৳</th>
+                </tr>
+                </thead>
+                <tbody>
+                @php $sum = 0; @endphp
+                @foreach($order->orderDetails as $orderDetails)
+                    @php $total = $orderDetails->price * $orderDetails->qty; $sum += $total; @endphp
+                    <tr>
+                        <td>{{ $orderDetails->product->name }}</td>
+                        <td>{{ $orderDetails->qty }}</td>
+                        <td>{{ $total }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+
+            <table class="totals">
+                <tr>
+                    <td>Subtotal:</td>
+                    <td>{{ $sum }} Tk.</td>
+                </tr>
+                <tr>
+                    <td>Delivery:</td>
+                    <td>{{ $order->area }} Tk.</td>
+                </tr>
+                <tr>
+                    <td>Total:</td>
+                    <td>{{ $order->price }} Tk.</td>
+                </tr>
+            </table>
         </div>
-        <div style="text-align:right">
-            <p class="note">
-                আগে পণ্য দেখে নিন, তারপর ডেলিভারি ম্যানকে টাকা দিন।
-            </p>
-        </div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-box">
-            <h6>Customer Info</h6>
-            <p>{{ $order->name }}</p>
-            <p>{{ $order->phone }}</p>
-            <p>{{ $order->address }}</p>
-        </div>
-
-        <div class="info-box">
-            <h6>Company Info</h6>
-            <p>{{ $order->dropshipper->domain_name }}</p>
-            <p>Call: {{ $order->dropshipper->phone }}</p>
-        </div>
-
-        <div class="info-box">
-            <h6>Order Info</h6>
-            <p><strong>Order #: </strong>{{ $order->orderId }}</p>
-            @if ($order->courier_name == 'Pathao')
-                <p><strong>Courier: </strong>Pathao → {{ $order->pathao_city_name }} → {{ $order->pathao_zone_name }}</p>
-            @endif
-        </div>
-    </div>
-
-    <table class="invoice-table">
-        <thead>
-        <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>Price</th>
-            <th>Size</th>
-            <th>Color</th>
-        </tr>
-        </thead>
-        <tbody>
-        @php $sum = 0; @endphp
-        @foreach($order->orderDetails as $orderDetails)
-            @php $total = $orderDetails->price * $orderDetails->qty; $sum += $total; @endphp
-            <tr>
-                <td>{{ $orderDetails->product->name }}</td>
-                <td>{{ $orderDetails->qty }}</td>
-                <td>{{ $total }} Tk.</td>
-                <td>{{ $orderDetails->size ?? '-' }}</td>
-                <td>{{ $orderDetails->color ?? '-' }}</td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
-
-    <table class="totals" width="100%">
-        <tr>
-            <td><strong>Subtotal:</strong></td>
-            <td>{{ $sum }} Tk.</td>
-        </tr>
-        <tr>
-            <td><strong>Discount:</strong></td>
-            <td>{{ $order->discount ?? 0 }} Tk.</td>
-        </tr>
-        <tr>
-            <td><strong>Delivery Charge:</strong></td>
-            <td>{{ $order->area }} Tk.</td>
-        </tr>
-        <tr>
-            <td><strong>Total:</strong></td>
-            <td>{{ $order->price }} Tk.</td>
-        </tr>
-    </table>
-
-    <hr />
-@endforeach
+    @endforeach
+</div>
 
 <script>
-    window.onload = function () {
+    window.onload = function() {
         window.print();
     };
 </script>
