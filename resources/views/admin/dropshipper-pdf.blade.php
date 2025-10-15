@@ -163,6 +163,12 @@
                 @endif
             </div>
 
+            <div class="info-box">
+                <h6>Company Info</h6>
+                <p>{{ $order->dropshipper->domain_name }}</p>
+                <p>Call: {{ $order->dropshipper->phone }}</p>
+            </div>
+
             <table class="invoice-table">
                 <thead>
                 <tr>
