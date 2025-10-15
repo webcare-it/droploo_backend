@@ -62,8 +62,14 @@
             margin: 0;
         }
 
-        .info-box {
+        .info-row {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 8px;
+        }
+
+        .info-box {
+            width: 48%;
         }
 
         .info-box h6 {
@@ -148,25 +154,29 @@
                 </p>
             </div>
 
-            <div class="info-box">
-                <h6>Customer Info</h6>
-                <p>{{ $order->name }}</p>
-                <p>{{ $order->phone }}</p>
-                <p>{{ $order->address }}</p>
+            <!-- ✅ Customer Info Left + Company Info Right -->
+            <div class="info-row">
+                <div class="info-box">
+                    <h6>Customer Info</h6>
+                    <p>{{ $order->name }}</p>
+                    <p>{{ $order->phone }}</p>
+                    <p>{{ $order->address }}</p>
+                </div>
+
+                <div class="info-box">
+                    <h6>Company Info</h6>
+                    <p>{{ $order->dropshipper->domain_name }}</p>
+                    <p>Call: {{ $order->dropshipper->phone }}</p>
+                </div>
             </div>
 
+            <!-- Order Info Below -->
             <div class="info-box">
                 <h6>Order Info</h6>
                 <p><strong>#:</strong> {{ $order->orderId }}</p>
                 @if ($order->courier_name == 'Pathao')
                     <p><strong>Courier:</strong> Pathao → {{ $order->pathao_city_name }} → {{ $order->pathao_zone_name }}</p>
                 @endif
-            </div>
-
-            <div class="info-box">
-                <h6>Company Info</h6>
-                <p>{{ $order->dropshipper->domain_name }}</p>
-                <p>Call: {{ $order->dropshipper->phone }}</p>
             </div>
 
             <table class="invoice-table">
