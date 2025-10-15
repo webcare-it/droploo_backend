@@ -76,11 +76,11 @@
             font-weight: 700;
             border-bottom: 1px solid #f48fb1;
             margin-bottom: 3px;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         .info-box p {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
             margin: 0;
             line-height: 1.3;
@@ -95,7 +95,7 @@
         .invoice-table th {
             background-color: #fce4ec;
             border: 1px solid #f48fb1;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 700;
             text-align: left;
             padding: 3px 5px;
@@ -103,13 +103,13 @@
 
         .invoice-table td {
             border: 1px solid #ddd;
-            font-size: 11px;
+            font-size: 13px;
             padding: 3px 5px;
         }
 
         .totals {
             width: 100%;
-            font-size: 11px;
+            font-size: 13px;
         }
 
         .totals td {
@@ -119,7 +119,7 @@
         }
 
         .totals tr:last-child td {
-            font-size: 12px;
+            font-size: 13px;
             color: #c2185b;
             font-weight: 700;
         }
