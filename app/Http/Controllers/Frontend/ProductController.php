@@ -108,7 +108,7 @@ class ProductController extends Controller
     public function getProductById ($slug)
     {
         try {
-            $product = Product::with('category', 'productImages', 'colors', 'sizes', 'reviews')->where('slug', $slug)->first();
+            $product = Product::with('category', 'productImages', 'colors', 'sizes', 'reviews')->where('slug', $slug)->where('status', 1)->first();
 
             if (!$product) {
                 return response()->json([
