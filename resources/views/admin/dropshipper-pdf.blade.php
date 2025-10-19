@@ -192,7 +192,21 @@
                 @foreach($order->orderDetails as $orderDetails)
                     @php $total = $orderDetails->price * $orderDetails->qty; $sum += $total; @endphp
                     <tr>
-                        <td>{{ $orderDetails->product->name }}</td>
+                        <td>
+                            {{ $orderDetails->product->name }}
+                            @if(!empty($orderDetails->color) || !empty($orderDetails->size))
+                                <br>
+                                <small style="color:#c2185b;">
+                                    @if(!empty($orderDetails->color))
+                                        Color: {{ $orderDetails->color }}
+                                    @endif
+                                    @if(!empty($orderDetails->size))
+                                        @if(!empty($orderDetails->color)) | @endif
+                                        Size: {{ $orderDetails->size }}
+                                    @endif
+                                </small>
+                            @endif
+                        </td>
                         <td>{{ $orderDetails->qty }}</td>
                         <td>{{ $total }}</td>
                     </tr>
