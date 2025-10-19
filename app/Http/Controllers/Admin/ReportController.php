@@ -836,7 +836,8 @@ class ReportController extends Controller
                 $searchTerm = $request->search;
                 $sql->where(function ($query) use ($searchTerm) {
                     $query->where('orderId', 'LIKE', "%{$searchTerm}%")
-                        ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+                        ->orWhere('phone', 'LIKE', "%{$searchTerm}%")
+                        ->orWhere('name', 'LIKE', "%{$searchTerm}%");
                 });
             }
 
@@ -864,7 +865,8 @@ class ReportController extends Controller
                 $searchTerm = $request->search;
                 $sql->where(function ($query) use ($searchTerm) {
                     $query->where('phone', 'LIKE', "%{$searchTerm}%")
-                        ->orWhere('orderId', 'LIKE', "%{$searchTerm}%");
+                        ->orWhere('orderId', 'LIKE', "%{$searchTerm}%")
+                        ->orWhere('name', 'LIKE', "%{$searchTerm}%");
                 });
             }
 
@@ -898,7 +900,8 @@ class ReportController extends Controller
                 $searchTerm = $request->search;
                 $sql->where(function ($query) use ($searchTerm) {
                     $query->where('orderId', 'LIKE', "%{$searchTerm}%")
-                        ->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+                        ->orWhere('phone', 'LIKE', "%{$searchTerm}%")
+                        ->orWhere('name', 'LIKE', "%{$searchTerm}%");
                 });
             }
 
@@ -926,7 +929,8 @@ class ReportController extends Controller
                 $searchTerm = $request->search;
                 $sql->where(function ($query) use ($searchTerm) {
                     $query->where('phone', 'LIKE', "%{$searchTerm}%")
-                        ->orWhere('orderId', 'LIKE', "%{$searchTerm}%");
+                        ->orWhere('orderId', 'LIKE', "%{$searchTerm}%")
+                        ->orWhere('name', 'LIKE', "%{$searchTerm}%");
                 });
             }
 
@@ -982,7 +986,8 @@ class ReportController extends Controller
                 $searchTerm = $request->search;
                 $sql->where(function ($query) use ($searchTerm) {
                 $query->where('phone', $searchTerm)
-                ->orWhere('orderId', $searchTerm);
+                ->orWhere('orderId', $searchTerm)
+                    ->orWhere('name', 'LIKE', "%{$searchTerm}%");
                 })->get();
             }
             if (isset($request->from)) {
