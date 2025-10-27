@@ -220,6 +220,10 @@
                     <td>{{ $sum }} Tk.</td>
                 </tr>
                 <tr>
+                    <td>Discount:</td>
+                    <td><span class="text-danger">-</span>{{ $order->discount }} Tk.</td>
+                </tr>
+                <tr>
                     <td>Delivery:</td>
                     <td>{{ $order->area }} Tk.</td>
                 </tr>
