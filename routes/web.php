@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Exports\FacebookCatalogExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +30,10 @@ Route::get('clear', function () {
 Route::get('migrate', function (){
     \Artisan::call('migrate');
     dd('Migrated');
+});
+
+Route::get('/export/facebook-catalog', function () {
+    return Excel::download(new FacebookCatalogExport, 'facebook_catalog.csv');
 });
 
 Route::get('/sitemap.xml', [App\Http\Controllers\Frontend\FrontendController::class, 'sitemap']);
