@@ -12,6 +12,8 @@ Route::group(['prefix' => 'admin'], function(){
     Route::post('/login', [\App\Http\Controllers\Auth\AdminController::class, 'adminLogin'])->name('admin.login');
     Route::group(['middleware' => 'isAdmin'], function(){
         Route::get('/dashboard', [\App\Http\Controllers\Auth\AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/change-password', [\App\Http\Controllers\Auth\AdminController::class, 'showChangePasswordForm'])->name('admin.password.change.form');
+        Route::post('/change-password', [\App\Http\Controllers\Auth\AdminController::class, 'changePassword'])->name('admin.password.change');
         Route::post('/logout', [\App\Http\Controllers\Auth\AdminController::class, 'logout'])->name('admin.logout');
 
         Route::get('migrate', function() {
@@ -49,10 +51,6 @@ Route::group(['prefix' => 'admin'], function(){
 
 //Functionality logic
 Route::group(['middleware' => 'isAdmin'], function(){
-    // Password change routes
-    Route::get('/change-password', [\App\Http\Controllers\Auth\AdminController::class, 'showChangePasswordForm'])->name('admin.password.change.form');
-    Route::post('/change-password', [\App\Http\Controllers\Auth\AdminController::class, 'changePassword'])->name('admin.password.change');
-    
     Route::resource('/categories', CategoryController::class);
     Route::resource('/subcategories', SubcategoryController::class);
     Route::resource('/brands', BrandController::class);
