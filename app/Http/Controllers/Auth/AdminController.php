@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Session;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -24,6 +25,30 @@ class AdminController extends Controller
     public function showAdminLoginForm()
     {
         return view('admin.home.auth.admin-login');
+    }
+
+    public function showChangePasswordForm()
+    {
+        return view('admin.auth.change-password');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $admin = Admin::find(session('id'));
+
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect']);
+        }
+
+        $admin->password = Hash::make($request->new_password);
+        $admin->save();
+
+        return redirect()->back()->with('success', 'Password changed successfully');
     }
 
     public function dashboard(Request $request)

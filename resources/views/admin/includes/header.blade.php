@@ -44,6 +44,12 @@
                             <span>Profile</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('admin.password.change.form') }}">
+                            <i class="bx bx-lock"></i>
+                            <span>Change Password</span>
+                        </a>
+                    </li>
 
                     <li><div class="dropdown-divider mb-0"></div></li>
 

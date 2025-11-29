@@ -49,6 +49,10 @@ Route::group(['prefix' => 'admin'], function(){
 
 //Functionality logic
 Route::group(['middleware' => 'isAdmin'], function(){
+    // Password change routes
+    Route::get('/change-password', [\App\Http\Controllers\Auth\AdminController::class, 'showChangePasswordForm'])->name('admin.password.change.form');
+    Route::post('/change-password', [\App\Http\Controllers\Auth\AdminController::class, 'changePassword'])->name('admin.password.change');
+    
     Route::resource('/categories', CategoryController::class);
     Route::resource('/subcategories', SubcategoryController::class);
     Route::resource('/brands', BrandController::class);
