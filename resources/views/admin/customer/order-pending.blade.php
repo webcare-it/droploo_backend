@@ -177,9 +177,9 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                        </tbody>
-                                    </table>
+                                        </table>
                                 </div>
+                                {{ $orders->links() }}
                             </form>
                         </div>
                     </div>
