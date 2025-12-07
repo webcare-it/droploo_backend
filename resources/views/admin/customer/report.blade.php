@@ -12,6 +12,7 @@
                     <div class="card radius-10 mb-0">
                         <div class="card-header bg-gradient-burning">
                             <h5 class="mb-1 text-white">Order report</h5>
+                            <a href="{{ route('admin.export.orders.form') }}" class="btn btn-primary float-end">Export Orders</a>
                         </div>
                         <div class="card-body">
                             <div class="row">

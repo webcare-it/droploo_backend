@@ -287,6 +287,17 @@
     </li>
 
     <li>
+        <a class="" href="{{ url('/order/export/form') }}">
+            <div class="parent-icon">
+                <i class='bx bx-group'></i>
+            </div>
+            <div class="menu-title">
+                Order report
+            </div>
+        </a>
+    </li>
+
+    <li>
         <a class="" href="{{ url('/invoice') }}">
             <div class="parent-icon">
                 <i class='bx bx-group'></i>

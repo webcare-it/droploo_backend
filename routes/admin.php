@@ -110,6 +110,8 @@ Route::group(['middleware' => 'isAdmin'], function(){
 
     //======================== Order reports =========================//
     Route::get('/order/report', [\App\Http\Controllers\Admin\ReportController::class, 'ordersReport'])->name('customer.products.order.report');
+    Route::get('/order/export/form', [\App\Http\Controllers\Admin\ReportController::class, 'exportOrdersForm'])->name('admin.export.orders.form');
+    Route::post('/order/export', [\App\Http\Controllers\Admin\ReportController::class, 'exportOrders'])->name('admin.export.orders');
     Route::get('/order/cancel', [\App\Http\Controllers\Admin\ReportController::class, 'ordersCancel']);
     Route::get('/order/hold', [\App\Http\Controllers\Admin\ReportController::class, 'ordersHold']);
     Route::get('/order/pending', [\App\Http\Controllers\Admin\ReportController::class, 'ordersPending']);

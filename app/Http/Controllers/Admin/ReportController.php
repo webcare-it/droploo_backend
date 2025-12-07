@@ -12,16 +12,18 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Codeboxr\PathaoCourier\Facade\PathaoCourier;
 use Illuminate\Support\Facades\Log;
-use Session;
+use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use App\Exports\OrdersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
     public function ordersReport(Request $request)
     {
-        $sql = OrderDetails::with('product', 'order')->where('is_deleted', '!=', true)->orderBy('created_at', 'desc');
+        $sql = OrderDetails::with('product', 'order')->orderBy('created_at', 'desc');
 
         if (isset($request->from)) {
             $sql->whereDate('created_at', '>=', $request->from);
@@ -32,6 +34,65 @@ class ReportController extends Controller
 
         $ordersReports = $sql->paginate(10);
         return view('admin.customer.report', compact('ordersReports'));
+    }
+
+    public function exportOrdersForm()
+    {
+        return view('admin.customer.export-orders-form');
+    }
+
+    public function exportOrders(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'from' => 'nullable|date',
+            'to' => 'nullable|date',
+            'order_status' => 'nullable|string',
+            'columns' => 'nullable|array',
+        ]);
+
+        // Build the query
+        $sql = Order::with('orderDetails', 'admin')->orderBy('created_at', 'desc');
+
+        // Apply date range filter
+        if ($request->from) {
+            $sql->whereDate('created_at', '>=', $request->from);
+        }
+        if ($request->to) {
+            $sql->whereDate('created_at', '<=', $request->to);
+        }
+
+        // Apply order status filter
+        if ($request->order_status) {
+            $sql->where('order_status', $request->order_status);
+        }
+
+        // Get the orders
+        $orders = $sql->get();
+
+        // Extract order IDs
+        $orderIds = $orders->pluck('id')->toArray();
+
+        // Get selected columns
+        $selectedColumns = $request->columns ?? [
+            'ItemType(*)',
+            'StoreName(*)',
+            'MerchantOrderId',
+            'RecipientName(*)',
+            'RecipientPhone(*)',
+            'RecipientCity(*)',
+            'RecipientZone(*)',
+            'RecipientArea',
+            'RecipientAddress(*)',
+            'AmountToCollect(*)',
+            'ItemQuantity(*)',
+            'ItemWeight(*)',
+            'ItemDesc',
+            'SpecialInstruction',
+        ];
+
+        // Export the orders
+        return Excel::download(new OrdersExport($orderIds, $selectedColumns), 'orders-export-' . now()->format('Y-m-d') . '.csv');
     }
 
     public function ordersCancel(Request $request){
