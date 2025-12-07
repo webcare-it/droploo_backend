@@ -6,8 +6,9 @@ use App\Models\Order;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
-class OrdersExport implements FromCollection, WithHeadings, WithMapping
+class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithCustomCsvSettings
 {
     protected $orderIds;
     protected $selectedColumns;
@@ -17,7 +18,7 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping
         $this->selectedColumns = $selectedColumns ?: [
             'ItemType(*)',
             'StoreName(*)',
-            'MerchantOrderId',
+            'OrderId',
             'RecipientName(*)',
             'RecipientPhone(*)',
             'RecipientCity(*)',
@@ -44,7 +45,7 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping
         $productNames = [];
         foreach($order->orderDetails as $details){
             if ($details->product) {
-                $productNames[] = $details->product->name;
+                $productNames[] = $this->ensureUtf8($details->product->name);
             }
         }
         $combinedProductNames = implode(', ', $productNames);
@@ -53,18 +54,18 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping
             'ItemType(*)' => 'parcel',
             'StoreName(*)' => 'droploo.com',
             'MerchantOrderId' => $order->orderId,
-            'RecipientName(*)' => $order->name,
+            'RecipientName(*)' => $this->ensureUtf8($order->name),
             'RecipientPhone(*)' => $order->phone,
-            'RecipientCity(*)' => $order->pathao_city_name,
-            'RecipientZone(*)' => $order->pathao_zone_name,
+            'RecipientCity(*)' => $this->ensureUtf8($order->pathao_city_name),
+            'RecipientZone(*)' => $this->ensureUtf8($order->pathao_zone_name),
             'RecipientArea' => '1',
-            'RecipientAddress(*)' => $order->address,
+            'RecipientAddress(*)' => $this->ensureUtf8($order->address),
             'AmountToCollect(*)' => $order->price,
             'ItemQuantity(*)' => '1',
             'ItemWeight(*)' => '0.5',
-            'ItemDesc' => $combinedProductNames,
-            'SpecialInstruction' => $order->notes, // Changed from pathao_special_note to notes
-            'OrderStatus' => $order->order_status, // Added Order Status column
+            'ItemDesc' => $this->ensureUtf8($combinedProductNames),
+            'SpecialInstruction' => $this->ensureUtf8($order->notes), // Changed from pathao_special_note to notes
+            'OrderStatus' => $this->ensureUtf8($order->order_status), // Added Order Status column
         ];
         
         // Filter data based on selected columns
@@ -77,5 +78,49 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings() : array {
         return $this->selectedColumns;
+    }
+    
+    public function getCsvSettings(): array
+    {
+        return [
+            'delimiter' => ',',
+            'enclosure' => '"',
+            'line_ending' => "\n",
+            'use_bom' => true, // Add BOM for UTF-8 support
+            'include_separator_line' => false,
+            'excel_compatibility' => true, // Enable Excel compatibility for better UTF-8 support
+        ];
+    }
+    
+    /**
+     * Ensure proper UTF-8 encoding
+     */
+    private function ensureUtf8($string)
+    {
+        if (is_null($string) || $string === '') {
+            return $string;
+        }
+        
+        // If it's already a valid UTF-8 string, return as is
+        if (mb_check_encoding($string, 'UTF-8')) {
+            // Also ensure it's properly normalized
+            return mb_convert_encoding($string, 'UTF-8', 'UTF-8');
+        }
+        
+        // Try different encodings that might contain Bangla text
+        $encodings = ['UTF-8', 'ISO-8859-1', 'Windows-1252', 'ASCII'];
+        
+        foreach ($encodings as $encoding) {
+            if (mb_check_encoding($string, $encoding)) {
+                $converted = mb_convert_encoding($string, 'UTF-8', $encoding);
+                if (mb_check_encoding($converted, 'UTF-8')) {
+                    return $converted;
+                }
+            }
+        }
+        
+        // If all else fails, try auto detection
+        $encoded = mb_convert_encoding($string, 'UTF-8', 'auto');
+        return $encoded ?: $string;
     }
 }
