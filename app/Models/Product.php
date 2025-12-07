@@ -40,6 +40,7 @@ class Product extends Model
         'seo_description',
         'seo_keyword',
         'priority',
+        'is_variable',
     ];
 
     //===================================== Relationship ======================================//
