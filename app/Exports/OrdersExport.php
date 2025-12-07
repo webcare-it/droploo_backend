@@ -18,7 +18,7 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithCus
         $this->selectedColumns = $selectedColumns ?: [
             'ItemType(*)',
             'StoreName(*)',
-            'OrderId',
+            'MerchantOrderId',
             'RecipientName(*)',
             'RecipientPhone(*)',
             'RecipientCity(*)',
