@@ -53,7 +53,7 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithCus
         $data = [
             'ItemType(*)' => 'parcel',
             'StoreName(*)' => 'droploo.com',
-            'OrderId' => $order->orderId,
+            'MerchantOrderId' => $order->orderId,
             'RecipientName(*)' => $this->ensureUtf8($order->name),
             'RecipientPhone(*)' => $order->phone,
             'RecipientCity(*)' => $this->ensureUtf8($order->pathao_city_name),

@@ -77,7 +77,7 @@ class ReportController extends Controller
         $selectedColumns = $request->columns ?? [
             'ItemType(*)',
             'StoreName(*)',
-            'OrderId',
+            'MerchantOrderId',
             'RecipientName(*)',
             'RecipientPhone(*)',
             'RecipientCity(*)',
