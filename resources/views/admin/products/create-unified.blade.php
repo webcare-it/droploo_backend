@@ -117,26 +117,23 @@
                                                         </div>
                                                         <div id="galleryImagesContainer"></div>
                                                         
-                                                        <!-- Size and Color fields that will be hidden for single products -->
-                                                        {{-- <div id="singleProductAttributes">
-                                                            <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Product Sizes (Optional)</label>
-                                                            <div class="input-group mb-3">
-                                                                <input type="text" name="size[]" class="form-control" placeholder="Product size">
-                                                                <button class="btn btn-sm btn-success add-size-btn" type="button">
-                                                                    <i class="bx bx-plus-circle" aria-hidden="true" style="margin-left: 7px;"></i>
-                                                                </button>
-                                                            </div>
-                                                            <div id="sizesContainer"></div>
-                                                            
-                                                            <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Product Colors (Optional)</label>
-                                                            <div class="input-group mb-3">
-                                                                <input type="text" name="color[]" class="form-control" placeholder="Product color">
-                                                                <button class="btn btn-sm btn-info add-color-btn" type="button">
-                                                                    <i class="bx bx-plus-circle" aria-hidden="true" style="margin-left: 7px;"></i>
-                                                                </button>
-                                                            </div>
-                                                            <div id="colorsContainer"></div>
-                                                        </div> --}}
+                                                        <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Product Sizes (Optional)</label>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="size[]" class="form-control" placeholder="Product size">
+                                                            <button class="btn btn-sm btn-success add-size-btn" type="button">
+                                                                <i class="bx bx-plus-circle" aria-hidden="true" style="margin-left: 7px;"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div id="sizesContainer"></div>
+                                                        
+                                                        <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Product Colors (Optional)</label>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="color[]" class="form-control" placeholder="Product color">
+                                                            <button class="btn btn-sm btn-info add-color-btn" type="button">
+                                                                <i class="bx bx-plus-circle" aria-hidden="true" style="margin-left: 7px;"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div id="colorsContainer"></div>
                                                     </div>
                                                     
                                                     <!-- Variable Product Fields -->
@@ -256,11 +253,21 @@
                                                 <select type="text" class="form-control" id="multipleTag" name="seo_keyword" multiple="multiple" value=""></select>
                                             </div>
                                         </div>
+                                        <div class="col-md-12 additional-info-form mt-3">
+                                            <div class="additional-info-wrapper">
+                                                <div class="additional-info-title">
+                                                    <h6 class="info-title">
+                                                        Product RAW Content
+                                                    </h6>
+                                                </div>
+                                                <hr>
+                                                <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Google Drive Link ( Optional )</label><br>
+                                                <input type="text" class="form-control" name="drive_link">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            <div class="col-md-12">
                                 <button type="submit" class="btn btn-success mt-2 float-right">Submit</button>
-                            </div>
                               </form>
                         </div>
                     </div>

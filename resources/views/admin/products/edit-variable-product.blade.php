@@ -106,27 +106,41 @@
                                                         <span style="color: red"> {{ $errors->has('image') ? $errors->first('image') : ' ' }}</span>
                                                     </div>
                                                     <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Gallery Image, Price, Color, and Size <small style="color: red; font-size: 18px;">*</small></label><br>
-                                                    @foreach ($product->productImages as $image)
-                                                    <div style="display: inline-block; text-align: center; margin: 10px; position: relative;">
-                                                        <img src="{{ asset('galleryImage/'.$image->gallery_image) }}" height="100" width="100" alt="Product Image">
+                                                    @foreach ($product->productImages as $index => $image)
+                                                    <div class="row g-2 align-items-center mb-3 removeRowExisting">
+                                                        <div class="col-md-3">
+                                                            <input type="hidden" name="existing_gallery_image_id[]" value="{{ $image->id }}">
+                                                            <img src="{{ asset('galleryImage/'.$image->gallery_image) }}" height="100" width="100" alt="Product Image"><br>
+                                                            <input type="file" name="existing_gallery_image[]" class="form-control mt-2">
+                                                        </div>
 
-                                                        <!-- Delete Icon -->
-                                                        <a href="{{url('/gallery-image/delete/'.$image->id)}}"
-                                                            style="position: absolute; top: 5px; right: 5px; background: red; color: white; border-radius: 50%; padding: 5px; text-decoration: none;"
-                                                            onclick="return confirm('Are you sure you want to delete this image?')">
-                                                            &times;
-                                                        </a>
+                                                        <!-- Wholesale Price -->
+                                                        <div class="col-md-2">
+                                                            <input type="number" name="existing_wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price" value="{{ $image->wholesale_price ?? '' }}">
+                                                        </div>
 
-                                                        <!-- Edit Icon -->
-                                                        <a href="{{url('/gallery-image/edit/'.$image->id)}}"
-                                                            style="position: absolute; bottom: 5px; right: 5px; background: blue; color: white; border-radius: 50%; padding: 5px; text-decoration: none;">
-                                                            ✎
-                                                        </a>
+                                                        <!-- Retail Price -->
+                                                        <div class="col-md-2">
+                                                            <input type="number" name="existing_price[]" class="form-control" placeholder="Price" value="{{ $image->price ?? '' }}">
+                                                        </div>
 
-                                                        <div>
-                                                            <span>Price: {{$image->price ?? "N/A"}}</span><br>
-                                                            <span>Color: {{$image->color ?? "N/A"}}</span><br>
-                                                            <span>Size: {{$image->size ?? "N/A"}}</span>
+                                                        <!-- Color -->
+                                                        <div class="col-md-2">
+                                                            <input type="text" name="existing_color[]" class="form-control" placeholder="Product Color" value="{{ $image->color ?? '' }}">
+                                                        </div>
+
+                                                        <!-- Size -->
+                                                        <div class="col-md-2">
+                                                            <input type="text" name="existing_size[]" class="form-control" placeholder="Product Size" value="{{ $image->size ?? '' }}">
+                                                        </div>
+
+                                                        <!-- Delete Button -->
+                                                        <div class="col-md-1">
+                                                            <a href="{{url('/gallery-image/delete/'.$image->id)}}" 
+                                                               class="btn btn-sm btn-danger" 
+                                                               onclick="return confirm('Are you sure you want to delete this image?')">
+                                                                &times;
+                                                            </a>
                                                         </div>
                                                     </div>
                                                     @endforeach
@@ -139,12 +153,12 @@
 
                                                         <!-- Wholesale Price -->
                                                         <div class="col-md-2">
-                                                            <input type="text" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price">
+                                                            <input type="number" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price">
                                                         </div>
 
                                                         <!-- Retail Price -->
                                                         <div class="col-md-2">
-                                                            <input type="text" name="price[]" class="form-control" placeholder="Price">
+                                                            <input type="number" name="price[]" class="form-control" placeholder="Price">
                                                         </div>
 
                                                         <!-- Color -->
@@ -170,13 +184,20 @@
                                                     <span style="color: red"> {{ $errors->has('size') ? $errors->first('size') : ' ' }}</span>
                                                     <div id="newRow"></div>
 
-                                                    <div id="newRowForColor"></div>
-
-                                                    <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Related Product ( Optional )</label>
+                                                    <div class="form-group mt-5">
+                                                        <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">Vendor (Optional)</label>
+                                                        <select class="form-control" name="vendor_id" id="vendor_id">
+                                                            <option selected disabled>Select a Vendor</option>
+                                                            @foreach ($vendors as $vendor)
+                                                                <option value="{{ $vendor->id }}" {{ $product->vendor_id == $vendor->id ? 'selected' : '' }}>{{ $vendor->shop_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <span style="color: red"> {{ $errors->has('vendor_id') ? $errors->first('vendor_id') : ' ' }}</span>
+                                                    </div>
                                                     <select class="multiple-related-product form-control mb-3" name="related_product_id[]" multiple="multiple">
                                                       <option value="AL">Select A Related Product</option>
                                                         @foreach(\App\Models\Product::orderBy('created_at', 'desc')->get() as $relatedproduct)
-                                                            <option value="{{ $relatedproduct->id }}">{{ $relatedproduct->name }}</option>
+                                                            <option value="{{ $relatedproduct->id }}" {{ $product->comboProducts->contains('related_product_id', $relatedproduct->id) ? 'selected' : '' }}>{{ $relatedproduct->name }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -221,11 +242,11 @@
                                                 </div>
                                                 <hr>
                                                 <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">SEO Title ( Optional )</label><br>
-                                                <input type="text" name="seo_title" class="form-control" value="" placeholder="Seo title"><br>
+                                                <input type="text" name="seo_title" class="form-control" value="{{ $product->seo_title ?? '' }}" placeholder="Seo title"><br>
                                                 <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">SEO Description ( Optional )</label><br>
-                                                <textarea rows="4" name="seo_description" class="form-control" placeholder="Seo description"></textarea><br>
+                                                <textarea rows="4" name="seo_description" class="form-control" placeholder="Seo description">{{ $product->seo_description ?? '' }}</textarea><br>
                                                 <label style="padding-bottom: 5px;font-weight: 600;font-size: 15px;letter-spacing: 1px;">SEO Keyword ( Optional )</label><br>
-                                                <select type="text" class="form-control" id="multipleTag" name="seo_keyword" multiple="multiple" value=""></select>
+                                                <select type="text" class="form-control" id="multipleTag" name="seo_keyword" multiple="multiple" value="{{ $product->seo_keyword ?? '' }}"></select>
                                             </div>
                                         </div>
                                     </div>
@@ -255,10 +276,10 @@
                     <input type="file" name="gallery_image[]" class="form-control">
                 </div>
                 <div class="col-md-2">
-                    <input type="text" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price">
+                    <input type="number" name="wholesale_price_variable[]" class="form-control" placeholder="Wholesale Price">
                 </div>
                 <div class="col-md-2">
-                    <input type="text" name="price[]" class="form-control" placeholder="Price">
+                    <input type="number" name="price[]" class="form-control" placeholder="Price">
                 </div>
                 <div class="col-md-2">
                     <input type="text" name="color[]" class="form-control" placeholder="Color">

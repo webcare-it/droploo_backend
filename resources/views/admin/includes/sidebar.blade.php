@@ -75,6 +75,11 @@
                     <i class="bx bx-right-arrow-alt"></i>Add Variable Product
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.unified.products.create') }}">
+                    <i class="bx bx-right-arrow-alt"></i>Add Unified Product
+                </a>
+            </li>
 
             <li>
               <a href="{{ route('admin.page.products.create') }}">

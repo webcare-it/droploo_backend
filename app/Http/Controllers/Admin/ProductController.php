@@ -75,6 +75,245 @@ class ProductController extends Controller
         ]);
     }
 
+    public function createUnifiedProduct ()
+    {
+        return view('admin.products.create-unified', [
+            'categories' => Category::orderBy('created_at', 'desc')->get(),
+            'subcategories' => Subcategory::orderBy('created_at', 'desc')->get(),
+            'brands' => Brand::orderBy('created_at', 'desc')->get(),
+            'vendors' => Supplier::orderBy('shop_name', 'asc')->where('is_approved', true)->get(),
+            'product' => Product::latest()->first()
+        ]);
+    }
+
+    public function storeVariableProduct (Request $request)
+    {
+        // Check if this is actually a single product request
+        if ($request->product_category === 'single') {
+            // For single products, we'll handle it in the same method
+            // Set is_variable to false
+            $isVariable = false;
+        } else if ($request->product_category === 'variable') {
+            $isVariable = true;
+        } else {
+            return redirect()->back()->with('error', 'Please select a product type.');
+        }
+        
+        // Validation rules
+        $rules = [
+            'priority'  => 'unique:products,priority',
+            'name' => 'required|string|max:255',
+            'cat_id' => 'required|exists:categories,id',
+            'product_category' => 'required|in:single,variable',
+            'product_type' => 'required|in:feature,hot,discount,new',
+            'qty' => 'required|integer|min:0',
+            'wholesale_price' => 'required|numeric|min:0',
+            'regular_price' => 'required|numeric|min:0',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ];
+
+        // For variable products, validate the additional fields
+        if ($isVariable) {
+            $rules = array_merge($rules, [
+                'gallery_image.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'wholesale_price_variable.*' => 'required|numeric|min:0',
+                'price.*' => 'nullable|numeric|min:0',
+            ]);
+        }
+
+        $validatedData = $request->validate($rules);
+
+        $image = $request->file('image');
+
+        $destinationPath = 'product/images';
+         if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+        // Create a safe filename
+        $safeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
+        $filename = rand() . '_pro_main_' . $safeName . '.webp';
+        $imgFile = Image::make($image->getRealPath());
+        $imgFile->resize(240, 240, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode('webp', 90)->save($destinationPath.'/'.$filename);
+        $image->move($destinationPath, $filename);
+        $imageUrl = url($destinationPath.'/'.$filename);
+
+        if($request->type){
+            //dd($request->type);
+            // $product = new PageProduct();
+            $product = new Product();
+            $page= AddPage::find($request->type);
+            // $product->type = Str::slug($page->name);
+            $product->page_name = Str::slug($page->name);
+            $product->is_page_product = 1;
+        }
+        else{
+            $product = new Product();
+            $product->seo_title = $request->seo_title;
+            $product->seo_description = $request->seo_description;
+            $product->seo_keyword = $request->seo_keyword;
+        }
+        if(isset($request->priority)){
+            $checkPriority = Product::where('priority', $request->priority)->first();
+            if($checkPriority == null){
+                $product->priority = $request->priority;
+            }
+            // elseif($checkPriority != null){
+            //     $checkPriority->priority = $checkPriority->id;
+            //     $product->priority = $request->priority;
+            // }
+        }
+        if(!isset($request->priority)){
+            $previousProduct = Product::orderBy('created_at', 'desc')->first();
+            $product->priority = $previousProduct->id+1;
+        }
+
+        $product->rating = $request->rating;
+        $product->drive_link = $request->drive_link;
+        $product->is_variable = $isVariable;
+        $product->name = $request->name;
+        $product->vendor_id = $request->vendor_id;
+        $product->slug = str_replace(' ', '-', strtolower($request->name));
+        $product->cat_id = $request->cat_id;
+        $product->sub_cat_id = $request->sub_cat_id;
+        $product->qty = $request->qty;
+        $product->buy_price = $request->buy_price;
+        $product->wholesale_price = $request->wholesale_price;
+        $product->regular_price = $request->regular_price;
+        if ($request->discount_price){
+            $product->discount_price = $request->discount_price;
+        }
+        $product->product_code = $request->product_code;
+        $product->short_description = $request->short_description;
+        $product->long_description = $request->long_description;
+        $product->policy = $request->policy;
+        $product->product_type = $request->product_type;
+        $product->image = $filename;
+        $product->imageUrl = $imageUrl;
+        $product->save();
+
+        if(!empty($product)){
+            // Handle gallery images based on product type
+            if ($request->hasFile('gallery_image')) {
+                $galleryImages = $request->file('gallery_image');
+                
+                if ($isVariable) {
+                    // For variable products, handle variations
+                    $wholesalePrices = $request->wholesale_price_variable;
+                    $prices = $request->price;
+                    $colors = $request->color;
+                    $sizes = $request->size;
+
+                    foreach ($galleryImages as $index => $galleryImage) {
+                        if ($galleryImage) { // Check if file exists
+                            $galleryDestinationPath = 'galleryImage';
+                            if (!file_exists($galleryDestinationPath)) {
+                               mkdir($galleryDestinationPath, 0777, true);
+                            }
+                            $gallerySafeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
+                            $galleryImageName = rand() . '_gal_' . $gallerySafeName . '.webp';
+
+                            // Resize and save the image
+                            $galleryImgFile = Image::make($galleryImage->getRealPath());
+                            $galleryImgFile->resize(600, 600, function ($constraint) {
+                                $constraint->aspectRatio();
+                            })->encode('webp', 90)->save($galleryDestinationPath.'/'.$galleryImageName);
+
+                            // Move the uploaded image to the desired directory
+                            $galleryImage->move($galleryDestinationPath, $galleryImageName);
+
+                            // Generate the image URL
+                            $imageUrl = url($galleryDestinationPath . '/' . $galleryImageName);
+
+                            // Save the image information to the database
+                            $productGalleryImage = new ProductImage();
+                            $productGalleryImage->product_id = $product->id;
+                            $productGalleryImage->gallery_image = $galleryImageName;
+                            $productGalleryImage->imageUrl = $imageUrl;
+                            $productGalleryImage->size = isset($sizes[$index]) ? $sizes[$index] : null;
+                            $productGalleryImage->color = isset($colors[$index]) ? $colors[$index] : null;
+                            $productGalleryImage->price = isset($prices[$index]) ? $prices[$index] : 0;
+                            $productGalleryImage->wholesale_price = isset($wholesalePrices[$index]) ? $wholesalePrices[$index] : 0;
+                            $productGalleryImage->save();
+                        }
+                    }
+                } else {
+                    // For single products, handle gallery images without variations
+                    foreach ($galleryImages as $galleryImage) {
+                        if ($galleryImage) { // Check if file exists
+                            $galleryDestinationPath = 'galleryImage';
+                            if (!file_exists($galleryDestinationPath)) {
+                               mkdir($galleryDestinationPath, 0777, true);
+                            }
+                            $gallerySafeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
+                            $galleryImageName = rand() . '_gal_' . $gallerySafeName . '.webp';
+
+                            // Resize and save the image
+                            $galleryImgFile = Image::make($galleryImage->getRealPath());
+                            $galleryImgFile->resize(600, 600, function ($constraint) {
+                                $constraint->aspectRatio();
+                            })->encode('webp', 90)->save($galleryDestinationPath.'/'.$galleryImageName);
+
+                            // Move the uploaded image to the desired directory
+                            $galleryImage->move($galleryDestinationPath, $galleryImageName);
+
+                            // Generate the image URL
+                            $galleryImageUrl = url($galleryDestinationPath . '/' . $galleryImageName);
+
+                            // Save the image information to the database
+                            $productGalleryImage = new ProductImage();
+                            $productGalleryImage->product_id = $product->id;
+                            $productGalleryImage->gallery_image = $galleryImageName;
+                            $productGalleryImage->imageUrl = $galleryImageUrl;
+                            $productGalleryImage->save();
+                        }
+                    }
+                }
+            }
+            
+            // Handle colors for single products
+            if (!$isVariable && $request->filled('color')){
+                $colors = $request->color;
+                foreach ($colors as $key => $color){
+                    $colorName = new ProductColor();
+                    $colorName->product_id = $product->id;
+                    $colorName->color = $request->color[$key];
+                    $colorName->save();
+                }
+            }
+            
+            // Handle sizes for single products
+            if (!$isVariable && $request->filled('size')){
+                $sizes = $request->filled('size');
+                if (is_array($sizes) || is_object($sizes)){
+                    foreach ($sizes as $key => $size){
+                        $sizeName = new ProductSize();
+                        $sizeName->product_id = $product->id;
+                        $sizeName->size = $request->size[$key];
+                        $sizeName->save();
+                    }
+                }
+            }
+        }
+        // Related product
+        if($request->filled('related_product_id')){
+            $relatedProducts = $request->related_product_id;
+            if (is_array($relatedProducts) || is_object($relatedProducts)){
+                foreach ($relatedProducts as $key => $related){
+                    $relatedProduct = new RelatedProduct();
+                    $relatedProduct->product_id = $product->id;
+                    $relatedProduct->related_product_id = $request->related_product_id[$key];
+                    $relatedProduct->save();
+                }
+            }
+        }
+        if($request->type){
+            return redirect()->route('page.products.index')->with('success', 'Product has been successfully created.');
+        }
+        return redirect()->route('products.index')->with('success', 'Product has been successfully created.');
+    }
+
     public function store(ProductRequest $request)
     {
         $image = $request->file('image');
@@ -125,6 +364,7 @@ class ProductController extends Controller
         }
         $product->rating = $request->rating;
         $product->drive_link = $request->drive_link;
+        // For single products created via the store method, is_variable should be false
         $product->is_variable = false;
         $product->name = $request->name;
         $product->vendor_id = $request->vendor_id;
@@ -209,151 +449,7 @@ class ProductController extends Controller
         // Related product
         if($request->filled('related_product_id')){
             $relatedProducts = $request->related_product_id;
-            if (is_array($relatedProducts || is_object($relatedProducts))){
-                foreach ($relatedProducts as $key => $related){
-                    $relatedProduct = new RelatedProduct();
-                    $relatedProduct->product_id = $product->id;
-                    $relatedProduct->related_product_id = $request->related_product_id[$key];
-                    $relatedProduct->save();
-                }
-            }
-        }
-        if($request->type){
-            return redirect()->route('page.products.index')->with('success', 'Product has been successfully created.');
-        }
-        return redirect()->route('products.index')->with('success', 'Product has been successfully created.');
-    }
-
-    public function storeVariableProduct (Request $request)
-    {
-        // Check if this is actually a single product request
-        if ($request->product_category === 'single') {
-            // Redirect to single product store method
-            return $this->store(new ProductRequest($request->all()));
-        }
-        
-        $validatedData = $request->validate([
-            'priority'  => 'unique:products,priority',
-        ]);
-
-        $image = $request->file('image');
-
-        $destinationPath = 'product/images';
-         if (!file_exists($destinationPath)) {
-        mkdir($destinationPath, 0777, true);
-    }
-    // Create a safe filename
-        $safeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
-        $filename = rand() . '_pro_main_' . $safeName . '.webp';
-        $imgFile = Image::make($image->getRealPath());
-        $imgFile->resize(240, 240, function ($constraint) {
-            $constraint->aspectRatio();
-        })->encode('webp', 90)->save($destinationPath.'/'.$filename);
-        $image->move($destinationPath, $filename);
-        $imageUrl = url($destinationPath.'/'.$filename);
-
-        if($request->type){
-            //dd($request->type);
-            // $product = new PageProduct();
-            $product = new Product();
-            $page= AddPage::find($request->type);
-            // $product->type = Str::slug($page->name);
-            $product->page_name = Str::slug($page->name);
-            $product->is_page_product = 1;
-        }
-        else{
-            $product = new Product();
-            $product->seo_title = $request->seo_title;
-            $product->seo_description = $request->seo_description;
-            $product->seo_keyword = $request->seo_keyword;
-        }
-        if(isset($request->priority)){
-            $checkPriority = Product::where('priority', $request->priority)->first();
-            if($checkPriority == null){
-                $product->priority = $request->priority;
-            }
-            // elseif($checkPriority != null){
-            //     $checkPriority->priority = $checkPriority->id;
-            //     $product->priority = $request->priority;
-            // }
-        }
-        if(!isset($request->priority)){
-            $previousProduct = Product::orderBy('created_at', 'desc')->first();
-            $product->priority = $previousProduct->id+1;
-        }
-
-        $product->rating = $request->rating;
-        $product->drive_link = $request->drive_link;
-        $product->is_variable = ($request->product_category === 'variable');
-        $product->name = $request->name;
-        $product->vendor_id = $request->vendor_id;
-        $product->slug = str_replace(' ', '-', strtolower($request->name));
-        $product->cat_id = $request->cat_id;
-        $product->sub_cat_id = $request->sub_cat_id;
-        $product->qty = $request->qty;
-        $product->buy_price = $request->buy_price;
-        $product->wholesale_price = $request->wholesale_price;
-        $product->regular_price = $request->regular_price;
-        if ($request->discount_price){
-            $product->discount_price = $request->discount_price;
-        }
-        $product->product_code = $request->product_code;
-        $product->short_description = $request->short_description;
-        $product->long_description = $request->long_description;
-        $product->policy = $request->policy;
-        $product->product_type = $request->product_type;
-        $product->image = $filename;
-        $product->imageUrl = $imageUrl;
-        $product->save();
-
-        if(!empty($product)){
-            // Product gallery image
-            if ($request->hasFile('gallery_image')) {
-                $galleryImages = $request->file('gallery_image');
-                $wholesalePrices = $request->wholesale_price_variable;
-                $prices = $request->price;
-                $colors = $request->color;
-                $sizes = $request->size;
-
-                foreach ($galleryImages as $index => $galleryImage) {
-                    if ($galleryImage) { // Check if file exists
-                        $galleryDestinationPath = 'galleryImage';
-                        if (!file_exists($galleryDestinationPath)) {
-                           mkdir($galleryDestinationPath, 0777, true);
-                        }
-                        $gallerySafeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
-                        $galleryImageName = rand() . '_gal_' . $gallerySafeName . '.webp';
-
-                        // Resize and save the image
-                        $galleryImgFile = Image::make($galleryImage->getRealPath());
-                        $galleryImgFile->resize(600, 600, function ($constraint) {
-                            $constraint->aspectRatio();
-                        })->encode('webp', 90)->save($galleryDestinationPath.'/'.$galleryImageName);
-
-                        // Move the uploaded image to the desired directory
-                        $galleryImage->move($galleryDestinationPath, $galleryImageName);
-
-                        // Generate the image URL
-                        $imageUrl = url($galleryDestinationPath . '/' . $galleryImageName);
-
-                        // Save the image information to the database
-                        $productGalleryImage = new ProductImage();
-                        $productGalleryImage->product_id = $product->id;
-                        $productGalleryImage->gallery_image = $galleryImageName;
-                        $productGalleryImage->imageUrl = $imageUrl;
-                        $productGalleryImage->size = $sizes[$index] ?? null;
-                        $productGalleryImage->color = $colors[$index] ?? null;
-                        $productGalleryImage->price = $prices[$index] ?? 0;
-                        $productGalleryImage->wholesale_price = $wholesalePrices[$index] ?? 0;
-                        $productGalleryImage->save();
-                    }
-                }
-            }
-        }
-        // Related product
-        if($request->filled('related_product_id')){
-            $relatedProducts = $request->related_product_id;
-            if (is_array($relatedProducts || is_object($relatedProducts))){
+            if (is_array($relatedProducts) || is_object($relatedProducts)){
                 foreach ($relatedProducts as $key => $related){
                     $relatedProduct = new RelatedProduct();
                     $relatedProduct->product_id = $product->id;
@@ -384,9 +480,21 @@ class ProductController extends Controller
         $categories = Category::orderBy('created_at', 'desc')->get();
         $subcategories = Subcategory::orderBy('created_at', 'desc')->get();
         $brands = Brand::orderBy('created_at', 'desc')->get();
-        $product = $this->product->edit($id);
+        $vendors = Supplier::orderBy('shop_name', 'asc')->where('is_approved', true)->get();
+        $product = Product::where('id', $id)->with('productImages', 'comboProducts')->first();
 
-        return view ('admin.products.edit-variable-product', compact('categories', 'subcategories', 'brands', 'product'));
+        return view ('admin.products.edit-variable-product', compact('categories', 'subcategories', 'brands', 'vendors', 'product'));
+    }
+
+    public function editUnifiedProduct ($id, $slug)
+    {
+        $categories = Category::orderBy('created_at', 'desc')->get();
+        $subcategories = Subcategory::orderBy('created_at', 'desc')->get();
+        $brands = Brand::orderBy('created_at', 'desc')->get();
+        $vendors = Supplier::orderBy('shop_name', 'asc')->where('is_approved', true)->get();
+        $product = Product::where('id', $id)->with('productImages', 'comboProducts')->first();
+
+        return view ('admin.products.edit-unified', compact('categories', 'subcategories', 'brands', 'vendors', 'product'));
     }
 
     public function update(ProductUpdateRequest $request, $id)
@@ -430,7 +538,8 @@ class ProductController extends Controller
 
         $productUpdate->rating = $request->rating;
         $productUpdate->drive_link = $request->drive_link;
-        $productUpdate->is_variable = false;
+        // Preserve the existing is_variable value during update
+        // $productUpdate->is_variable = false;
         $productUpdate->vendor_id = $request->vendor_id;
         $productUpdate->name = $request->name;
         $productUpdate->slug = str_replace(' ', '-', strtolower($request->name));
@@ -595,6 +704,7 @@ class ProductController extends Controller
         $product->rating = $request->rating;
         $product->drive_link = $request->drive_link;
         $product->is_variable = ($request->product_category === 'variable');
+        $product->vendor_id = $request->vendor_id;
         $product->name = $request->name;
         $product->slug = str_replace(' ', '-', strtolower($request->name));
         $product->cat_id = $request->cat_id;
@@ -614,21 +724,51 @@ class ProductController extends Controller
         $product->save();
 
         if(!empty($product)){
-            if($request->gallery_image){
-                //Delete Previous Image...
-                $prevousImage = ProductImage::where('product_id', $id)->get();
-                if(!empty($prevousImage)){
-                    foreach($prevousImage as $image){
-                        $image->delete();
+            // Handle existing gallery images
+            if($request->has('existing_gallery_image_id')) {
+                $existingImageIds = $request->input('existing_gallery_image_id');
+                $existingWholesalePrices = $request->input('existing_wholesale_price_variable');
+                $existingPrices = $request->input('existing_price');
+                $existingColors = $request->input('existing_color');
+                $existingSizes = $request->input('existing_size');
+                $existingGalleryImages = $request->file('existing_gallery_image');
+                
+                foreach ($existingImageIds as $index => $imageId) {
+                    $productImage = ProductImage::find($imageId);
+                    if ($productImage) {
+                        // Update fields
+                        $productImage->wholesale_price = $existingWholesalePrices[$index] ?? $productImage->wholesale_price;
+                        $productImage->price = $existingPrices[$index] ?? $productImage->price;
+                        $productImage->color = $existingColors[$index] ?? $productImage->color;
+                        $productImage->size = $existingSizes[$index] ?? $productImage->size;
+                        
+                        // Handle image update if a new file is uploaded
+                        if (isset($existingGalleryImages[$index]) && $existingGalleryImages[$index]) {
+                            // Delete old image file
+                            if (file_exists('galleryImage/' . $productImage->gallery_image)) {
+                                unlink('galleryImage/' . $productImage->gallery_image);
+                            }
+                            
+                            // Upload new image
+                            $image = $existingGalleryImages[$index];
+                            $galleryImageName = rand().$request->name.'.'.$image->extension();
+                            $image->move('galleryImage', $galleryImageName);
+                            $productImage->gallery_image = $galleryImageName;
+                            $productImage->imageUrl = url('galleryImage/' . $galleryImageName);
+                        }
+                        
+                        $productImage->save();
                     }
                 }
-                //Delete Previous Image...
+            }
+            
+            // Handle new gallery images
+            if($request->gallery_image){
                 $galleryImages = $request->file('gallery_image');
                 $wholesalePrices = $request->input('wholesale_price_variable');
                 $prices = $request->input('price');
                 $colors = $request->input('color');
                 $sizes = $request->input('size');
-                // }
 
                 foreach ($galleryImages as $index => $image) {
                     // Generate a unique file name
@@ -644,10 +784,10 @@ class ProductController extends Controller
                     $productGalleryImage = new ProductImage();
                     $productGalleryImage->product_id = $product->id; // assuming $product is available
                     $productGalleryImage->gallery_image = $galleryImageName;
-                    $productGalleryImage->price = $prices[$index];
-                    $productGalleryImage->wholesale_price = $wholesalePrices[$index];
-                    $productGalleryImage->color = $colors[$index];
-                    $productGalleryImage->size = $sizes[$index];
+                    $productGalleryImage->price = $prices[$index] ?? 0;
+                    $productGalleryImage->wholesale_price = $wholesalePrices[$index] ?? 0;
+                    $productGalleryImage->color = $colors[$index] ?? null;
+                    $productGalleryImage->size = $sizes[$index] ?? null;
                     $productGalleryImage->imageUrl = $imageUrl;
                     $productGalleryImage->save();
                 }
@@ -681,7 +821,7 @@ class ProductController extends Controller
         // Related product
         if($request->filled('related_product_id')){
             $relatedProducts = $request->related_product_id;
-            if (is_array($relatedProducts || is_object($relatedProducts))){
+            if (is_array($relatedProducts) || is_object($relatedProducts)){
                 foreach ($relatedProducts as $key => $related){
                     $relatedProduct = new RelatedProduct();
                     $relatedProduct->product_id = $product->id;
@@ -694,6 +834,234 @@ class ProductController extends Controller
             return redirect()->route('page.products.index')->with('success', 'Product has been successfully created.');
         }
         return redirect()->route('products.index')->with('success', 'Product has been successfully created.');
+    }
+
+    public function updateUnifiedProduct (Request $request, $id)
+    {
+        // Get the product
+        $product = Product::where('id', $id)->with('productImages')->first();
+        
+        // Handle main image update
+        if(isset($request->image)){
+            $image = $request->file('image');
+
+            $destinationPath = 'product/images';
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            
+            // Create a safe filename
+            $safeName = Str::slug(pathinfo($request->name, PATHINFO_FILENAME), '_');
+            $updateImageName = rand() . '_pro_main_' . $safeName . '.webp';
+            
+            $imgFile = Image::make($image->getRealPath());
+            $imgFile->resize(240, 240, function ($constraint) {
+                $constraint->aspectRatio();
+            })->encode('webp', 90)->save($destinationPath.'/'.$updateImageName);
+            $image->move($destinationPath, $updateImageName);
+            $imageUrl = url($destinationPath.'/'.$updateImageName);
+            
+            // Delete old image if it exists
+            if ($product->image && file_exists($destinationPath . '/' . $product->image)) {
+                unlink($destinationPath . '/' . $product->image);
+            }
+            
+            $product->image = $updateImageName;
+            $product->imageUrl = $imageUrl;
+        }
+
+        // Handle priority update
+        if ($request->has('priority')) {
+            // Only run the check if the new priority is different from the existing one
+            if ($product->priority != $request->priority) {
+                $checkPriority = Product::where('priority', $request->priority)
+                    ->where('id', '!=', $product->id)
+                    ->first();
+
+                if ($checkPriority) {
+                    return redirect()->back()->with('error', 'Priority already exists!');
+                }
+
+                $product->priority = $request->priority;
+            }
+        }
+
+        // Update product fields
+        $product->rating = $request->rating;
+        $product->drive_link = $request->drive_link;
+        $product->is_variable = ($request->product_category === 'variable');
+        $product->vendor_id = $request->vendor_id;
+        $product->name = $request->name;
+        $product->slug = str_replace(' ', '-', strtolower($request->name));
+        $product->cat_id = $request->cat_id;
+        $product->sub_cat_id = $request->sub_cat_id;
+        $product->qty = $request->qty;
+        $product->buy_price = $request->buy_price;
+        $product->wholesale_price = $request->wholesale_price;
+        $product->regular_price = $request->regular_price;
+        if ($request->discount_price){
+            $product->discount_price = $request->discount_price;
+        }
+        $product->product_code = $request->product_code;
+        $product->short_description = $request->short_description;
+        $product->long_description = $request->long_description;
+        $product->policy = $request->policy;
+        $product->product_type = $request->product_type;
+        $product->seo_title = $request->seo_title;
+        $product->seo_description = $request->seo_description;
+        $product->seo_keyword = $request->seo_keyword;
+        $product->save();
+
+        if(!empty($product)){
+            // Handle existing gallery images/variations
+            if($request->has('existing_gallery_image_id')) {
+                $existingImageIds = $request->input('existing_gallery_image_id');
+                $existingWholesalePrices = $request->input('existing_wholesale_price_variable');
+                $existingPrices = $request->input('existing_price');
+                $existingColors = $request->input('existing_color');
+                $existingSizes = $request->input('existing_size');
+                $existingGalleryImages = $request->file('existing_gallery_image');
+                
+                foreach ($existingImageIds as $index => $imageId) {
+                    $productImage = ProductImage::find($imageId);
+                    if ($productImage) {
+                        // Update fields
+                        $productImage->wholesale_price = $existingWholesalePrices[$index] ?? $productImage->wholesale_price;
+                        $productImage->price = $existingPrices[$index] ?? $productImage->price;
+                        $productImage->color = $existingColors[$index] ?? $productImage->color;
+                        $productImage->size = $existingSizes[$index] ?? $productImage->size;
+                        
+                        // Handle image update if a new file is uploaded
+                        if (isset($existingGalleryImages[$index]) && $existingGalleryImages[$index]) {
+                            // Delete old image file
+                            if (file_exists('galleryImage/' . $productImage->gallery_image)) {
+                                unlink('galleryImage/' . $productImage->gallery_image);
+                            }
+                            
+                            // Upload new image
+                            $image = $existingGalleryImages[$index];
+                            $galleryImageName = rand().$request->name.'.'.$image->extension();
+                            $image->move('galleryImage', $galleryImageName);
+                            $productImage->gallery_image = $galleryImageName;
+                            $productImage->imageUrl = url('galleryImage/' . $galleryImageName);
+                        }
+                        
+                        $productImage->save();
+                    }
+                }
+            }
+            
+            // Handle new gallery images/variations
+            if($request->gallery_image){
+                $galleryImages = $request->file('gallery_image');
+                
+                // For variable products
+                if ($product->is_variable) {
+                    $wholesalePrices = $request->input('wholesale_price_variable');
+                    $prices = $request->input('price');
+                    $colors = $request->input('color');
+                    $sizes = $request->input('size');
+
+                    foreach ($galleryImages as $index => $image) {
+                        // Generate a unique file name
+                        $galleryImageName = rand().$request->name.'.'.$image->extension();
+
+                        // Move the uploaded image to the desired directory
+                        $image->move('galleryImage', $galleryImageName);
+
+                        // Generate the image URL
+                        $imageUrl = url('galleryImage/' . $galleryImageName);
+
+                        // Create a new ProductImage record with additional attributes
+                        $productGalleryImage = new ProductImage();
+                        $productGalleryImage->product_id = $product->id;
+                        $productGalleryImage->gallery_image = $galleryImageName;
+                        $productGalleryImage->price = $prices[$index] ?? 0;
+                        $productGalleryImage->wholesale_price = $wholesalePrices[$index] ?? 0;
+                        $productGalleryImage->color = $colors[$index] ?? null;
+                        $productGalleryImage->size = $sizes[$index] ?? null;
+                        $productGalleryImage->imageUrl = $imageUrl;
+                        $productGalleryImage->save();
+                    }
+                } else {
+                    // For single products
+                    foreach ($galleryImages as $image) {
+                        // Generate a unique file name
+                        $galleryImageName = rand().$request->name.'.'.$image->extension();
+
+                        // Move the uploaded image to the desired directory
+                        $image->move('galleryImage', $galleryImageName);
+
+                        // Generate the image URL
+                        $imageUrl = url('galleryImage/' . $galleryImageName);
+
+                        // Create a new ProductImage record
+                        $productGalleryImage = new ProductImage();
+                        $productGalleryImage->product_id = $product->id;
+                        $productGalleryImage->gallery_image = $galleryImageName;
+                        $productGalleryImage->imageUrl = $imageUrl;
+                        $productGalleryImage->save();
+                    }
+                }
+            }
+        }
+
+        // Handle colors for single products
+        if (!$product->is_variable) {
+            // Delete existing colors
+            ProductColor::where('product_id', $product->id)->delete();
+            
+            // Add new colors
+            if($request->filled('color')){
+                $colors = $request->color;
+                if (is_array($colors) || is_object($colors)){
+                    foreach ($colors as $color){
+                        $colorName = new ProductColor();
+                        $colorName->product_id = $product->id;
+                        $colorName->color = $color;
+                        $colorName->save();
+                    }
+                }
+            }
+        }
+        
+        // Handle sizes for single products
+        if (!$product->is_variable) {
+            // Delete existing sizes
+            ProductSize::where('product_id', $product->id)->delete();
+            
+            // Add new sizes
+            if ($request->filled('size')) {
+                $sizes = $request->input('size');
+                if (is_array($sizes) || is_object($sizes)) {
+                    foreach ($sizes as $size) {
+                        $sizeName = new ProductSize();
+                        $sizeName->product_id = $product->id;
+                        $sizeName->size = $size;
+                        $sizeName->save();
+                    }
+                }
+            }
+        }
+        
+        // Handle related products
+        if($request->filled('related_product_id')){
+            // Delete existing related products
+            RelatedProduct::where('product_id', $product->id)->delete();
+            
+            // Add new related products
+            $relatedProducts = $request->related_product_id;
+            if (is_array($relatedProducts) || is_object($relatedProducts)){
+                foreach ($relatedProducts as $key => $related){
+                    $relatedProduct = new RelatedProduct();
+                    $relatedProduct->product_id = $product->id;
+                    $relatedProduct->related_product_id = $request->related_product_id[$key];
+                    $relatedProduct->save();
+                }
+            }
+        }
+        
+        return redirect()->route('products.index')->with('success', 'Product has been successfully updated.');
     }
 
     public function active($id)
@@ -720,7 +1088,7 @@ class ProductController extends Controller
             'categories' => Category::orderBy('created_at', 'desc')->get(),
             'subcategories' => Subcategory::orderBy('created_at', 'desc')->get(),
             'brands' => Brand::orderBy('created_at', 'desc')->get(),
-            'pages' => AddPage::orderBy('created_at', 'desc')->get()
+            'pages' => AddPage::orderBy('created_created_at', 'desc')->get()
         ]);
     }
 

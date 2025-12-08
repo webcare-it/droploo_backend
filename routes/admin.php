@@ -62,12 +62,15 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('products.index');
     Route::get('/admin/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])->name('admin.products.create');
     Route::get('/admin/variable-products/create', [\App\Http\Controllers\Admin\ProductController::class, 'createVariableProduct'])->name('admin.variable.products.create');
+    Route::get('/admin/unified-products/create', [\App\Http\Controllers\Admin\ProductController::class, 'createUnifiedProduct'])->name('admin.unified.products.create');
     Route::post('/products/store', [\App\Http\Controllers\Admin\ProductController::class, 'store'])->name('products.store');
     Route::post('/variable-products/store', [\App\Http\Controllers\Admin\ProductController::class, 'storeVariableProduct'])->name('variable.products.store');
     Route::get('/products/edit/{id}/{slug}', [\App\Http\Controllers\Admin\ProductController::class, 'edit'])->name('products.edit');
     Route::get('/variable-products/edit/{id}/{slug}', [\App\Http\Controllers\Admin\ProductController::class, 'editVariableProduct'])->name('variable.products.edit');
+    Route::get('/unified-products/edit/{id}/{slug}', [\App\Http\Controllers\Admin\ProductController::class, 'editUnifiedProduct'])->name('unified.products.edit');
     Route::post('/products/update/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])->name('products.update');
     Route::post('/variable-products/update/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'updateVariableProduct'])->name('variable.products.update');
+    Route::put('/unified-products/update/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'updateUnifiedProduct'])->name('unified.products.update');
     Route::get('/products/active/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'active'])->name('products.active');
     Route::get('/products/inactive/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'inactive'])->name('products.inactive');
     Route::get('/products/delete/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'delete'])->name('products.delete');
