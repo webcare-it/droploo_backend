@@ -721,8 +721,19 @@ class ReportController extends Controller
         $totalWholesaleCost = 0;
 
         foreach ($orderStatus->orderDetails as $detail) {
-            if ($detail->product && $detail->product->wholesale_price) {
-                $totalWholesaleCost += $detail->product->wholesale_price * $detail->qty;
+            if ($detail->product) {
+                // If product is variable (is_variable == 1), get wholesale_price from product_images table
+                if ($detail->product->is_variable == 1) {
+                    $productImage = $detail->product->productImages()->first();
+                    $wholesalePrice = $productImage ? $productImage->wholesale_price : 0;
+                } else {
+                    // Otherwise, get wholesale_price from product table
+                    $wholesalePrice = $detail->product->wholesale_price ?? 0;
+                }
+                
+                if ($wholesalePrice) {
+                    $totalWholesaleCost += $wholesalePrice * $detail->qty;
+                }
             }
         }
         $orderTotal = (float)$orderStatus->price - (float)$orderStatus->area;
