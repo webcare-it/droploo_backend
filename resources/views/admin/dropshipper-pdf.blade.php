@@ -124,6 +124,17 @@
             font-weight: 700;
         }
 
+        .print-info {
+            background-color: #fff3e0;
+            border: 1px solid #ffb74d;
+            border-radius: 5px;
+            padding: 8px;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #e65100;
+        }
+
         /* ✅ Print settings: no auto-fit, no page breaks, 4 invoices per page */
         @media print {
             body {
@@ -174,6 +185,8 @@
             <div class="info-box">
                 <h6>Order Info</h6>
                 <p><strong>#:</strong> {{ $order->orderId }}</p>
+                <p><strong>Order Date:</strong> {{ $order->created_at->format('d M Y') }}</p>
+                <p><strong>Order Time:</strong> {{ $order->created_at->format('h:i A') }}</p>
                 @if ($order->courier_name == 'Pathao')
                     <p><strong>Courier:</strong> Pathao → {{ $order->pathao_city_name }} → {{ $order->pathao_zone_name }}</p>
                 @endif
@@ -232,6 +245,11 @@
                     <td>{{ $order->price }} Tk.</td>
                 </tr>
             </table>
+
+            <!-- Print Date & Time Section -->
+            <div class="print-info">
+                <div id="printDateTime{{ $loop->index }}"></div>
+            </div>
         </div>
     @endforeach
 </div>
@@ -240,6 +258,20 @@
     window.onload = function() {
         window.print();
     };
+    
+    // Display print date and time
+    document.addEventListener('DOMContentLoaded', function() {
+        const printDateTime = new Date();
+        const formattedDate = printDateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        const formattedTime = printDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dateTimeText = 'Print Date: ' + formattedDate + ' | Print Time: ' + formattedTime;
+        
+        // Populate all print date/time boxes
+        const printBoxes = document.querySelectorAll('[id^="printDateTime"]');
+        printBoxes.forEach(function(box) {
+            box.textContent = dateTimeText;
+        });
+    });
 </script>
 </body>
 </html>
