@@ -185,8 +185,6 @@
             <div class="info-box">
                 <h6>Order Info</h6>
                 <p><strong>#:</strong> {{ $order->orderId }}</p>
-                <p><strong>Order Date:</strong> {{ $order->created_at->format('d M Y') }}</p>
-                <p><strong>Order Time:</strong> {{ $order->created_at->format('h:i A') }}</p>
                 @if ($order->courier_name == 'Pathao')
                     <p><strong>Courier:</strong> Pathao → {{ $order->pathao_city_name }} → {{ $order->pathao_zone_name }}</p>
                 @endif
@@ -248,6 +246,7 @@
 
             <!-- Print Date & Time Section -->
             <div class="print-info">
+                <div><strong>Order Date:</strong> {{ $order->created_at->format('d M Y, h:i A') }}</div>
                 <div id="printDateTime{{ $loop->index }}"></div>
             </div>
         </div>
