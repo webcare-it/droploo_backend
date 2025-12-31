@@ -104,3 +104,4 @@ Route::get('/order-details/{orderId}', [OrderController::class, 'orderDetails'])
 
 Route::post('/dropshipper/create', [DropshipperController::class, 'index']);
 Route::post('/dropshipper/update/logo', [DropshipperController::class, 'updateLogo']);
+Route::delete('/dropshipper/delete-by-domain', [DropshipperController::class, 'deleteByDomainName']);
