@@ -41,7 +41,6 @@ Route::get('/top/products/list', [App\Http\Controllers\Frontend\TopProductContro
 //For products list page filtering route
 
 
-
 //Supplier products controller here
 Route::get('/supplier/products/{vendor_id}', [App\Http\Controllers\Frontend\SupplierController::class, 'products']);
 Route::delete('/product/delete/{id}', [App\Http\Controllers\Frontend\SupplierController::class, 'productsDelete']);

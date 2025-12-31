@@ -26,4 +26,14 @@ class Dropshipper extends Authenticatable
     {
         return $this->hasMany(WithdrawHistory::class, 'dropshipper_id', 'id');
     }
+
+    public function deposits()
+    {
+        return $this->hasMany(DropshipperDeposit::class, 'dropshipper_id', 'id');
+    }
+
+    public function credits()
+    {
+        return $this->hasMany(DropshipperCredit::class, 'dropshipper_id', 'id');
+    }
 }

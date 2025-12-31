@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Dropshipper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DropshipperController extends Controller
 {
@@ -61,6 +62,64 @@ class DropshipperController extends Controller
                 'status'   => 'success',
                 'message'  => $dropshipper->wasRecentlyCreated ? 'Dropshipper has been created' : 'Dropshipper has been updated',
                 'dropshipper_id' => $dropshipper->id,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+            ], 500);
+        }
+    }
+
+    public function deleteByDomainName(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'domain_name' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $dropshipper = Dropshipper::where('domain_name', $request->domain_name)->first();
+
+            if (!$dropshipper) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Dropshipper not found with the specified domain name',
+                ], 404);
+            }
+
+            // Delete related records first to maintain referential integrity
+            // Delete orders associated with this dropshipper
+            $dropshipper->orders()->delete();
+            
+            // Delete dropshipper banking info
+            $dropshipper->bankInfo()->delete();
+            
+            // Delete dropshipper withdrawals
+            $dropshipper->withdraw()->delete();
+            
+            // Delete dropshipper deposits
+            $dropshipper->deposits()->delete();
+            
+            // Delete dropshipper credits
+            $dropshipper->credits()->delete();
+
+            // Finally, delete the dropshipper
+            $dropshipper->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Dropshipper and all related data deleted successfully',
             ]);
         } catch (\Throwable $e) {
             return response()->json([
