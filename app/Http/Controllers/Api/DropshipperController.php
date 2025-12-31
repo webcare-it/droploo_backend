@@ -77,18 +77,6 @@ class DropshipperController extends Controller
     public function deleteByDomainName(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'domain_name' => 'required|string',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors(),
-                ], 422);
-            }
-
             $dropshipper = Dropshipper::where('domain_name', $request->domain_name)->first();
 
             if (!$dropshipper) {
@@ -98,28 +86,12 @@ class DropshipperController extends Controller
                 ], 404);
             }
 
-            // Delete related records first to maintain referential integrity
-            // Delete orders associated with this dropshipper
-            $dropshipper->orders()->delete();
-            
-            // Delete dropshipper banking info
-            $dropshipper->bankInfo()->delete();
-            
-            // Delete dropshipper withdrawals
-            $dropshipper->withdraw()->delete();
-            
-            // Delete dropshipper deposits
-            $dropshipper->deposits()->delete();
-            
-            // Delete dropshipper credits
-            $dropshipper->credits()->delete();
-
             // Finally, delete the dropshipper
             $dropshipper->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Dropshipper and all related data deleted successfully',
+                'message' => 'Dropshipper deleted successfully',
             ]);
         } catch (\Throwable $e) {
             return response()->json([
