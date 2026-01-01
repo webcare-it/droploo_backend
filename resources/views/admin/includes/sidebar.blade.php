@@ -526,35 +526,35 @@
             </li>
         </ul>
     </li> --}}
-{{--    <hr/>--}}
-{{--    <li>--}}
-{{--        <a class="">--}}
-{{--            <div class="parent-icon">--}}
-{{--                <i class='bx bx-group'></i>--}}
-{{--            </div>--}}
-{{--            <div class="menu-title">--}}
-{{--                Dropshipper--}}
-{{--            </div>--}}
-{{--        </a>--}}
-{{--    </li>--}}
-{{--    <hr/>--}}
-{{--    <li>--}}
-{{--        <a class="has-arrow" href="javascript:;">--}}
-{{--            <div class="parent-icon">--}}
-{{--                <i class='bx bx-cart-alt'></i>--}}
-{{--            </div>--}}
-{{--            <div class="menu-title">--}}
-{{--                Dropshipper Info--}}
-{{--            </div>--}}
-{{--        </a>--}}
-{{--        <ul>--}}
-{{--            <li>--}}
-{{--                <a href="{{ url('/dropshipper-list') }}">--}}
-{{--                    <i class="bx bx-right-arrow-alt"></i>List--}}
-{{--                </a>--}}
-{{--            </li>--}}
-{{--        </ul>--}}
-{{--    </li>--}}
+    <hr/>
+    <li>
+        <a class="">
+            <div class="parent-icon">
+                <i class='bx bx-group'></i>
+            </div>
+            <div class="menu-title">
+                Dropshipper
+            </div>
+        </a>
+    </li>
+    <hr/>
+    <li>
+        <a class="has-arrow" href="javascript:;">
+            <div class="parent-icon">
+                <i class='bx bx-cart-alt'></i>
+            </div>
+            <div class="menu-title">
+                Dropshipper Info
+            </div>
+        </a>
+        <ul>
+            <li>
+                <a href="{{ url('/dropshipper-list') }}">
+                    <i class="bx bx-right-arrow-alt"></i>List
+                </a>
+            </li>
+        </ul>
+    </li>
 {{--    <li>--}}
 {{--        <a class="has-arrow" href="javascript:;">--}}
 {{--            <div class="parent-icon">--}}

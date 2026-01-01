@@ -56,4 +56,20 @@ class DropshipperController extends Controller
 
         return view('admin.dropshipper.orders', compact('orders', 'dropshipper'));
     }
+
+    // Delete dropshipper
+    public function dropshipperDelete($id)
+    {
+        $dropshipper = Dropshipper::findOrFail($id);
+        
+        // Check if the dropshipper has any related orders
+        if ($dropshipper->orders()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete dropshipper because they have associated orders.');
+        }
+        
+        // Delete the dropshipper
+        $dropshipper->delete();
+        
+        return redirect()->back()->with('success', 'Dropshipper deleted successfully!');
+    }
 }

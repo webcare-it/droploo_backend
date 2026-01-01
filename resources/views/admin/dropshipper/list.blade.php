@@ -30,6 +30,7 @@
                                     <td>
                                         <a href="{{url('dropshipper-details/'.$dropshipper->id)}}" class="btn btn-info">Details</a>
                                         <a href="{{url('dropshipper-edit/'.$dropshipper->id)}}" class="btn btn-primary">Edit</a>
+                                        <a href="{{url('dropshipper-delete/'.$dropshipper->id)}}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this dropshipper?')">Delete</a>
                                     </td>
                                 </tr>
                                 @endforeach

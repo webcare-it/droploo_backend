@@ -317,6 +317,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::get('/dropshipper-edit/{id}', [\App\Http\Controllers\Admin\DropshipperController::class, 'dropshipperEdit']);
     Route::post('/dropshipper-update/{id}', [\App\Http\Controllers\Admin\DropshipperController::class, 'dropshipperUpdate']);
     Route::get('/dropshipper-orders/{dropshipper_id}', [\App\Http\Controllers\Admin\DropshipperController::class, 'dropshipperOrders']);
+    Route::get('/dropshipper-delete/{id}', [\App\Http\Controllers\Admin\DropshipperController::class, 'dropshipperDelete']);
     //Dropshipper Info...
 
     //Order Payment to Dropshipper...
