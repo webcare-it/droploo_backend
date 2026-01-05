@@ -60,12 +60,22 @@ class DropshipperController extends Controller
     // Delete dropshipper
     public function dropshipperDelete($id)
     {
-        $dropshipper = Dropshipper::findOrFail($id);
+        $dropshipper = Dropshipper::find($id);
+        
+        if (!$dropshipper) {
+            return redirect()->back()->with('error', 'Dropshipper not found.');
+        }
         
         // Check if the dropshipper has any related orders
         if ($dropshipper->orders()->count() > 0) {
             return redirect()->back()->with('error', 'Cannot delete dropshipper because they have associated orders.');
         }
+        
+        // Delete related records first
+        $dropshipper->bankInfo()->delete();
+        $dropshipper->withdraw()->delete();
+        $dropshipper->deposits()->delete();
+        $dropshipper->credits()->delete();
         
         // Delete the dropshipper
         $dropshipper->delete();

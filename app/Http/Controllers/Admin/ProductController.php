@@ -355,7 +355,7 @@ class ProductController extends Controller
                 $colors = $request->input('color');
                 $sizes = $request->input('size');
                 $prices = $request->input('price');
-                $wholesalePrices = $request->input('wholesale_price');
+                $wholesalePrices = $request->input('wholesale_price_variable');
 
                 foreach ($galleryImages as $index => $image) {
                     // Generate a unique name for the image
