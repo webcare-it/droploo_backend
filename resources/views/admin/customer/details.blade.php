@@ -234,7 +234,7 @@
                                                 <input type="number" name="regular_price"
                                                     id="regular_price-{{ $orderDetail?->id }}"
                                                     onblur="productPrice({{ $orderDetail }})"
-                                                    value="{{ $orderDetail->price }}"
+                                                    value="{{ $total = $orderDetail->price }}"
                                                     class="form-control" />
                                             </td>
                                             <td>
