@@ -244,5 +244,18 @@
 
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('table.table tbody tr').forEach(function (row) {
+                row.addEventListener('click', function (e) {
+                    var tag = e.target.tagName.toLowerCase();
+                    if (['input', 'a', 'button', 'textarea', 'select', 'label'].includes(tag)) return;
+                    if (e.target.closest('.action-dropdown-menu, .action-btn-list, .action-btn-link')) return;
+
+                    var cb = row.querySelector('input[type="checkbox"][name="id[]"]');
+                    if (cb) cb.checked = !cb.checked;
+                });
+            });
+        });
     </script>
 @endpush
