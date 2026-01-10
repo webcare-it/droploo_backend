@@ -226,13 +226,9 @@
                                             <td>
                                                 <span
                                                     class="badge rounded-pill bg-primary">{{ $totalProductQty = $orderDetail?->qty }}</span>
-                                                <div class="input-group" style="width: 120px;">
-                                                    <button type="button" class="btn btn-outline-secondary" onclick="decreaseQty({{ $orderDetail }})" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">-</button>
-                                                    <input type="number" name="qty" id="qty-{{ $orderDetail?->id }}"
-                                                        onblur="productQty({{ $orderDetail }})" value="{{ $orderDetail->qty }}"
-                                                        placeholder="Qty" style="width: 60px; padding: 0.25rem; text-align: center;" min="1" />
-                                                    <button type="button" class="btn btn-outline-secondary" onclick="increaseQty({{ $orderDetail }})" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">+</button>
-                                                </div>
+                                                <input type="number" name="qty" id="qty-{{ $orderDetail?->id }}"
+                                                    onblur="productQty({{ $orderDetail }})" value="{{ $orderDetail->qty }}"
+                                                    placeholder="Qty" style="width:80px;" min="1" />
                                             </td>
                                             <td>
                                                 <input type="number" name="regular_price"
@@ -518,27 +514,6 @@
             
             let totalPrice = subTotal + area - discount - advance;
             document.getElementById('total_price').value = totalPrice;
-        }
-        
-        function increaseQty(orderDetail) {
-            let qtyInput = document.getElementById('qty-' + orderDetail.id);
-            let currentQty = parseInt(qtyInput.value) || 0;
-            qtyInput.value = currentQty + 1;
-            
-            // Trigger the productQty function to update backend and recalculate subtotal
-            productQty(orderDetail);
-        }
-        
-        function decreaseQty(orderDetail) {
-            let qtyInput = document.getElementById('qty-' + orderDetail.id);
-            let currentQty = parseInt(qtyInput.value) || 1;
-            
-            if(currentQty > 1) {
-                qtyInput.value = currentQty - 1;
-                
-                // Trigger the productQty function to update backend and recalculate subtotal
-                productQty(orderDetail);
-            }
         }
 
         function productColor(orderDetail) {
