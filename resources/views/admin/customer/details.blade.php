@@ -248,7 +248,7 @@
                                             </td>
                                         </tr>
                                         @php
-                                            $sum += $total;
+                                            $sum += $total * $orderDetail->qty;
                                         @endphp
                                         <input class="form-control" type="hidden" name="per_price" id="per_price"
                                             value="{{ $orderDetail->price ?? 'price' }}">
