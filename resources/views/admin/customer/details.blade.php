@@ -227,8 +227,8 @@
                                                 <span
                                                     class="badge rounded-pill bg-primary">{{ $totalProductQty = $orderDetail?->qty }}</span>
                                                 <input type="number" name="qty" id="qty-{{ $orderDetail?->id }}"
-                                                    onblur="productQty({{ $orderDetail }})" value="{{ $orderDetail->qty }}"
-                                                    placeholder="Qty" style="width:80px;" min="1" />
+                                                    onblur="productQty({{ $orderDetail }})" value=""
+                                                    placeholder="Qty" style="width:80px;" />
                                             </td>
                                             <td>
                                                 <input type="number" name="regular_price"
@@ -434,86 +434,33 @@
         }
 
         function productPrice(orderDetailPrice) {
-            let priceInput = document.getElementById('regular_price-' + orderDetailPrice.id);
-            let price = priceInput.value;
-            
-            // Validate price
-            if(price <= 0) {
-                alert('Price must be greater than 0');
-                priceInput.value = orderDetailPrice.price; // Reset to original value
-                return;
-            }
-            
+            let price = document.getElementById('regular_price-' + orderDetailPrice.id).value;
             axios.post('/api/order/price/update/' + orderDetailPrice.id, {
                     regular_price: price
                 })
                 .then(response => {
                     if (response.status == 200) {
-                        // Update the subtotal without page reload
-                        updateSubtotal();
+                        //alert('Order Price has been updated.')
+                        location.reload()
                     }
                 }).catch(error => {
-                    console.error('Error updating price:', error);
-                    alert('Something is wrong, Please try again');
-                    priceInput.value = orderDetailPrice.price; // Reset to original value
+                    return confirm('Something is wrong, Please try again')
                 })
         }
 
         function productQty(orderDetail) {
-            let qtyInput = document.getElementById('qty-' + orderDetail.id);
-            let qty = qtyInput.value;
-            let priceInput = document.getElementById('regular_price-' + orderDetail.id);
-            let price = parseFloat(priceInput.value) || 0;
-            
-            // Validate quantity
-            if(qty <= 0) {
-                alert('Quantity must be greater than 0');
-                qtyInput.value = orderDetail.qty; // Reset to original value
-                return;
-            }
-            
+            let qty = document.getElementById('qty-' + orderDetail.id).value;
             axios.post('/api/order/product/qty/update/' + orderDetail.id, {
                     qty: qty
                 })
                 .then(response => {
                     if (response.status == 200) {
-                        // Update the subtotal without page reload
-                        updateSubtotal();
+                        //alert('Qty has been updated.')
+                        location.reload()
                     }
                 }).catch(error => {
-                    console.error('Error updating quantity:', error);
-                    alert('Something is wrong, Please try again');
-                    qtyInput.value = orderDetail.qty; // Reset to original value
+                    return confirm('Something is wrong, Please try again')
                 })
-        }
-        
-        function updateSubtotal() {
-            let totalSum = 0;
-            // Loop through all order details to calculate new subtotal
-            @foreach ($order->orderDetails as $orderDetail)
-                let qtyElement = document.getElementById('qty-{{ $orderDetail->id }}');
-                let priceElement = document.getElementById('regular_price-{{ $orderDetail->id }}');
-                
-                let qty = parseFloat(qtyElement ? qtyElement.value : {{ $orderDetail->qty }}) || {{ $orderDetail->qty }};
-                let price = parseFloat(priceElement ? priceElement.value : {{ $orderDetail->price }}) || {{ $orderDetail->price }};
-                
-                totalSum += (qty * price);
-            @endforeach
-            
-            // Update subtotal field
-            document.getElementById('sub_total').value = totalSum;
-            
-            // Also update total price field
-            updateTotalPrice(totalSum);
-        }
-        
-        function updateTotalPrice(subTotal) {
-            let area = parseFloat(document.getElementById('area').value) || 0;
-            let discount = parseFloat(document.getElementById('discount').value) || 0;
-            let advance = parseFloat(document.getElementById('advance').value) || 0;
-            
-            let totalPrice = subTotal + area - discount - advance;
-            document.getElementById('total_price').value = totalPrice;
         }
 
         function productColor(orderDetail) {
