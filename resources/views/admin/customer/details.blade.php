@@ -226,9 +226,13 @@
                                             <td>
                                                 <span
                                                     class="badge rounded-pill bg-primary">{{ $totalProductQty = $orderDetail?->qty }}</span>
-                                                <input type="number" name="qty" id="qty-{{ $orderDetail?->id }}"
-                                                    onblur="productQty({{ $orderDetail }})" value=""
-                                                    placeholder="Qty" style="width:80px;" />
+                                                <div class="input-group" style="width: 120px;">
+                                                    <button type="button" class="btn btn-outline-secondary" onclick="decreaseQty({{ $orderDetail }})" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">-</button>
+                                                    <input type="number" name="qty" id="qty-{{ $orderDetail?->id }}"
+                                                        onblur="productQty({{ $orderDetail }})" value="{{ $orderDetail->qty }}"
+                                                        placeholder="Qty" style="width: 60px; padding: 0.25rem; text-align: center;" min="1" />
+                                                    <button type="button" class="btn btn-outline-secondary" onclick="increaseQty({{ $orderDetail }})" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">+</button>
+                                                </div>
                                             </td>
                                             <td>
                                                 <input type="number" name="regular_price"
@@ -434,33 +438,107 @@
         }
 
         function productPrice(orderDetailPrice) {
-            let price = document.getElementById('regular_price-' + orderDetailPrice.id).value;
+            let priceInput = document.getElementById('regular_price-' + orderDetailPrice.id);
+            let price = priceInput.value;
+            
+            // Validate price
+            if(price <= 0) {
+                alert('Price must be greater than 0');
+                priceInput.value = orderDetailPrice.price; // Reset to original value
+                return;
+            }
+            
             axios.post('/api/order/price/update/' + orderDetailPrice.id, {
                     regular_price: price
                 })
                 .then(response => {
                     if (response.status == 200) {
-                        //alert('Order Price has been updated.')
-                        location.reload()
+                        // Update the subtotal without page reload
+                        updateSubtotal();
                     }
                 }).catch(error => {
-                    return confirm('Something is wrong, Please try again')
+                    console.error('Error updating price:', error);
+                    alert('Something is wrong, Please try again');
+                    priceInput.value = orderDetailPrice.price; // Reset to original value
                 })
         }
 
         function productQty(orderDetail) {
-            let qty = document.getElementById('qty-' + orderDetail.id).value;
+            let qtyInput = document.getElementById('qty-' + orderDetail.id);
+            let qty = qtyInput.value;
+            let priceInput = document.getElementById('regular_price-' + orderDetail.id);
+            let price = parseFloat(priceInput.value) || 0;
+            
+            // Validate quantity
+            if(qty <= 0) {
+                alert('Quantity must be greater than 0');
+                qtyInput.value = orderDetail.qty; // Reset to original value
+                return;
+            }
+            
             axios.post('/api/order/product/qty/update/' + orderDetail.id, {
                     qty: qty
                 })
                 .then(response => {
                     if (response.status == 200) {
-                        //alert('Qty has been updated.')
-                        location.reload()
+                        // Update the subtotal without page reload
+                        updateSubtotal();
                     }
                 }).catch(error => {
-                    return confirm('Something is wrong, Please try again')
+                    console.error('Error updating quantity:', error);
+                    alert('Something is wrong, Please try again');
+                    qtyInput.value = orderDetail.qty; // Reset to original value
                 })
+        }
+        
+        function updateSubtotal() {
+            let totalSum = 0;
+            // Loop through all order details to calculate new subtotal
+            @foreach ($order->orderDetails as $orderDetail)
+                let qtyElement = document.getElementById('qty-{{ $orderDetail->id }}');
+                let priceElement = document.getElementById('regular_price-{{ $orderDetail->id }}');
+                
+                let qty = parseFloat(qtyElement ? qtyElement.value : {{ $orderDetail->qty }}) || {{ $orderDetail->qty }};
+                let price = parseFloat(priceElement ? priceElement.value : {{ $orderDetail->price }}) || {{ $orderDetail->price }};
+                
+                totalSum += (qty * price);
+            @endforeach
+            
+            // Update subtotal field
+            document.getElementById('sub_total').value = totalSum;
+            
+            // Also update total price field
+            updateTotalPrice(totalSum);
+        }
+        
+        function updateTotalPrice(subTotal) {
+            let area = parseFloat(document.getElementById('area').value) || 0;
+            let discount = parseFloat(document.getElementById('discount').value) || 0;
+            let advance = parseFloat(document.getElementById('advance').value) || 0;
+            
+            let totalPrice = subTotal + area - discount - advance;
+            document.getElementById('total_price').value = totalPrice;
+        }
+        
+        function increaseQty(orderDetail) {
+            let qtyInput = document.getElementById('qty-' + orderDetail.id);
+            let currentQty = parseInt(qtyInput.value) || 0;
+            qtyInput.value = currentQty + 1;
+            
+            // Trigger the productQty function to update backend and recalculate subtotal
+            productQty(orderDetail);
+        }
+        
+        function decreaseQty(orderDetail) {
+            let qtyInput = document.getElementById('qty-' + orderDetail.id);
+            let currentQty = parseInt(qtyInput.value) || 1;
+            
+            if(currentQty > 1) {
+                qtyInput.value = currentQty - 1;
+                
+                // Trigger the productQty function to update backend and recalculate subtotal
+                productQty(orderDetail);
+            }
         }
 
         function productColor(orderDetail) {
