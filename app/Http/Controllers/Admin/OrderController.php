@@ -63,17 +63,16 @@ class OrderController extends Controller
     public function qtyUpdate(Request $request, $id)
     {
         $qtyUpdate = OrderDetails::find($id);
-        dd($qtyUpdate);
         $qtyUpdate->qty = $request->qty ? $qtyUpdate->qty + $request->qty : 0;
         $qtyUpdate->save();
 
         // Recalculate the total quantity and price for the entire order
         $orderDetails = OrderDetails::where('order_id', $qtyUpdate->order_id)->get();
 
-        
+
         $totalQty = 0;
         $totalPrice = 0;
-        
+
         foreach ($orderDetails as $detail) {
             $totalQty += $detail->qty;
             $totalPrice += $detail->price * $detail->qty;
