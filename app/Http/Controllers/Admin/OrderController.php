@@ -11,9 +11,9 @@ use App\Models\Notification;
 use Codeboxr\PathaoCourier\Facade\PathaoCourier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Session;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Maatwebsite\Excel\Facades\Excel;
-use PDF;
-use Session;
 
 class OrderController extends Controller
 {
@@ -66,11 +66,20 @@ class OrderController extends Controller
         $qtyUpdate->qty = $request->qty ? $qtyUpdate->qty + $request->qty : 0;
         $qtyUpdate->save();
 
-        $totalPrice = $qtyUpdate->price * $qtyUpdate->qty;
+        // Recalculate the total quantity and price for the entire order
+        $orderDetails = OrderDetails::where('order_id', $qtyUpdate->order_id)->get();
+        
+        $totalQty = 0;
+        $totalPrice = 0;
+        
+        foreach ($orderDetails as $detail) {
+            $totalQty += $detail->qty;
+            $totalPrice += $detail->price * $detail->qty;
+        }
 
         $orderQtyUpdate = Order::find($qtyUpdate->order_id);
-        $orderQtyUpdate->qty = $orderQtyUpdate->qty + $request->qty;
-        $orderQtyUpdate->price = $orderQtyUpdate->price + $totalPrice;
+        $orderQtyUpdate->qty = $totalQty;
+        $orderQtyUpdate->price = $totalPrice;
         $orderQtyUpdate->save();
 
         return response()->json($qtyUpdate, 200);
@@ -196,8 +205,8 @@ class OrderController extends Controller
                     $order->save();
                     //Notification...
                     $notification = new Notification();
-                    $notification->message = 'Order with invoice id'.' '.$order->orderId.' '. 'is made status delivered by'.' '.Session::get('name');
-                    $notification->specific_user_id = Session::get('id');
+                    $notification->message = 'Order with invoice id'.' '.$order->orderId.' '. 'is made status delivered by'.' '.session('name');
+                    $notification->specific_user_id = session('id');
                     $notification->notification_for = "user";
                     $order->notification()->save($notification);
                     //Notification...
