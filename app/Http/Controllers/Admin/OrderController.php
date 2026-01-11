@@ -66,8 +66,11 @@ class OrderController extends Controller
         $qtyUpdate->qty = $request->qty ? $qtyUpdate->qty + $request->qty : 0;
         $qtyUpdate->save();
 
+        $totalPrice = $qtyUpdate->price * $qtyUpdate->qty;
+
         $orderQtyUpdate = Order::find($qtyUpdate->order_id);
         $orderQtyUpdate->qty = $orderQtyUpdate->qty + $request->qty;
+        $orderQtyUpdate->price = $orderQtyUpdate->price + $totalPrice;
         $orderQtyUpdate->save();
 
         return response()->json($qtyUpdate, 200);
