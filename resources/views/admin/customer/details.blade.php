@@ -177,7 +177,7 @@
                                         <th style="width: 10%;">Color</th>
                                         <th style="width: 10%;">Size</th>
                                         <th style="width: 10%;">Qty</th>
-                                        <th style="width: 10%;">Price</th>
+                                        <th style="width: 10%;">Unit Price</th>
                                         <th style="width: 20%;">Notes</th>
                                         <th style="width: 5%;">Action</th>
                                     </tr>

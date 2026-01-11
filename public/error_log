@@ -768,3 +768,6 @@ Stack trace:
 #0 {main}
   thrown in /home/nittozco/cmp.nittoz.com/index.php on line 34
 [20-May-2025 06:58:35 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.1.32. in /home/nittozco/cmp.nittoz.com/src/vendor/composer/platform_check.php on line 28
+[06-Oct-2025 16:13:20 Asia/Dhaka] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 20480 bytes) in /home/droplooc/backend-droploo/vendor/laravel/serializable-closure/src/Serializers/Native.php on line 222
+[06-Oct-2025 16:19:23 Asia/Dhaka] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 20480 bytes) in /home/droplooc/backend-droploo/vendor/laravel/serializable-closure/src/Serializers/Native.php on line 222
+[06-Oct-2025 16:19:32 Asia/Dhaka] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 20480 bytes) in /home/droplooc/backend-droploo/vendor/laravel/serializable-closure/src/Serializers/Native.php on line 222
