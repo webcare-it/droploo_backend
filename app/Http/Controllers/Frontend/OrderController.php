@@ -192,6 +192,9 @@ class OrderController extends Controller
             foreach ($request->products as $productData) {
                 $product = Product::find($productData['id']);
                 if ($product) {
+
+                    $wholesalePrice = $product->wholesale_price;
+                    
                     // If product is variable, get wholesale price from productImages table
                     if ($product->is_variable == 1) {
                         $productImage = ProductImage::where('size', $productData['size'])->first();
@@ -199,8 +202,6 @@ class OrderController extends Controller
                             $wholesalePrice = $productImage->wholesale_price;
                         }
                     }
-
-                    $wholesalePrice = $product->wholesale_price;
                 
                     if ($request->price < $wholesalePrice) {
                         $deductAmount += ($wholesalePrice - $request->price);
