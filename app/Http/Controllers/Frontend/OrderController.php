@@ -190,8 +190,20 @@ class OrderController extends Controller
             $deductAmount = $request->delivery_cost; // base delivery charge
             foreach ($request->products as $productData) {
                 $product = Product::find($productData['id']);
-                if ($product && $request->price < $product->wholesale_price) {
-                    $deductAmount += ($product->wholesale_price - $request->price);
+                if ($product) {
+                    // If product is variable, get wholesale price from productImages table
+                    if ($product->is_variable == 1) {
+                        $productImage = $product->productImages()->first();
+                        if ($productImage && isset($productImage->wholesale_price)) {
+                            $wholesalePrice = $productImage->wholesale_price;
+                        }
+                    }
+
+                    $wholesalePrice = $product->wholesale_price;
+                
+                    if ($request->price < $wholesalePrice) {
+                        $deductAmount += ($wholesalePrice - $request->price);
+                    }
                 }
             }
 
