@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use App\Exports\OrdersExport;
+use App\Models\ProductImage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -724,7 +725,7 @@ class ReportController extends Controller
             if ($detail->product) {
                 // If product is variable (is_variable == 1), get wholesale_price from product_images table
                 if ($detail->product->is_variable == 1) {
-                    $productImage = $detail->product->productImages()->first();
+                    $productImage = ProductImage::where('size', $detail->size)->first();
                     $wholesalePrice = $productImage ? $productImage->wholesale_price : 0;
                 } else {
                     // Otherwise, get wholesale_price from product table
