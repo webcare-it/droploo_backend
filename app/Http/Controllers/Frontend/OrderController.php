@@ -9,6 +9,7 @@ use App\Models\Dropshipper;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -193,7 +194,7 @@ class OrderController extends Controller
                 if ($product) {
                     // If product is variable, get wholesale price from productImages table
                     if ($product->is_variable == 1) {
-                        $productImage = $product->productImages()->first();
+                        $productImage = ProductImage::where('size', $productData['size'])->first();
                         if ($productImage && isset($productImage->wholesale_price)) {
                             $wholesalePrice = $productImage->wholesale_price;
                         }
