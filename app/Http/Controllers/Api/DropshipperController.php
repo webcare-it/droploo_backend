@@ -12,7 +12,7 @@ class DropshipperController extends Controller
     public function index(Request $request)
     {
         try {
-            // Check for existing order by invoice number
+            // Check for existing dropshipper
             $dropshipper = Dropshipper::where('dropshipper_id', $request->dropshipper_id)->first();
 
             if (!$dropshipper) {
@@ -53,8 +53,16 @@ class DropshipperController extends Controller
     public function updateLogo(Request $request)
     {
         try {
-            // Check for existing order by invoice number
+            // Check for existing dropshipper
             $dropshipper = Dropshipper::where('dropshipper_id', $request->dropshipper_id)->first();
+
+            if (!$dropshipper) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Dropshipper not found',
+                ], 404);
+            }
+
             $dropshipper->image           = $request->logo;
             $dropshipper->save();
 
@@ -76,17 +84,34 @@ class DropshipperController extends Controller
 
     public function updateProfile(Request $request)
     {
-        // Check for existing order by invoice number
+        try {
+            // Check for existing dropshipper
             $dropshipper = Dropshipper::where('dropshipper_id', $request->dropshipper_id)->first();
-            $dropshipper->name            = $request->name;
-            $dropshipper->phone           = $request->phone;
+
+            if (!$dropshipper) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Dropshipper not found',
+                ], 404);
+            }
+
+            $dropshipper->name  = $request->name;
+            $dropshipper->phone = $request->phone;
             $dropshipper->save();
 
             return response()->json([
-                'status'   => 'success',
-                'message'  => $dropshipper->wasRecentlyCreated ? 'Dropshipper profile has been created' : 'Dropshipper profile has been updated',
+                'status'         => 'success',
+                'message'        => 'Dropshipper profile has been updated',
                 'dropshipper_id' => $dropshipper->id,
             ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ], 500);
+        }
     }
 
     public function deleteByDomainName(Request $request)
