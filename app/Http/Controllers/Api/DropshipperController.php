@@ -83,28 +83,36 @@ class DropshipperController extends Controller
     }
 
     public function updateProfile(Request $request)
-{
-    $request->validate([
-        'dropshipper_id' => 'required',
-        'name' => 'required|string',
-        'phone' => 'required|string',
-    ]);
+    {
+        try {
+            // Check for existing dropshipper
+            $dropshipper = Dropshipper::where('dropshipper_id', $request->dropshipper_id)->first();
 
-    $dropshipper = Dropshipper::updateOrCreate(
-        ['dropshipper_id' => $request->dropshipper_id],
-        [
-            'name'  => $request->name,
-            'phone' => $request->phone,
-        ]
-    );
+            if (!$dropshipper) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Dropshipper not found',
+                ], 404);
+            }
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Dropshipper profile updated successfully',
-        'dropshipper_id' => $dropshipper->id,
-    ]);
-}
+            $dropshipper->name  = $request->name;
+            $dropshipper->phone = $request->phone;
+            $dropshipper->save();
 
+            return response()->json([
+                'status'         => 'success',
+                'message'        => 'Dropshipper profile has been updated',
+                'dropshipper_id' => $dropshipper->id,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ], 500);
+        }
+    }
 
     public function deleteByDomainName(Request $request)
     {
