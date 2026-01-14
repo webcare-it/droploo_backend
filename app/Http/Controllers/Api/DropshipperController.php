@@ -76,8 +76,7 @@ class DropshipperController extends Controller
 
     public function updateProfile(Request $request)
     {
-        try {
-            // Check for existing order by invoice number
+        // Check for existing order by invoice number
             $dropshipper = Dropshipper::where('dropshipper_id', $request->dropshipper_id)->first();
             $dropshipper->name            = $request->name;
             $dropshipper->phone           = $request->phone;
@@ -88,15 +87,6 @@ class DropshipperController extends Controller
                 'message'  => $dropshipper->wasRecentlyCreated ? 'Dropshipper profile has been created' : 'Dropshipper profile has been updated',
                 'dropshipper_id' => $dropshipper->id,
             ]);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => $e->getMessage(),
-                'file'    => $e->getFile(),
-                'line'    => $e->getLine(),
-                'trace'   => $e->getTraceAsString(),
-            ], 500);
-        }
     }
 
     public function deleteByDomainName(Request $request)
