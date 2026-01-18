@@ -178,6 +178,7 @@
                                         <th style="width: 10%;">Size</th>
                                         <th style="width: 10%;">Qty</th>
                                         <th style="width: 10%;">Unit Price</th>
+                                        <th style="width: 10%;">Total Price</th>
                                         <th style="width: 20%;">Notes</th>
                                         <th style="width: 5%;">Action</th>
                                     </tr>
@@ -236,6 +237,13 @@
                                                     onblur="productPrice({{ $orderDetail }})"
                                                     value="{{ $total = $orderDetail->price }}"
                                                     class="form-control" />
+                                            </td>
+                                            <td>
+                                                <input type="number" name=""
+                                                    id="regular_price-{{ $orderDetail?->id }}"
+                                                    onblur="productPrice({{ $orderDetail }})"
+                                                    value="{{ $total = $orderDetail->price * $orderDetail->qty }}"
+                                                    class="form-control" readonly />
                                             </td>
                                             <td>
                                                 <input type="text" name="notes" id="notes-{{ $orderDetail?->id }}" value="{{ $orderDetail->notes }}" class="form-control" readonly/>
