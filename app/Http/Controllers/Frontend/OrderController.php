@@ -267,7 +267,8 @@ class OrderController extends Controller
                 $details = new OrderDetails();
                 $details->order_id   = $order->id;
                 $details->product_id = $product ? $product->id : null;
-                $details->price      = $productData['price'];
+                $qty = isset($productData['qty']) && $productData['qty'] > 0 ? $productData['qty'] : 1;
+                $details->price      = $productData['price'] / $qty;
                 $details->color      = $productData['color'] ?? null;
                 $details->size       = $productData['size'] ?? null;
                 $details->qty        = $productData['qty'];
