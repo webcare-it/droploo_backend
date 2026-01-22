@@ -21,28 +21,24 @@ class SmsService
     public function sendSms($phone, $message)
     {
         try {
-            $formattedPhone = $this->formatPhoneNumber($phone);
-            
             $response = Http::get($this->apiUrl, [
                 'api_key' => $this->apiKey,
                 'type' => 'text',
-                'number' => $formattedPhone,
+                'number' => '88' . $phone,
                 'senderid' => $this->senderId,
                 'message' => $message,
             ]);
 
             if ($response->successful()) {
                 Log::info('SMS sent successfully', [
-                    'phone' => $formattedPhone,
-                    'original_phone' => $phone,
+                    'phone' =>  '88' .$phone,
                     'message' => $message,
                     'response' => $response->body(),
                 ]);
                 return true;
             } else {
                 Log::warning('SMS sending failed', [
-                    'phone' => $formattedPhone,
-                    'original_phone' => $phone,
+                    'phone' => '88' .$phone,
                     'message' => $message,
                     'status' => $response->status(),
                     'response' => $response->body(),
@@ -51,32 +47,12 @@ class SmsService
             }
         } catch (\Exception $e) {
             Log::error('SMS service error', [
-                'phone' => $phone,
+                'phone' => '88' .$phone,
                 'message' => $message,
                 'error' => $e->getMessage(),
             ]);
             return false;
         }
-    }
-
-    /**
-     * Format phone number to be compatible with BulkSMSBD API
-     * (e.g., 017... -> 88017...)
-     *
-     * @param string $phone
-     * @return string
-     */
-    private function formatPhoneNumber($phone)
-    {
-        // Remove any non-numeric characters
-        $phone = preg_replace('/[^0-9]/', '', $phone);
-
-        // If it starts with 0 and is 11 digits (e.g. 01731278775), prefix with 88
-        if (strpos($phone, '0') === 0 && strlen($phone) == 11) {
-            $phone = '88' . $phone;
-        }
-
-        return $phone;
     }
 
     /**
