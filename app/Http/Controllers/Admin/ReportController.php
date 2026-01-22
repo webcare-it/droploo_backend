@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Product;
 use App\Models\Notification;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Codeboxr\PathaoCourier\Facade\PathaoCourier;
 use Illuminate\Support\Facades\Log;
@@ -407,6 +408,16 @@ class ReportController extends Controller
         $notification->notification_for = "user";
         $cancelOrderStatus->notification()->save($notification);
         //Notification...
+        
+        // Send SMS to dropshipper if order belongs to a dropshipper
+        if ($cancelOrderStatus->dropshipper_id) {
+            $dropshipper = $cancelOrderStatus->dropshipper;
+            if ($dropshipper && $dropshipper->phone) {
+                $smsService = new SmsService();
+                $smsService->sendCancelNotification($dropshipper->phone, $cancelOrderStatus->orderId);
+            }
+        }
+        
         return redirect('/order/cancel')->with('success', 'Order has been canceled');
     }
 
@@ -769,6 +780,12 @@ class ReportController extends Controller
         $notification->specific_user_id = Session::get('id');
         $notification->notification_for = "user";
         $orderStatus->notification()->save($notification);
+        
+        // Send SMS to dropshipper
+        if ($orderStatus->dropshipper && $orderStatus->dropshipper->phone) {
+            $smsService = new SmsService();
+            $smsService->sendDeliveredNotification($orderStatus->dropshipper->phone, $invoice_number);
+        }
 
         return redirect()->back()->with('success', 'Order has been completed');
     }
