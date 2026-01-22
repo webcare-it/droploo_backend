@@ -401,6 +401,16 @@ class ReportController extends Controller
         $cancelOrderStatus->order_status = 'cancel';
         $cancelOrderStatus->notes = $request->notes;
         $cancelOrderStatus->save();
+
+         // Send SMS to dropshipper if order belongs to a dropshipper
+        if ($cancelOrderStatus->dropshipper_id) {
+            $dropshipper = $cancelOrderStatus->dropshipper;
+            if ($dropshipper && $dropshipper->phone) {
+                $smsService = new SmsService();
+                $smsService->sendCancelNotification($dropshipper->phone, $cancelOrderStatus->orderId);
+            }
+        }
+    
         //Notification...
         $notification = new Notification();
         $notification->message = 'Order with invoice id'.' '.$cancelOrderStatus->orderId.' '. 'is made status cancel by'.' '.Session::get('name');
@@ -409,15 +419,7 @@ class ReportController extends Controller
         $cancelOrderStatus->notification()->save($notification);
         //Notification...
         
-        // Send SMS to dropshipper if order belongs to a dropshipper
-        if ($cancelOrderStatus->dropshipper_id) {
-            $dropshipper = $cancelOrderStatus->dropshipper;
-            if ($dropshipper && $dropshipper->phone) {
-                $smsService = new SmsService();
-                $smsService->sendCancelNotification($dropshipper->phone, $cancelOrderStatus->orderId);
-            }
-        }
-        
+       
         return redirect('/order/cancel')->with('success', 'Order has been canceled');
     }
 
@@ -774,6 +776,12 @@ class ReportController extends Controller
             ]);
         }
 
+        // Send SMS to dropshipper
+        if ($orderStatus->dropshipper && $orderStatus->dropshipper->phone) {
+            $smsService = new SmsService();
+            $smsService->sendDeliveredNotification($orderStatus->dropshipper->phone, $invoice_number);
+        }
+        
         // Notification
         $notification = new Notification();
         $notification->message = 'Order with invoice id ' . $orderStatus->orderId . ' is made status complete by ' . Session::get('name');
@@ -781,11 +789,6 @@ class ReportController extends Controller
         $notification->notification_for = "user";
         $orderStatus->notification()->save($notification);
         
-        // Send SMS to dropshipper
-        if ($orderStatus->dropshipper && $orderStatus->dropshipper->phone) {
-            $smsService = new SmsService();
-            $smsService->sendDeliveredNotification($orderStatus->dropshipper->phone, $invoice_number);
-        }
 
         return redirect()->back()->with('success', 'Order has been completed');
     }
