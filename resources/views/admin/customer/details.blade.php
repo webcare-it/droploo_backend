@@ -216,11 +216,9 @@
                                                     id="size-{{ $orderDetail?->id }}"
                                                     onchange="productSize({{ $orderDetail }})">
                                                     @foreach ($orderDetail->product?->sizes as $size)
-                                                        @if ($size->size != null)
-                                                            <option value="{{ $size->size }}"
+                                                        <option value="{{ $size->size }}"
                                                                 {{ $size->size == $orderDetail->size ? 'selected' : '' }}>
                                                                 {{ $size->size }}</option>
-                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </td>
