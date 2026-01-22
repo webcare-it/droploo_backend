@@ -192,18 +192,21 @@
                                                     height="40" width="40" /><br>
                                                 {{ $orderDetail->product?->name ?? 'Product name' }}
                                             </td>
+                                            @php
+                                                    $variations = App\Models\ProductImage::where('product_id', $orderDetail->product_id)->get();
+                                                    @endphp
                                             <td>
                                                 <select class="form-control" name="color"
                                                     id="color-{{ $orderDetail?->id }}"
                                                     onchange="productColor({{ $orderDetail }})">
                                                     @if ($orderDetail->color == null || $orderDetail->color == 'No color')
                                                         <option selected disabled>No Color</option>
-                                                        @foreach ($orderDetail->product?->colors as $color)
+                                                        @foreach ($variations as $color)
                                                             <option value="{{ $color->color }}">{{ $color->color }}
                                                             </option>
                                                         @endforeach
                                                     @else
-                                                        @foreach ($orderDetail->product?->colors as $color)
+                                                        @foreach ($variations as $color)
                                                             <option value="{{ $color->color }}"
                                                                 {{ $color->color == $orderDetail->color ? 'selected' : '' }}>
                                                                 {{ $color->color }}</option>
@@ -215,7 +218,7 @@
                                                 <select class="form-control" name="size"
                                                     id="size-{{ $orderDetail?->id }}"
                                                     onchange="productSize({{ $orderDetail }})">
-                                                    @foreach ($orderDetail->product?->sizes as $size)
+                                                    @foreach ($variations as $size)
                                                         <option value="{{ $size->size }}"
                                                                 {{ $size->size == $orderDetail->size ? 'selected' : '' }}>
                                                                 {{ $size->size }}</option>

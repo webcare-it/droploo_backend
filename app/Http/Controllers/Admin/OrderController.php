@@ -36,6 +36,7 @@ class OrderController extends Controller
         $order = Order::with('orderDetails', 'user', 'district', 'subDistrict', 'dropshipper')->where('id', $id)->orderBy('created_at', 'desc')->first();
         // $cities = PathaoCourier::area()->city();
         // return view('admin.customer.details', compact('order', 'cities'));
+        
         return view('admin.customer.details', compact('order'));
     }
 
