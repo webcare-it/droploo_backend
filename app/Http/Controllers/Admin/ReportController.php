@@ -1251,8 +1251,19 @@ class ReportController extends Controller
                             $totalWholesaleCost = 0;
 
                             foreach ($orderDetails->orderDetails as $detail) {
-                                if ($detail->product && $detail->product->wholesale_price) {
-                                    $totalWholesaleCost += $detail->product->wholesale_price * $detail->qty;
+                                $product = Product::find($detail->product_id);
+                                if($product) {
+                                    if ($product->is_variable == 1) {
+
+                                        if ($detail->product && $detail->product->wholesale_price) {
+                                            $totalWholesaleCost += $detail->product->wholesale_price * $detail->qty;
+                                        }
+                                        
+                                        $productImage = ProductImage::where('size', $detail->size)->where('product_id', $detail->product_id)->first();
+                                        if ($productImage && isset($productImage->wholesale_price)) {
+                                            $totalWholesaleCost += $productImage->wholesale_price * $detail->qty;
+                                        }
+                                    }
                                 }
                             }
                             $orderTotal = (float)$orderDetails->price - (float)$orderDetails->area;
