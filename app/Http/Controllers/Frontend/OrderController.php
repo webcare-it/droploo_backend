@@ -202,11 +202,11 @@ class OrderController extends Controller
                             $wholesalePrice = $productImage->wholesale_price;
                         }
                     }
-                }
 
-                if ($request->price < $wholesalePrice) {
+                    if ($request->price < $wholesalePrice) {
                         $deductAmount += ($wholesalePrice - $request->price);
                     }
+                }
             }
 
             // Step 4.1: Validate all products before creating order

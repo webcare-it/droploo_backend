@@ -410,7 +410,7 @@ class ReportController extends Controller
                 $smsService->sendCancelNotification($dropshipper->phone, $cancelOrderStatus->orderId);
             }
         }
-    
+
         //Notification...
         $notification = new Notification();
         $notification->message = 'Order with invoice id'.' '.$cancelOrderStatus->orderId.' '. 'is made status cancel by'.' '.Session::get('name');
@@ -418,8 +418,8 @@ class ReportController extends Controller
         $notification->notification_for = "user";
         $cancelOrderStatus->notification()->save($notification);
         //Notification...
-        
-       
+
+
         return redirect('/order/cancel')->with('success', 'Order has been canceled');
     }
 
@@ -738,13 +738,13 @@ class ReportController extends Controller
             if ($detail->product) {
                 // If product is variable (is_variable == 1), get wholesale_price from product_images table
                 if ($detail->product->is_variable == 1) {
-                    $productImage = ProductImage::where('size', $detail->size)->first();
+                    $productImage = ProductImage::where('size', $detail->size)->where('product_id', $detail->product->id)->first();
                     $wholesalePrice = $productImage ? $productImage->wholesale_price : 0;
                 } else {
                     // Otherwise, get wholesale_price from product table
                     $wholesalePrice = $detail->product->wholesale_price ?? 0;
                 }
-                
+
                 if ($wholesalePrice) {
                     $totalWholesaleCost += $wholesalePrice * $detail->qty;
                 }
@@ -781,14 +781,14 @@ class ReportController extends Controller
             $smsService = new SmsService();
             $smsService->sendDeliveredNotification($orderStatus->dropshipper->phone, $invoice_number);
         }
-        
+
         // Notification
         $notification = new Notification();
         $notification->message = 'Order with invoice id ' . $orderStatus->orderId . ' is made status complete by ' . Session::get('name');
         $notification->specific_user_id = Session::get('id');
         $notification->notification_for = "user";
         $orderStatus->notification()->save($notification);
-        
+
 
         return redirect()->back()->with('success', 'Order has been completed');
     }
@@ -1258,7 +1258,7 @@ class ReportController extends Controller
                                         if ($detail->product && $detail->product->wholesale_price) {
                                             $totalWholesaleCost += $detail->product->wholesale_price * $detail->qty;
                                         }
-                                        
+
                                         $productImage = ProductImage::where('size', $detail->size)->where('product_id', $detail->product_id)->first();
                                         if ($productImage && isset($productImage->wholesale_price)) {
                                             $totalWholesaleCost += $productImage->wholesale_price * $detail->qty;
