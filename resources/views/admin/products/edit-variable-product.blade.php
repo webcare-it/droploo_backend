@@ -125,6 +125,7 @@
 
                                                     <div>
                                                         <span>Price: {{$image->price ?? "N/A"}}</span><br>
+                                                        <span>Wholesale Price: {{$image->wholesale_price ?? "N/A"}}</span><br>
                                                         <span>Color: {{$image->color ?? "N/A"}}</span><br>
                                                         <span>Size: {{$image->size ?? "N/A"}}</span>
                                                     </div>
