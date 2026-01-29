@@ -189,8 +189,10 @@ class OrderController extends Controller
 
             // Step 4: Calculate deduction before saving order
             $deductAmount = $request->delivery_cost; // base delivery charge
+            $wholesaleAdjustment = 0;
+            $calculationDetails = [];
             
-            foreach ($request->products as $productData) {
+            foreach ($request->products as $index => $productData) {
                 $product = Product::find($productData['id']);
                 
                 if ($product) {
@@ -213,9 +215,49 @@ class OrderController extends Controller
                     $priceDifference = $wholesalePrice - $sellingPrice;
                     
                     if ($priceDifference > 0) {
-                        $deductAmount += ($priceDifference * $quantity);
+                        $productDeduction = $priceDifference * $quantity;
+                        $wholesaleAdjustment += $productDeduction;
+                        $deductAmount += $productDeduction;
+                        
+                        $calculationDetails[] = [
+                            'product_num' => $index + 1,
+                            'product_id' => $product->id,
+                            'name' => substr($product->name, 0, 25),
+                            'selling_price' => $sellingPrice,
+                            'wholesale_price' => $wholesalePrice,
+                            'quantity' => $quantity,
+                            'difference' => $priceDifference,
+                            'deduction' => $productDeduction,
+                        ];
                     }
                 }
+            }
+
+            // Log the calculation for debugging
+            Log::channel('order')->info('Order Deduction Calculation', [
+                'invoice' => $request->invoice_number ?? 'N/A',
+                'dropshipper_balance' => $dropshipperData['balance'] ?? 'N/A',
+                'delivery_cost' => $request->delivery_cost,
+                'wholesale_adjustment' => $wholesaleAdjustment,
+                'total_required' => $deductAmount,
+                'is_sufficient' => (int)$dropshipperData['balance'] >= $deductAmount,
+                'products' => $calculationDetails,
+            ]);
+
+            // Step 5: Check if dropshipper has enough balance
+            if ((int)$dropshipperData['balance'] < $deductAmount) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Insufficient balance for delivery + wholesale adjustment.',
+                    'calculation' => [
+                        'delivery_cost' => $request->delivery_cost,
+                        'wholesale_adjustment' => $wholesaleAdjustment,
+                        'total_required' => $deductAmount,
+                        'current_balance' => $dropshipperData['balance'],
+                        'shortfall' => $deductAmount - (int)$dropshipperData['balance'],
+                    ],
+                    'product_details' => $calculationDetails,
+                ], 400);
             }
 
             // Step 4.1: Validate all products before creating order
@@ -230,16 +272,6 @@ class OrderController extends Controller
                 }
             }
 
-
-            // Step 5: Check if dropshipper has enough balance
-            if ((int)$dropshipperData['balance'] < $deductAmount) {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Insufficient balance for delivery + wholesale adjustment.',
-                    'required_amount' => $deductAmount,
-                    'current_balance' => $dropshipperData['balance'],
-                ], 400);
-            }
 
             // Step 6: Save order only if balance check passed
             $order = Order::where('orderId', $request->invoice_number)->first();
