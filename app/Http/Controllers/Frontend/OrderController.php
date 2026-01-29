@@ -198,7 +198,7 @@ class OrderController extends Controller
                     // If product is variable, get wholesale price from productImages table
                     if ($product->is_variable == 1) {
                         $productImage = ProductImage::where('size', $productData['size'])->where('product_id', $productData['id'])->first();
-                        if ($productImage && isset($productImage->wholesale_price)) {
+                        if (isset($productImage->wholesale_price)) {
                             $wholesalePrice = $productImage->wholesale_price;
                         }
                     }
