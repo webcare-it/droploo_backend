@@ -735,19 +735,20 @@ class ReportController extends Controller
         $totalWholesaleCost = 0;
 
         foreach ($orderStatus->orderDetails as $detail) {
-            if ($detail->product) {
-                // If product is variable (is_variable == 1), get wholesale_price from product_images table
-                if ($detail->product->is_variable == 1) {
-                    $productImage = ProductImage::where('size', $detail->size)->where('product_id', $detail->product->id)->first();
-                    $wholesalePrice = $productImage ? $productImage->wholesale_price : 0;
-                } else {
-                    // Otherwise, get wholesale_price from product table
-                    $wholesalePrice = $detail->product->wholesale_price ?? 0;
+            $product = $detail->product;
+            if ($product) {
+                $wholesalePrice = $product->wholesale_price;
+                
+                if ($product->is_variable == 1) {
+                    $productImage = ProductImage::where('size', $detail->size)
+                        ->where('product_id', $detail->product_id)
+                        ->first();
+                    if ($productImage && isset($productImage->wholesale_price)) {
+                        $wholesalePrice = $productImage->wholesale_price;
+                    }
                 }
-
-                if ($wholesalePrice) {
-                    $totalWholesaleCost += $wholesalePrice * $detail->qty;
-                }
+                
+                $totalWholesaleCost += ($wholesalePrice ?? 0) * $detail->qty;
             }
         }
         $orderTotal = (float)$orderStatus->price - (float)$orderStatus->area;
@@ -1251,19 +1252,20 @@ class ReportController extends Controller
                             $totalWholesaleCost = 0;
 
                             foreach ($orderDetails->orderDetails as $detail) {
-                                $product = Product::find($detail->product_id);
-                                if($product) {
+                                $product = $detail->product;
+                                if ($product) {
+                                    $wholesalePrice = $product->wholesale_price;
+                                    
                                     if ($product->is_variable == 1) {
-
-                                        if ($detail->product && $detail->product->wholesale_price) {
-                                            $totalWholesaleCost += $detail->product->wholesale_price * $detail->qty;
-                                        }
-
-                                        $productImage = ProductImage::where('size', $detail->size)->where('product_id', $detail->product_id)->first();
+                                        $productImage = ProductImage::where('size', $detail->size)
+                                            ->where('product_id', $detail->product_id)
+                                            ->first();
                                         if ($productImage && isset($productImage->wholesale_price)) {
-                                            $totalWholesaleCost += $productImage->wholesale_price * $detail->qty;
+                                            $wholesalePrice = $productImage->wholesale_price;
                                         }
                                     }
+                                    
+                                    $totalWholesaleCost += ($wholesalePrice ?? 0) * $detail->qty;
                                 }
                             }
                             $orderTotal = (float)$orderDetails->price - (float)$orderDetails->area;
