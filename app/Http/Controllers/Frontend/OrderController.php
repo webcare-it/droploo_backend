@@ -142,10 +142,10 @@ class OrderController extends Controller
     {
         try {
             // Order creation temporarily disabled
-            // return response()->json([
-            //     'status'  => 'error',
-            //     'message' => 'আসসালামু আলাইকুম। প্রিয় ড্রপশিপার, বাংলাদেশের জাতীয় নির্বাচন উপলক্ষে আজ ৮ তারিখ থেকে ১৩ তারিখ পর্যন্ত ড্রপশিপিং-এর নতুন অর্ডার গ্রহণ সাময়িকভাবে বন্ধ থাকবে। তাই যারা এড রান করছেন, অনুগ্রহ করে এই সময়ের জন্য বন্ধ রাখবেন। বর্তমানে আমাদের হাতে ১৫০+ পেন্ডিং অর্ডার রয়েছে। ইনশাআল্লাহ আজ ও আগামীকালের মধ্যে সবগুলো অর্ডার ডেলিভারি সম্পন্ন করা হবে। পরবর্তী নোটিশ অনুযায়ী পুনরায় সকল কার্যক্রম শুরু করা হবে, ইনশাআল্লাহ।'
-            // ], 503);
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'আসসালামু আলাইকুম। প্রিয় ড্রপশিপার, বাংলাদেশের জাতীয় নির্বাচন উপলক্ষে আজ ৮ তারিখ থেকে ১৩ তারিখ পর্যন্ত ড্রপশিপিং-এর নতুন অর্ডার গ্রহণ সাময়িকভাবে বন্ধ থাকবে। তাই যারা এড রান করছেন, অনুগ্রহ করে এই সময়ের জন্য বন্ধ রাখবেন। বর্তমানে আমাদের হাতে ১৫০+ পেন্ডিং অর্ডার রয়েছে। ইনশাআল্লাহ আজ ও আগামীকালের মধ্যে সবগুলো অর্ডার ডেলিভারি সম্পন্ন করা হবে। পরবর্তী নোটিশ অনুযায়ী পুনরায় সকল কার্যক্রম শুরু করা হবে, ইনশাআল্লাহ।'
+            ], 503);
 
             // Step 1: Validate dropshipper auth headers
             $dropshipper = Dropshipper::where('app_key', $request->header('App-Key'))
@@ -195,10 +195,10 @@ class OrderController extends Controller
 
             // Step 4: Calculate deduction before saving order
             $deductAmount = $request->delivery_cost; // base delivery charge
-            
+
             foreach ($request->products as $productData) {
                 $product = Product::find($productData['id']);
-                
+
                 if ($product) {
                     $wholesalePrice = $product->wholesale_price;
                     $sellingPrice = $productData['price'];
@@ -209,7 +209,7 @@ class OrderController extends Controller
                         $productImage = ProductImage::where('size', $productData['size'])
                             ->where('product_id', $productData['id'])
                             ->first();
-                        
+
                         if ($productImage && isset($productImage->wholesale_price)) {
                             $wholesalePrice = $productImage->wholesale_price;
                         }
@@ -217,7 +217,7 @@ class OrderController extends Controller
 
                     // Calculate difference: if selling price < wholesale price, add to deduction
                     $priceDifference = $wholesalePrice - $sellingPrice;
-                    
+
                     if ($priceDifference > 0) {
                         $deductAmount += ($priceDifference * $quantity);
                     }
