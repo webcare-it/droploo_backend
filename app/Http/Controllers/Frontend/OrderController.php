@@ -141,6 +141,12 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         try {
+            // Order creation temporarily disabled
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'আসসালামু আলাইকুম। প্রিয় ড্রপশিপার, বাংলাদেশের জাতীয় নির্বাচন উপলক্ষে আজ ৮ তারিখ থেকে ১৩ তারিখ পর্যন্ত ড্রপশিপিং-এর নতুন অর্ডার গ্রহণ সাময়িকভাবে বন্ধ থাকবে। তাই যারা এড রান করছেন, অনুগ্রহ করে এই সময়ের জন্য বন্ধ রাখবেন। বর্তমানে আমাদের হাতে ১৫০+ পেন্ডিং অর্ডার রয়েছে। ইনশাআল্লাহ আজ ও আগামীকালের মধ্যে সবগুলো অর্ডার ডেলিভারি সম্পন্ন করা হবে। পরবর্তী নোটিশ অনুযায়ী পুনরায় সকল কার্যক্রম শুরু করা হবে, ইনশাআল্লাহ।'
+            ], 503);
+
             // Step 1: Validate dropshipper auth headers
             $dropshipper = Dropshipper::where('app_key', $request->header('App-Key'))
                 ->where('app_secret', $request->header('App-Secret'))
