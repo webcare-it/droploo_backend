@@ -141,11 +141,6 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         try {
-            // Order creation temporarily disabled
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'আসসালামু আলাইকুম। প্রিয় ড্রপশিপার, বাংলাদেশের জাতীয় নির্বাচন উপলক্ষে আজ ৮ তারিখ থেকে ১৩ তারিখ পর্যন্ত ড্রপশিপিং-এর নতুন অর্ডার গ্রহণ সাময়িকভাবে বন্ধ থাকবে। তাই যারা এড রান করছেন, অনুগ্রহ করে এই সময়ের জন্য বন্ধ রাখবেন। বর্তমানে আমাদের হাতে ১৫০+ পেন্ডিং অর্ডার রয়েছে। ইনশাআল্লাহ আজ ও আগামীকালের মধ্যে সবগুলো অর্ডার ডেলিভারি সম্পন্ন করা হবে। পরবর্তী নোটিশ অনুযায়ী পুনরায় সকল কার্যক্রম শুরু করা হবে, ইনশাআল্লাহ।'
-            ], 503);
 
             // Step 1: Validate dropshipper auth headers
             $dropshipper = Dropshipper::where('app_key', $request->header('App-Key'))
@@ -247,14 +242,19 @@ class OrderController extends Controller
                 ], 400);
             }
 
-            // Step 6: Save order only if balance check passed
-            $order = Order::where('orderId', $request->invoice_number)->first();
+            // Step 6: Check if invoice number already exists (must be unique)
+            $existingOrder = Order::where('orderId', $request->invoice_number)->first();
 
-            if (!$order) {
-                $order = new Order();
-                $order->orderId = $request->invoice_number;
+            if ($existingOrder) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'This invoice has already been transferred. Invoice number is not unique.'
+                ], 400);
             }
 
+            // Create new order
+            $order = new Order();
+            $order->orderId              = $request->invoice_number;
             $order->name                 = $request->customer_name;
             $order->phone                = $request->customer_phone;
             $order->area                 = $request->delivery_cost;
