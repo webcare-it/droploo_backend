@@ -182,12 +182,20 @@
             </div>
 
             <!-- Order Info Below -->
+            <div class="info-row">
             <div class="info-box">
                 <h6>Order Info</h6>
                 <p><strong>#:</strong> {{ $order->orderId }}</p>
                 @if ($order->courier_name == 'Pathao')
                     <p><strong>Courier:</strong> Pathao → {{ $order->pathao_city_name }} → {{ $order->pathao_zone_name }}</p>
                 @endif
+            </div>
+            @if ($order->consignmentId != null)
+                <div class="info-box">
+                    <h6>Percel ID</h6>
+                    <p><strong>#:</strong> {{ $order->consignmentId }}</p>
+                </div>
+            @endif
             </div>
 
             <table class="invoice-table">
