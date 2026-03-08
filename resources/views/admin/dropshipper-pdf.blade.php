@@ -192,8 +192,8 @@
             </div>
             @if ($order->consignmentId != null)
                 <div class="info-box">
-                    <h6>Percel ID</h6>
-                    <p><strong>#:</strong> {{ $order->consignmentId }}</p>
+                    <h6 style="font-size: 25px;">Steadfast Parcel ID</h6>
+                    <p style="font-size: 25px;"><strong>#:</strong> {{ $order->consignmentId }}</p>
                 </div>
             @endif
             </div>
