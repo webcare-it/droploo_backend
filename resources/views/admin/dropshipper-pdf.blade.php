@@ -192,7 +192,7 @@
             </div>
             @if ($order->consignmentId != null)
                 <div class="info-box">
-                    <h6 style="font-size: 25px;">Steadfast Parcel ID</h6>
+                    <h6 style="font-size: 18px;">Steadfast Parcel ID</h6>
                     <p style="font-size: 25px;"><strong>#:</strong> {{ $order->consignmentId }}</p>
                 </div>
             @endif
@@ -265,14 +265,14 @@
     window.onload = function() {
         window.print();
     };
-    
+
     // Display print date and time
     document.addEventListener('DOMContentLoaded', function() {
         const printDateTime = new Date();
         const formattedDate = printDateTime.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         const formattedTime = printDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const dateTimeText = 'Print Date: ' + formattedDate + ' | Print Time: ' + formattedTime;
-        
+
         // Populate all print date/time boxes
         const printBoxes = document.querySelectorAll('[id^="printDateTime"]');
         printBoxes.forEach(function(box) {
