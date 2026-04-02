@@ -738,7 +738,7 @@ class ReportController extends Controller
             $product = $detail->product;
             if ($product) {
                 $wholesalePrice = $product->wholesale_price;
-                
+
                 if ($product->is_variable == 1) {
                     $productImage = ProductImage::where('size', $detail->size)
                         ->where('product_id', $detail->product_id)
@@ -747,7 +747,7 @@ class ReportController extends Controller
                         $wholesalePrice = $productImage->wholesale_price;
                     }
                 }
-                
+
                 $totalWholesaleCost += ($wholesalePrice ?? 0) * $detail->qty;
             }
         }
@@ -1185,12 +1185,12 @@ class ReportController extends Controller
                 $apiEndpoint = 'https://portal.packzy.com/api/v1/create_order';
 
                 // API-Key and Secret-Key
-                $apiKey = 'workktmej9fc6f26elkfyh9zckskxqe4';
-                $secretKey = 'kjfkz2lkd2iitg07qsyd9gys';
+                $apiKey = 'zqitddzywavwvr36vhsiddllfyka9otj';
+                $secretKey = 'bug5srqntx0fd8gwy5fvpr37';
 
                 // The request parameters
                 $invoice           = $orderDetails->orderId;
-                $cod_amount        = (int) $orderDetails->price;
+                $cod_amount        = $orderDetails->price;
                 $recipient_name    = $orderDetails->name;
                 $recipient_phone   = $orderDetails->phone;
                 $recipient_address = $orderDetails->address;
@@ -1255,7 +1255,7 @@ class ReportController extends Controller
                                 $product = $detail->product;
                                 if ($product) {
                                     $wholesalePrice = $product->wholesale_price;
-                                    
+
                                     if ($product->is_variable == 1) {
                                         $productImage = ProductImage::where('size', $detail->size)
                                             ->where('product_id', $detail->product_id)
@@ -1264,7 +1264,7 @@ class ReportController extends Controller
                                             $wholesalePrice = $productImage->wholesale_price;
                                         }
                                     }
-                                    
+
                                     $totalWholesaleCost += ($wholesalePrice ?? 0) * $detail->qty;
                                 }
                             }
