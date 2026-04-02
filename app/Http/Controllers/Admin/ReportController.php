@@ -1185,12 +1185,12 @@ class ReportController extends Controller
                 $apiEndpoint = 'https://portal.packzy.com/api/v1/create_order';
 
                 // API-Key and Secret-Key
-                $apiKey = 'zqitddzywavwvr36vhsiddllfyka9otj';
-                $secretKey = 'bug5srqntx0fd8gwy5fvpr37';
+                $apiKey = 'shjazdw7jxqb0wp6unzuve050zdkimqt';
+                $secretKey = 'w2rjsnpaoramstasuhczo9lt';
 
                 // The request parameters
                 $invoice           = $orderDetails->orderId;
-                $cod_amount        = $orderDetails->price;
+                $cod_amount        = (int) $orderDetails->price;
                 $recipient_name    = $orderDetails->name;
                 $recipient_phone   = $orderDetails->phone;
                 $recipient_address = $orderDetails->address;
