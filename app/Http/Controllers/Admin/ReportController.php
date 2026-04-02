@@ -1185,8 +1185,8 @@ class ReportController extends Controller
                 $apiEndpoint = 'https://portal.packzy.com/api/v1/create_order';
 
                 // API-Key and Secret-Key
-                $apiKey = 'shjazdw7jxqb0wp6unzuve050zdkimqt';
-                $secretKey = 'w2rjsnpaoramstasuhczo9lt';
+                $apiKey = 'zqitddzywavwvr36vhsiddllfyka9otj';
+                $secretKey = 'bug5srqntx0fd8gwy5fvpr37';
 
                 // The request parameters
                 $invoice           = $orderDetails->orderId;
@@ -1194,7 +1194,7 @@ class ReportController extends Controller
                 $recipient_name    = $orderDetails->name;
                 $recipient_phone   = $orderDetails->phone;
                 $recipient_address = $orderDetails->address;
-                $note              = $request->notes;
+                $note              = $request->steadfast_notes;
 
 
                 // The headers
@@ -1230,8 +1230,58 @@ class ReportController extends Controller
 
                             // ✅ Save consignment ID to order
                             $orderDetails->consignmentId = $consignmentId;
+                            $orderDetails->tracking_code = $tracking_code;
                             $orderDetails->save();
 
+                            $appKey    = $orderDetails->dropshipper->app_key;
+                            $appSecret = $orderDetails->dropshipper->app_secret;
+                            $userName  = $orderDetails->dropshipper->user_name;
+
+                            Http::withHeaders([
+                                'App-Secret' => $appSecret,
+                                'App-Key'    => $appKey,
+                                'Username'   => $userName,
+                            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/tracking-code', [
+                                'tracking_code'         => $orderDetails->tracking_code,
+                                'invoice_number' => $orderDetails->orderId,
+                            ]);
+
+                            $invoice_number = $orderDetails->orderId;
+
+                            // Step 1: Calculate total wholesale cost
+                            $totalWholesaleCost = 0;
+
+                            foreach ($orderDetails->orderDetails as $detail) {
+                                $product = $detail->product;
+                                if ($product) {
+                                    $wholesalePrice = $product->wholesale_price;
+
+                                    if ($product->is_variable == 1) {
+                                        $productImage = ProductImage::where('size', $detail->size)
+                                            ->where('product_id', $detail->product_id)
+                                            ->first();
+                                        if ($productImage && isset($productImage->wholesale_price)) {
+                                            $wholesalePrice = $productImage->wholesale_price;
+                                        }
+                                    }
+
+                                    $totalWholesaleCost += ($wholesalePrice ?? 0) * $detail->qty;
+                                }
+                            }
+                            $orderTotal = (float)$orderDetails->price - (float)$orderDetails->area;
+
+                            // Step 2: Calculate profit
+                            $grandTotal = $orderTotal - (float)$totalWholesaleCost;
+                            $profit_amount = $grandTotal + (float)$orderDetails->area;
+
+                            Http::withHeaders([
+                                'App-Secret' => $appSecret,
+                                'App-Key'    => $appKey,
+                                'Username'   => $userName,
+                            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/estimated/profit/add', [
+                                'profit_amount'         => $profit_amount,
+                                'invoice_number'        => $invoice_number,
+                            ]);
 
                             // return response()->json([
                             //     'message' => 'Order sent to Steadfast successfully',
