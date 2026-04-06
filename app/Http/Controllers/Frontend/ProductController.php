@@ -106,6 +106,43 @@ class ProductController extends Controller
         }
     }
 
+
+    public function getStockOutProductById ($slug)
+    {
+        try {
+            $product = Product::with('category', 'productImages', 'colors', 'sizes', 'reviews')->where('slug', $slug)->where('status', 0)->first();
+
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product not found',
+                    'data' => null
+                ], 404);
+            }
+
+            $related = Product::with('reviews', 'category')
+                ->where('status', 0)
+                ->where('cat_id', $product->category ? $product->category->id : null)
+                ->where('id', '!=', $product->id)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product retrieved successfully',
+                'data' => [
+                    'product' => $product,
+                    'related' => $related
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve product. ' . $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+    }
+
     public function shopProducts ()
     {
         try {
