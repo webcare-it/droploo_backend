@@ -82,7 +82,7 @@ class ProductController extends Controller
     public function stockOutProducts ()
     {
         try {
-            $products = Product::with('productImages')->where('status', 0)->orderBy('priority', 'desc')->get();
+            $products = Product::with('productImages')->where('status', 0)->orderBy('priority', 'desc')->paginate(50);
 
             if ($products->isEmpty()) {
                 return response()->json([
