@@ -107,6 +107,33 @@ class ProductController extends Controller
     }
 
 
+    public function recentStockOutProducts ()
+    {
+        try {
+            $products = Product::with('productImages')->where('status', 0)->orderBy('updated_at', 'desc')->take(10)->get();
+
+            if ($products->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Products not found',
+                    'data' => null
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Products retrieved successfully',
+                'data' => $products
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve products. ' . $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+    }
+
     public function getStockOutProductById ($slug)
     {
         try {
