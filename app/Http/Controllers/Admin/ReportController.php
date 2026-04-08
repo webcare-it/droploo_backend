@@ -1230,62 +1230,59 @@ class ReportController extends Controller
                             $orderDetails->tracking_code = $tracking_code;
                             $orderDetails->save();
 
-                            // Log successful consignment creation
-                            Log::channel('steadfast')->info('Consignment Created Successfully', [
-                                'consignment_id' => $consignmentId,
-                                'tracking_code' => $tracking_code,
-                                'invoice' => $invoice,
-                            ]);
 
-                            $appKey    = $orderDetails->dropshipper->app_key;
-                            $appSecret = $orderDetails->dropshipper->app_secret;
-                            $userName  = $orderDetails->dropshipper->user_name;
+                            if ($orderDetails->order_type == 'dropshipping')
+                            {
+                                $appKey    = $orderDetails->dropshipper->app_key;
+                                $appSecret = $orderDetails->dropshipper->app_secret;
+                                $userName  = $orderDetails->dropshipper->user_name;
 
-                            Http::withHeaders([
-                                'App-Secret' => $appSecret,
-                                'App-Key'    => $appKey,
-                                'Username'   => $userName,
-                            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/tracking-code', [
-                                'tracking_code'         => $orderDetails->tracking_code,
-                                'invoice_number' => $orderDetails->orderId,
-                            ]);
+                                Http::withHeaders([
+                                    'App-Secret' => $appSecret,
+                                    'App-Key'    => $appKey,
+                                    'Username'   => $userName,
+                                ])->post('https://dropshipper.droploo.com/api/dropshipper/order/tracking-code', [
+                                    'tracking_code'         => $orderDetails->tracking_code,
+                                    'invoice_number' => $orderDetails->orderId,
+                                ]);
 
-                            $invoice_number = $orderDetails->orderId;
+                                $invoice_number = $orderDetails->orderId;
 
-                            // Step 1: Calculate total wholesale cost
-                            $totalWholesaleCost = 0;
+                                // Step 1: Calculate total wholesale cost
+                                $totalWholesaleCost = 0;
 
-                            foreach ($orderDetails->orderDetails as $detail) {
-                                $product = $detail->product;
-                                if ($product) {
-                                    $wholesalePrice = $product->wholesale_price;
+                                foreach ($orderDetails->orderDetails as $detail) {
+                                    $product = $detail->product;
+                                    if ($product) {
+                                        $wholesalePrice = $product->wholesale_price;
 
-                                    if ($product->is_variable == 1) {
-                                        $productImage = ProductImage::where('size', $detail->size)
-                                            ->where('product_id', $detail->product_id)
-                                            ->first();
-                                        if ($productImage && isset($productImage->wholesale_price)) {
-                                            $wholesalePrice = $productImage->wholesale_price;
+                                        if ($product->is_variable == 1) {
+                                            $productImage = ProductImage::where('size', $detail->size)
+                                                ->where('product_id', $detail->product_id)
+                                                ->first();
+                                            if ($productImage && isset($productImage->wholesale_price)) {
+                                                $wholesalePrice = $productImage->wholesale_price;
+                                            }
                                         }
+
+                                        $totalWholesaleCost += ($wholesalePrice ?? 0) * $detail->qty;
                                     }
-
-                                    $totalWholesaleCost += ($wholesalePrice ?? 0) * $detail->qty;
                                 }
+                                $orderTotal = (float)$orderDetails->price - (float)$orderDetails->area;
+
+                                // Step 2: Calculate profit
+                                $grandTotal = $orderTotal - (float)$totalWholesaleCost;
+                                $profit_amount = $grandTotal + (float)$orderDetails->area;
+
+                                Http::withHeaders([
+                                    'App-Secret' => $appSecret,
+                                    'App-Key'    => $appKey,
+                                    'Username'   => $userName,
+                                ])->post('https://dropshipper.droploo.com/api/dropshipper/order/estimated/profit/add', [
+                                    'profit_amount'         => $profit_amount,
+                                    'invoice_number'        => $invoice_number,
+                                ]);
                             }
-                            $orderTotal = (float)$orderDetails->price - (float)$orderDetails->area;
-
-                            // Step 2: Calculate profit
-                            $grandTotal = $orderTotal - (float)$totalWholesaleCost;
-                            $profit_amount = $grandTotal + (float)$orderDetails->area;
-
-                            Http::withHeaders([
-                                'App-Secret' => $appSecret,
-                                'App-Key'    => $appKey,
-                                'Username'   => $userName,
-                            ])->post('https://dropshipper.droploo.com/api/dropshipper/order/estimated/profit/add', [
-                                'profit_amount'         => $profit_amount,
-                                'invoice_number'        => $invoice_number,
-                            ]);
 
                             // return response()->json([
                             //     'message' => 'Order sent to Steadfast successfully',
