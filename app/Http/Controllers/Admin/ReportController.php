@@ -1181,14 +1181,14 @@ class ReportController extends Controller
 
             if (empty($orderDetails->consignmentId))
             {
-                // API endpoint
+                // API endpoint (Packzy/Steadfast)
                 $apiEndpoint = 'https://portal.packzy.com/api/v1/create_order';
 
-                // API-Key and Secret-Key
+                // API Authentication Parameters
                 $apiKey = 'zqitddzywavwvr36vhsiddllfyka9otj';
                 $secretKey = 'bug5srqntx0fd8gwy5fvpr37';
 
-                // The request parameters
+                // Required request parameters
                 $invoice           = $orderDetails->orderId;
                 $cod_amount        = (int) $orderDetails->price;
                 $recipient_name    = $orderDetails->name;
@@ -1196,16 +1196,14 @@ class ReportController extends Controller
                 $recipient_address = $orderDetails->address;
                 $note              = $request->steadfast_notes;
 
-
-                // The headers
+                // API Headers
                 $headers = [
-                    'Api-Key' => $apiKey,
-                    'Secret-Key' => $secretKey,
+                    'Api-Key'      => $apiKey,
+                    'Secret-Key'   => $secretKey,
                     'Content-Type' => 'application/json',
-                    'Accept'       => 'application/json',
                 ];
 
-                // The request payload
+                // Request payload
                 $payload = [
                     'invoice'           => $invoice,
                     'cod_amount'        => $cod_amount,
@@ -1213,14 +1211,13 @@ class ReportController extends Controller
                     'recipient_phone'   => $recipient_phone,
                     'recipient_address' => $recipient_address,
                     'note'              => $note,
-                    // Add any other parameters as needed
                 ];
 
                 try {
-                    // ✅ Send the POST request
+                    // Send the POST request
                     $response = Http::withHeaders($headers)->post($apiEndpoint, $payload);
 
-                    // ✅ Check if request was successful
+                    // Check if request was successful
                     if ($response->successful()) {
                         $responseData = $response->json();
 
@@ -1228,10 +1225,17 @@ class ReportController extends Controller
                             $consignmentId = $responseData['consignment']['consignment_id'];
                             $tracking_code = $responseData['consignment']['tracking_code'];
 
-                            // ✅ Save consignment ID to order
+                            // Save consignment ID to order
                             $orderDetails->consignmentId = $consignmentId;
                             $orderDetails->tracking_code = $tracking_code;
                             $orderDetails->save();
+
+                            // Log successful consignment creation
+                            Log::channel('steadfast')->info('Consignment Created Successfully', [
+                                'consignment_id' => $consignmentId,
+                                'tracking_code' => $tracking_code,
+                                'invoice' => $invoice,
+                            ]);
 
                             $appKey    = $orderDetails->dropshipper->app_key;
                             $appSecret = $orderDetails->dropshipper->app_secret;
@@ -1299,6 +1303,12 @@ class ReportController extends Controller
                     }
                 }
                 catch (\Exception $e) {
+                    Log::channel('steadfast')->error('Steadfast API Exception', [
+                        'invoice' => $invoice,
+                        'error' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                    ]);
                     return response()->json(['error' => $e->getMessage()], 500);
                 }
             }
