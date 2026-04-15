@@ -1221,6 +1221,8 @@ class ReportController extends Controller
                     if ($response->successful()) {
                         $responseData = $response->json();
 
+                        dd($responseData);
+
                         if (isset($responseData['consignment'])) {
                             $consignmentId = $responseData['consignment']['consignment_id'];
                             $tracking_code = $responseData['consignment']['tracking_code'];
