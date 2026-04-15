@@ -1233,7 +1233,7 @@ class ReportController extends Controller
                             $orderDetails->save();
 
 
-                            if ($orderDetails->order_type == 'dropshipping')
+                            if ($orderDetails->order_type == 'Dropshipping')
                             {
                                 $appKey    = $orderDetails->dropshipper->app_key;
                                 $appSecret = $orderDetails->dropshipper->app_secret;
