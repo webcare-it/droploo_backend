@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "category_name": "Fitness Equipment",
+    "image": "https://example.com/images/fitness_equipment.jpg",
+    "total_products": 150
+  },
+  {
+    "id": "2",
+    "category_name": "Running Gear",
+    "image": "https://example.com/images/running_gear.jpg",
+    "total_products": 120
+  },
+  {
+    "id": "3",
+    "category_name": "Outdoor Adventure",
+    "image": "https://example.com/images/outdoor_adventure.jpg",
+    "total_products": 90
+  },
+  {
+    "id": "4",
+    "category_name": "Team Sports",
+    "image": "https://example.com/images/team_sports.jpg",
+    "total_products": 200
+  },
+  {
+    "id": "5",
+    "category_name": "Yoga & Wellness",
+    "image": "https://example.com/images/yoga_wellness.jpg",
+    "total_products": 80
+  },
+  {
+    "id": "6",
+    "category_name": "Cycling",
+    "image": "https://example.com/images/cycling.jpg",
+    "total_products": 75
+  },
+  {
+    "id": "7",
+    "category_name": "Water Sports",
+    "image": "https://example.com/images/water_sports.jpg",
+    "total_products": 60
+  },
+  {
+    "id": "8",
+    "category_name": "Winter Sports",
+    "image": "https://example.com/images/winter_sports.jpg",
+    "total_products": 55
+  },
+  {
+    "id": "9",
+    "category_name": "Golf",
+    "image": "https://example.com/images/golf.jpg",
+    "total_products": 40
+  },
+  {
+    "id": "10",
+    "category_name": "Home Gym",
+    "image": "https://example.com/images/home_gym.jpg",
+    "total_products": 110
+  }
+]

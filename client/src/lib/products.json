@@ -1,0 +1,86 @@
+[
+  {
+    "id": "101",
+    "product_name": "Yoga Mat",
+    "image": "https://example.com/images/yoga_mat.jpg",
+    "rate": 4.5,
+    "price": 25.99
+  },
+  {
+    "id": "102",
+    "product_name": "Running Shoes",
+    "image": "https://example.com/images/running_shoes.jpg",
+    "rate": 4.7,
+    "price": 89.99
+  },
+  {
+    "id": "103",
+    "product_name": "Dumbbell Set",
+    "image": "https://example.com/images/dumbbell_set.jpg",
+    "rate": 4.8,
+    "price": 49.99
+  },
+  {
+    "id": "104",
+    "product_name": "Water Bottle",
+    "image": "https://example.com/images/water_bottle.jpg",
+    "rate": 4.3,
+    "price": 12.99
+  },
+  {
+    "id": "105",
+    "product_name": "Treadmill",
+    "image": "https://example.com/images/treadmill.jpg",
+    "rate": 4.6,
+    "price": 499.99
+  },
+  {
+    "id": "106",
+    "product_name": "Exercise Bike",
+    "image": "https://example.com/images/exercise_bike.jpg",
+    "rate": 4.4,
+    "price": 299.99
+  },
+  {
+    "id": "107",
+    "product_name": "Resistance Bands",
+    "image": "https://example.com/images/resistance_bands.jpg",
+    "rate": 4.7,
+    "price": 19.99
+  },
+  {
+    "id": "108",
+    "product_name": "Kettlebell",
+    "image": "https://example.com/images/kettlebell.jpg",
+    "rate": 4.5,
+    "price": 39.99
+  },
+  {
+    "id": "109",
+    "product_name": "Sports Watch",
+    "image": "https://example.com/images/sports_watch.jpg",
+    "rate": 4.6,
+    "price": 129.99
+  },
+  {
+    "id": "110",
+    "product_name": "Protein Powder",
+    "image": "https://example.com/images/protein_powder.jpg",
+    "rate": 4.8,
+    "price": 59.99
+  },
+  {
+    "id": "111",
+    "product_name": "Sports Watch",
+    "image": "https://example.com/images/sports_watch.jpg",
+    "rate": 4.6,
+    "price": 129.99
+  },
+  {
+    "id": "112",
+    "product_name": "Protein Powder",
+    "image": "https://example.com/images/protein_powder.jpg",
+    "rate": 4.8,
+    "price": 59.99
+  }
+]
