@@ -218,6 +218,7 @@
                                                 <select class="form-control" name="size"
                                                     id="size-{{ $orderDetail?->id }}"
                                                     onchange="productSize({{ $orderDetail }})">
+                                                    <option value="" selected disabled>No Size</option>
                                                     @foreach ($variations as $size)
                                                         <option value="{{ $size->size }}"
                                                                 {{ $size->size == $orderDetail->size ? 'selected' : '' }}>
