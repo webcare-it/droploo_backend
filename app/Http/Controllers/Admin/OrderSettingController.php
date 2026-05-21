@@ -30,12 +30,12 @@ class OrderSettingController extends Controller
         $settings = OrderSetting::first();
         if (!$settings) {
             $settings = OrderSetting::create([
-                'order_status' => $request->order_status,
+                'order_status' => $request->order_status ?? 0,
                 'order_disable_message' => $request->order_disable_message,
             ]);
         } else {
             $settings->update([
-                'order_status' => $request->order_status,
+                'order_status' => $request->order_status ?? 0,
                 'order_disable_message' => $request->order_disable_message,
             ]);
         }
