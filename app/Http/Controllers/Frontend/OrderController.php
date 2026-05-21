@@ -141,6 +141,15 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         try {
+            // Check if order creation is enabled
+            $orderSetting = \App\Models\OrderSetting::getSetting();
+            
+            if (!$orderSetting->order_status) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => $orderSetting->order_off_message ?? 'Order creation is currently disabled. Please try again later.'
+                ], 503);
+            }
 
             // Step 1: Validate dropshipper auth headers
             $dropshipper = Dropshipper::where('app_key', $request->header('App-Key'))
