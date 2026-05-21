@@ -23,19 +23,22 @@ class OrderSettingController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'order_status' => 'required|in:0,1',
+            'order_status' => 'nullable|in:0,1',
             'order_disable_message' => 'nullable|string',
         ]);
+
+        // If checkbox is not checked, it won't be in the request, so default to 0
+        $orderStatus = $request->has('order_status') ? 1 : 0;
 
         $settings = OrderSetting::first();
         if (!$settings) {
             $settings = OrderSetting::create([
-                'order_status' => $request->order_status ?? 0,
+                'order_status' => $orderStatus,
                 'order_disable_message' => $request->order_disable_message,
             ]);
         } else {
             $settings->update([
-                'order_status' => $request->order_status ?? 0,
+                'order_status' => $orderStatus,
                 'order_disable_message' => $request->order_disable_message,
             ]);
         }
