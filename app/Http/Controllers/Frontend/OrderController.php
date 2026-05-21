@@ -8,6 +8,7 @@ use App\Models\Cart;
 use App\Models\Dropshipper;
 use App\Models\Order;
 use App\Models\OrderDetails;
+use App\Models\OrderSetting;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
@@ -141,6 +142,14 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         try {
+            // Check if order creation is enabled
+            $orderSetting = OrderSetting::first();
+            if (!$orderSetting || $orderSetting->order_status == 0) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => $orderSetting && $orderSetting->order_disable_message ? $orderSetting->order_disable_message : 'Order creation is currently disabled. Please try again later.'
+                ], 503);
+            }
 
             // Step 1: Validate dropshipper auth headers
             $dropshipper = Dropshipper::where('app_key', $request->header('App-Key'))
