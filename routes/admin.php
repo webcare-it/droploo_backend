@@ -209,10 +209,6 @@ Route::group(['middleware' => 'isAdmin'], function(){
     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'generalSetting']);
     Route::post('/settings/update', [\App\Http\Controllers\Admin\SettingController::class, 'updateGeneralSetting']);
 
-    // Order Settings
-    Route::get('/order/settings', [\App\Http\Controllers\Admin\OrderSettingController::class, 'index'])->name('admin.order.settings');
-    Route::post('/order/settings/update', [\App\Http\Controllers\Admin\OrderSettingController::class, 'update'])->name('admin.order.settings.update');
-
     Route::get('/admin/google/facebook/code', [\App\Http\Controllers\Admin\SettingController::class, 'facebookGoogleForm']);
     Route::post('/admin/google/facebook/code/store', [\App\Http\Controllers\Admin\SettingController::class, 'facebookGoogleFormStore'])->name('admin.google.facebook.code.store');
 

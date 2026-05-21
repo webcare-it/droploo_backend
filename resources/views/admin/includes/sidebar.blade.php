@@ -645,11 +645,6 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.order.settings') }}">
-                    <i class="bx bx-right-arrow-alt"></i>Order Settings
-                </a>
-            </li>
-            <li>
                 <a href="{{ url('/banner/add') }}">
                     <i class="bx bx-right-arrow-alt"></i>Banners
                 </a>
