@@ -29,6 +29,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductsExport;
 
 class ProductController extends Controller
 {
@@ -66,6 +68,12 @@ class ProductController extends Controller
         }
 
         return view('admin.products.index', compact('products', 'search'));
+    }
+
+    public function export()
+    {
+        $fileName = 'products_' . date('Y-m-d_H-i-s') . '.csv';
+        return Excel::download(new ProductsExport(), $fileName);
     }
 
     public function pageProductIndex ()

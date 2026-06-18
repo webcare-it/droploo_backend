@@ -222,6 +222,11 @@ class FrontendController extends Controller
         $categoryProducts = Category::where('slug', $slug) ->with(['products' => function ($query) {
             $query->orderBy('priority', 'asc');
         }])->first();
+
+        if (!$categoryProducts) {
+            abort(404);
+        }
+
         return view('frontend.v-2.product.category-products', compact('categoryProducts'));
     }
 
@@ -245,6 +250,11 @@ class FrontendController extends Controller
     public function subcategoryProducts($slug)
     {
         $subcategoryProducts = Subcategory::with('products')->where('slug', $slug)->first();
+
+        if (!$subcategoryProducts) {
+            abort(404);
+        }
+
         return view('frontend.v-2.product.subcategory-products', compact('subcategoryProducts'));
     }
 

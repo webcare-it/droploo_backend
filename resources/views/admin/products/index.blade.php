@@ -31,6 +31,11 @@
                                 <div class="ms-auto">
                                     <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm">Add new</a>
                                 </div>
+                                <div class="ms-2">
+                                    <a href="{{ route('products.export') }}" class="btn btn-success btn-sm">
+                                        <i class="bx bx-download"></i> Export Excel
+                                    </a>
+                                </div>
                             </div>
 
                            <div class="table-responsive mt-3">

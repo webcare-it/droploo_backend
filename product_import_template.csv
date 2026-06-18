@@ -1,0 +1,490 @@
+name,slug,category_id,subcategory_id,brand_id,regular_price,purchase_price,discount,discount_type,stock,sku,barcode,unit,low_stock_qty,thumbnail_img,photos,tags,short_description,description,status,is_published,is_featured,best_selling,is_new_arrival,todays_deal,is_variant,video_link,badge_name,batch_no,shipping_type,shipping_cost,weight,length,width,height,meta_title,meta_description,meta_img,position,variant_attributes
+Data One,,4,15,18,100,670,56,percent,100,SKU001123,123456789,Pc,5,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=60,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=1,190,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001123,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=60,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=1,191,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001123,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=60,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=1,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001124,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=61,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=2,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001125,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=62,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=3,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001126,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=63,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=4,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001127,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=64,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=5,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001128,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=65,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=6,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001129,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=66,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=7,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001130,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=67,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=8,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001131,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=68,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=9,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001132,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=69,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=10,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001133,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=70,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=11,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001134,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=71,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=12,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
+Data One,,3,17,4,100,980,78,percent,100,SKU001135,123456789,Pc,6,https://assets.goal.com/images/v3/blt52d5867d0f812c38/GOAL%20-%20Blank%20WEB%20-%20Facebook(1820).jpeg?auto=webp&format=pjpg&width=3840&quality=72,"{
+    ""photos"": [
+        ""https://assets.goal.com/images/v3/bltb6453848bb0be685/Social-16x9.png?auto=webp&format=pjpg&width=3840&quality=60"",
+        ""https://mbpschool.com/wp-content/uploads/2020/09/shutterstock_1256100517-scaled.jpg"",
+        ""https://hips.hearstapps.com/hmg-prod/images/lionel-messi-of-argentina-and-wife-antonella-roccuzzo-walk-news-photo-1686171671.jpg?crop=0.910xw:1.00xh;0.0425xw,0&resize=980"",
+        ""https://ichef.bbci.co.uk/ace/standard/820/cpsprodpb/6c15/live/9b39a380-5d53-11f0-9680-eb6b1ff651a1.jpg"",
+        ""https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUr2tp49cOXlkUab2hzVqptru9tYAUsst_sTnEGwXsVJZVyx5A8bSKSZY&s=10""
+    ]
+}","new,popular",Short description,Full description,1,1,1,0,0,0,1,https://youtube.com/watch?v=xyz,Hot,1,flat_rate,10,0.5,10,5,5,Sample Meta Title,Sample meta description,https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2025/05/1294/728/messi1.jpg?ve=1&tl=13,192,"{
+  ""variant_attributes"": [
+    {
+      ""attributes"": ""3/4 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES585-12A"",
+      ""quantity"": ""250"",
+      ""image"": ""14""
+    },
+    {
+      ""attributes"": ""4/5 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES775-34A"",
+      ""quantity"": ""250"",
+      ""image"": ""9""
+    },
+    {
+      ""attributes"": ""5/6 Age"",
+      ""price"": ""500"",
+      ""sku"": ""TES148-56A"",
+      ""quantity"": ""250"",
+      ""image"": ""5""
+    }
+  ]
+}"
