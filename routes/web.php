@@ -90,6 +90,9 @@ Route::get('/product/threestar/count/{product_id}', [App\Http\Controllers\Fronte
 Route::get('/product/twostar/count/{product_id}', [App\Http\Controllers\Frontend\ReviewController::class, 'twoStarRating']);
 Route::get('/product/onestar/count/{product_id}', [App\Http\Controllers\Frontend\ReviewController::class, 'oneStarRating']);
 
+// Product export route (must be before /products/{slug})
+Route::get('/products/export', [App\Http\Controllers\Admin\ProductController::class, 'export'])->name('products.export')->middleware('isAdmin');
+
 Route::get('/products/{slug}', [App\Http\Controllers\Frontend\FrontendController::class, 'categoryProducts']);
 Route::get('/subcategory/products/{slug}', [App\Http\Controllers\Frontend\FrontendController::class, 'subcategoryProducts'])->name('subcategory.products');
 Route::get('/feature/products', [App\Http\Controllers\Frontend\FeatureProductController::class, 'index']);
