@@ -74,7 +74,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
                 }
             }
         }
-        $photosJson = !empty($photos) ? json_encode(['photos' => $photos], JSON_UNESCAPED_UNICODE) : '';
+        $photosJson = !empty($photos) ? json_encode(['photos' => $photos], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '';
 
         // Build variant attributes JSON
         $variantAttributes = [];
@@ -89,7 +89,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
                 ];
             }
         }
-        $variantJson = !empty($variantAttributes) ? json_encode(['variant_attributes' => $variantAttributes], JSON_UNESCAPED_UNICODE) : '';
+        $variantJson = !empty($variantAttributes) ? json_encode(['variant_attributes' => $variantAttributes], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '';
 
         // Build tags
         $tags = [];
