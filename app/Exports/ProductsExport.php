@@ -69,8 +69,8 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
         $photos = [];
         if ($product->productImages && $product->productImages->count() > 0) {
             foreach ($product->productImages as $image) {
-                if ($image->image) {
-                    $photos[] = asset('/product/images/' . $image->gallery_image);
+                if ($image->gallery_image) {
+                    $photos[] = asset('/galleryImage/' . $image->gallery_image);
                 }
             }
         }
@@ -85,7 +85,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
                     'price' => (string)($image->price ?? $product->regular_price),
                     'sku' => $image->sku ?? '',
                     'quantity' => (string)($image->qty ?? $product->stock),
-                    'image' => asset('/product/images/' . $image->gallery_image) ?? '',
+                    'image' => asset('/galleryImage/' . $image->gallery_image) ?? '',
                 ];
             }
         }
