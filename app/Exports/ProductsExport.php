@@ -60,30 +60,32 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
 
     public function collection()
     {
-        return Product::with('category', 'subcategory', 'brand', 'productImages', 'colors', 'sizes')->latest()->take(50)->get();
+        return Product::with('category', 'subcategory', 'brand', 'productImages', 'colors', 'sizes')->latest()->take(20)->get();
     }
 
     public function map($product): array
     {
+        // Build photos JSON
         $photos = [];
         if ($product->productImages && $product->productImages->count() > 0) {
             foreach ($product->productImages as $image) {
                 if ($image->image) {
-                    $photos[] = $image->imageUrl;
+                    $photos[] = asset('/product/images/' . $image->gallery_image);
                 }
             }
         }
         $photosJson = !empty($photos) ? json_encode(['photos' => $photos], JSON_UNESCAPED_UNICODE) : '';
 
+        // Build variant attributes JSON
         $variantAttributes = [];
         if ($product->is_variable == 1 && $product->productImages && $product->productImages->count() > 0) {
             foreach ($product->productImages as $image) {
                 $variantAttributes[] = [
                     'attributes' => $image->size ?? '',
-                    'price' => (string)($image->price ?? 0),
-                    'sku' => '',
+                    'price' => (string)($image->price ?? $product->regular_price),
+                    'sku' => $image->sku ?? '',
                     'quantity' => (string)($image->qty ?? $product->stock),
-                    'image' => $image->imageUrl ?? '',
+                    'image' => asset('/product/images/' . $image->gallery_image) ?? '',
                 ];
             }
         }
