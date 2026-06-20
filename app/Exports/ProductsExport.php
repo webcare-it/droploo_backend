@@ -84,7 +84,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
                     'attributes' => $image->size ?? '',
                     'price' => (string)($image->price ?? $product->regular_price),
                     'sku' => $image->sku ?? '',
-                    'quantity' => (string)($image->qty ?? $product->stock),
+                    'quantity' => (string)($image->qty ?? $product->qty),
                     'image' => asset('/galleryImage/' . $image->gallery_image) ?? '',
                 ];
             }
