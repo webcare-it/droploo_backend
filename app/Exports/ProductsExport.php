@@ -84,6 +84,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
                 $variantAttributes[] = [
                     'attributes' => $image->size ?? '',
                     'price' => (string)($image->price ?? $product->regular_price),
+                    'wholesale_price' => (string)($image->wholesale_price ?? $product->wholesale_price),
                     'sku' => $image->sku ?? '',
                     'quantity' => (string)($image->qty ?? $product->qty),
                     'image' => asset('/galleryImage/' . $image->gallery_image) ?? '',
