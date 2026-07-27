@@ -8,6 +8,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Dropshippers</h3>
+                        <div class="card-tools">
+                            <a href="{{ url('dropshipper/export') }}" class="btn btn-success btn-sm">
+                                <i class="fas fa-file-csv"></i> Export CSV
+                            </a>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped">
