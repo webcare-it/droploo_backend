@@ -28,6 +28,8 @@ class DropshippersExport implements FromCollection, WithHeadings, WithMapping, W
             'total_withdraw',
             'app_key',
             'app_secret',
+            'dropshipper_id',
+            'package_id',
         ];
     }
 
@@ -52,6 +54,8 @@ class DropshippersExport implements FromCollection, WithHeadings, WithMapping, W
             $dropshipper->withdraw_sum_amount ?? 0,
             $dropshipper->app_key ?? '',
             $dropshipper->app_secret ?? '',
+            $dropshipper->dropshipper_id ?? '',
+            $dropshipper->package_id ?? '',
         ];
     }
 
