@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\Dropshipper;
+use App\Exports\DropshippersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DropshipperController extends Controller
 {
@@ -55,6 +57,12 @@ class DropshipperController extends Controller
         $dropshipper = Dropshipper::findOrFail($dropshipper_id);
 
         return view('admin.dropshipper.orders', compact('orders', 'dropshipper'));
+    }
+
+    // Export dropshippers
+    public function export()
+    {
+        return Excel::download(new DropshippersExport, 'dropshippers.csv');
     }
 
     // Delete dropshipper
