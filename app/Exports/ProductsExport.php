@@ -15,6 +15,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
     function __construct()
     {
         $this->headings = [
+            'id',
             'name',
             'slug',
             'category_id',
@@ -101,6 +102,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
         $tagsString = implode(',', $tags);
 
         return [
+            $product->id ?? '',
             $this->ensureUtf8($product->name),
             $this->ensureUtf8($product->slug),
             $product->cat_id ?? '',
