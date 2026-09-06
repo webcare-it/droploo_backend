@@ -189,6 +189,13 @@ class OrderController extends Controller
                 ], 400);
             }
 
+            if ($request->order_type !== 'dropshipping') {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Only dropshipping orders are allowed. Please provide order_type as "dropshipping".'
+                ], 400);
+            }
+
             // Step 3: Minimum delivery cost
             if ($request->delivery_cost < 60) {
                 return response()->json([
