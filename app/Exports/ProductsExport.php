@@ -111,7 +111,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
             $product->regular_price ?? '',
             $product->buy_price ?? '',
             $product->regular_price - $product->discount_price ?? '',
-            'percent',
+            'flat',
             $product->wholesale_price ?? '',
             $product->stock ?? '',
             $product->sku ?? '',
