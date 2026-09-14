@@ -21,6 +21,11 @@ use App\Exports\OrdersExport;
 use App\Exports\AllOrdersExport;
 use App\Models\ProductImage;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
+use Illuminate\Support\Facades\Response;
+use ZipArchive;
 
 class ReportController extends Controller
 {
@@ -999,6 +1004,142 @@ class ReportController extends Controller
         $sql = $this->buildAllOrdersQuery($request);
 
         return Excel::download(new AllOrdersExport($sql), 'all-orders-' . now()->format('Y-m-d') . '.csv');
+    }
+
+    public function exportAllOrdersChunked(Request $request)
+    {
+        $request->validate([
+            'per_file' => 'required|integer|min:10|max:5000',
+            'format' => 'required|in:csv,excel',
+        ]);
+
+        $perFile = (int) $request->per_file;
+        $format = $request->format;
+        $sql = $this->buildAllOrdersQuery($request);
+        $totalCount = (clone $sql)->count();
+
+        if ($totalCount === 0) {
+            return redirect()->back()->with('error', 'No orders found to export.');
+        }
+
+        $totalFiles = ceil($totalCount / $perFile);
+        $dateStr = now()->format('Y-m-d');
+        $ext = $format === 'excel' ? 'xlsx' : 'csv';
+        $zipFileName = "all-orders-{$dateStr}-{$totalCount}-orders.zip";
+        $tempDir = storage_path('app/export_temp_' . uniqid());
+
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        for ($page = 0; $page < $totalFiles; $page++) {
+            $offset = $page * $perFile;
+            $orders = (clone $sql)->with('orderDetails', 'admin')->skip($offset)->take($perFile)->get();
+
+            $chunkNum = $page + 1;
+            $fileName = "orders_{$dateStr}_part_{$chunkNum}.{$ext}";
+            $filePath = $tempDir . '/' . $fileName;
+
+            $this->writeCsv($orders, $filePath);
+        }
+
+        // Create ZIP
+        $zip = new ZipArchive();
+        $zipPath = storage_path('app/' . $zipFileName);
+
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            $files = glob($tempDir . '/*');
+            foreach ($files as $file) {
+                $zip->addFile($file, basename($file));
+            }
+            $zip->close();
+        }
+
+        // Cleanup temp files
+        $files = glob($tempDir . '/*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
+        rmdir($tempDir);
+
+        return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
+    }
+
+    private function writeCsv($orders, $filePath)
+    {
+        $handle = fopen($filePath, 'w');
+        fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+
+        // Header
+        fputcsv($handle, [
+            'order_code', 'customer_name', 'customer_email', 'customer_phone',
+            'shipping_address', 'products', 'payment_type', 'delivery_status',
+            'payment_status', 'notes', 'shipping_area',
+        ]);
+
+        foreach ($orders as $order) {
+            $products = [];
+            foreach ($order->orderDetails as $detail) {
+                $attr = [];
+                if ($detail->size && $detail->size !== 'No size') {
+                    $attr['attribute'] = $detail->size;
+                }
+                if ($detail->color && $detail->color !== 'No color') {
+                    $attr['attribute'] = ($attr['attribute'] ?? '') . ' ' . $detail->color;
+                }
+                $products[] = [
+                    'product_id' => $detail->product_id,
+                    'name' => $detail->product?->name ?? '',
+                    'quantity' => $detail->qty,
+                    'price' => $detail->price,
+                    'attribute_value' => !empty($attr) ? $attr : null,
+                ];
+            }
+
+            $paymentType = $this->mapPaymentType($order->payment_type);
+            $paymentStatus = $this->mapPaymentStatus($order);
+
+            fputcsv($handle, [
+                $order->orderId ?? '',
+                $order->name,
+                $order->email ?? '',
+                $order->phone,
+                $order->address,
+                json_encode($products, JSON_UNESCAPED_UNICODE),
+                $paymentType,
+                $order->order_status,
+                $paymentStatus,
+                $order->notes ?? '',
+                $order->pathao_zone_name ?? $order->area ?? '',
+            ]);
+        }
+
+        fclose($handle);
+    }
+
+    private function mapPaymentType($type)
+    {
+        $map = [
+            'cod' => 'cash_on_delivery',
+            'cash_on_delivery' => 'cash_on_delivery',
+            'wallet' => 'wallet',
+            'online' => 'online',
+            'bkash' => 'bkash',
+            'nagad' => 'nagad',
+            'rocket' => 'rocket',
+        ];
+        return $map[strtolower($type)] ?? $type;
+    }
+
+    private function mapPaymentStatus($order)
+    {
+        if ($order->order_status === 'delivered' || $order->order_status === 'complete' || $order->order_status === 'paid') {
+            return 'paid';
+        }
+        if ($order->advance && (float)$order->advance > 0) {
+            return 'partial';
+        }
+        return 'unpaid';
     }
 
     public function searchResult(Request $request)

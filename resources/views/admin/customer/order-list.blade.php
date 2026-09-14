@@ -17,12 +17,9 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <a href="{{ route('all.orders.export.excel', request()->query()) }}" class="btn btn-success btn-sm">
-                                            <i class="fa fa-file-excel-o"></i> Export Excel
-                                        </a>
-                                        <a href="{{ route('all.orders.export.csv', request()->query()) }}" class="btn btn-primary btn-sm">
-                                            <i class="fa fa-file-text-o"></i> Export CSV
-                                        </a>
+                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
+                                            <i class="fa fa-download"></i> Export Orders
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -193,6 +190,45 @@
             </div>
         </div>
     </div>
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form action="{{ url('/all-orders/export/chunked') }}" method="GET" target="_blank">
+                    @csrf
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="exportModalLabel"><i class="fa fa-download"></i> Export Orders</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                        <input type="hidden" name="from" value="{{ request('from') }}">
+                        <input type="hidden" name="to" value="{{ request('to') }}">
+                        <input type="hidden" name="user_id" value="{{ request('user_id') }}">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Per File Records</label>
+                            <input type="number" name="per_file" class="form-control" value="500" min="10" max="5000" required>
+                            <small class="text-muted">File a koto ta order thakbe</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">File Format</label>
+                            <select name="format" class="form-select">
+                                <option value="csv">CSV</option>
+                                <option value="excel">Excel (.xlsx)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-download"></i> Download</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('script')
