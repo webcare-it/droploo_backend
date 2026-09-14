@@ -15,7 +15,16 @@
                                         <h5 class="mb-1">All orders</h5>
                                     </div>
                                 </div>
-                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <a href="{{ route('all.orders.export.excel', request()->query()) }}" class="btn btn-success btn-sm">
+                                            <i class="fa fa-file-excel-o"></i> Export Excel
+                                        </a>
+                                        <a href="{{ route('all.orders.export.csv', request()->query()) }}" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-file-text-o"></i> Export CSV
+                                        </a>
+                                    </div>
+                                </div>
                                 <div class="col-md-4">
                                     <form action="{{ url('/all-orders') }}" method="GET">
                                         @csrf

@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use App\Exports\OrdersExport;
+use App\Exports\AllOrdersExport;
 use App\Models\ProductImage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -920,12 +921,23 @@ class ReportController extends Controller
 
     public function allOrders(Request $request)
     {
+        $sql = $this->buildAllOrdersQuery($request);
+        $all_orders = $sql->paginate(100);
+
+        $users = Admin::orderBy('id', 'desc')
+            ->where('id', '!=', session()->get('id'))
+            ->get();
+
+        return view('admin.customer.order-list', compact('all_orders', 'users'));
+    }
+
+    private function buildAllOrdersQuery(Request $request)
+    {
         if (session('name') == 'admin') {
             $sql = Order::with('orderDetails', 'admin')
                 ->orderBy('id', 'desc')
                 ->where('is_deleted', '!=', true);
 
-            // Searching...
             if (!empty($request->search)) {
                 $searchTerm = $request->search;
                 $sql->where(function ($query) use ($searchTerm) {
@@ -954,7 +966,6 @@ class ReportController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->where('is_deleted', '!=', true);
 
-            // Searching...
             if (!empty($request->search)) {
                 $searchTerm = $request->search;
                 $sql->where(function ($query) use ($searchTerm) {
@@ -973,13 +984,23 @@ class ReportController extends Controller
             }
         }
 
-        $all_orders = $sql->paginate(100);
+        return $sql;
+    }
 
-        $users = Admin::orderBy('id', 'desc')
-            ->where('id', '!=', session()->get('id'))
-            ->get();
+    public function exportAllOrdersExcel(Request $request)
+    {
+        $sql = $this->buildAllOrdersQuery($request);
+        $orders = $sql->get();
 
-        return view('admin.customer.order-list', compact('all_orders', 'users'));
+        return Excel::download(new AllOrdersExport($orders), 'all-orders-' . now()->format('Y-m-d') . '.xlsx');
+    }
+
+    public function exportAllOrdersCsv(Request $request)
+    {
+        $sql = $this->buildAllOrdersQuery($request);
+        $orders = $sql->get();
+
+        return Excel::download(new AllOrdersExport($orders), 'all-orders-' . now()->format('Y-m-d') . '.csv');
     }
 
     public function searchResult(Request $request)
