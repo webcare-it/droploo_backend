@@ -7,9 +7,8 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
-use Maatwebsite\Excel\Concerns\ShouldChunk;
 
-class AllOrdersExport implements FromQuery, WithHeadings, WithMapping, WithCustomCsvSettings, ShouldChunk
+class AllOrdersExport implements FromQuery, WithHeadings, WithMapping, WithCustomCsvSettings
 {
     protected $query;
 
@@ -20,11 +19,6 @@ class AllOrdersExport implements FromQuery, WithHeadings, WithMapping, WithCusto
     public function query()
     {
         return $this->query;
-    }
-
-    public function chunkSize(): int
-    {
-        return 500;
     }
 
     public function map($order) : array {
