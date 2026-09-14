@@ -2,23 +2,29 @@
 
 namespace App\Exports;
 
-use App\Models\Order;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
+use Maatwebsite\Excel\Concerns\ShouldChunk;
 
-class AllOrdersExport implements FromCollection, WithHeadings, WithMapping, WithCustomCsvSettings
+class AllOrdersExport implements FromQuery, WithHeadings, WithMapping, WithCustomCsvSettings, ShouldChunk
 {
-    protected $orders;
+    protected $query;
 
-    function __construct($orders) {
-        $this->orders = $orders;
+    function __construct(Builder $query) {
+        $this->query = $query;
     }
 
-    public function collection()
+    public function query()
     {
-        return $this->orders;
+        return $this->query;
+    }
+
+    public function chunkSize(): int
+    {
+        return 500;
     }
 
     public function map($order) : array {

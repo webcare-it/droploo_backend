@@ -990,17 +990,15 @@ class ReportController extends Controller
     public function exportAllOrdersExcel(Request $request)
     {
         $sql = $this->buildAllOrdersQuery($request);
-        $orders = $sql->get();
 
-        return Excel::download(new AllOrdersExport($orders), 'all-orders-' . now()->format('Y-m-d') . '.xlsx');
+        return Excel::download(new AllOrdersExport($sql), 'all-orders-' . now()->format('Y-m-d') . '.xlsx');
     }
 
     public function exportAllOrdersCsv(Request $request)
     {
         $sql = $this->buildAllOrdersQuery($request);
-        $orders = $sql->get();
 
-        return Excel::download(new AllOrdersExport($orders), 'all-orders-' . now()->format('Y-m-d') . '.csv');
+        return Excel::download(new AllOrdersExport($sql), 'all-orders-' . now()->format('Y-m-d') . '.csv');
     }
 
     public function searchResult(Request $request)
