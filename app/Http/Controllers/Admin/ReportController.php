@@ -1040,7 +1040,11 @@ class ReportController extends Controller
             $fileName = "orders_{$dateStr}_part_{$chunkNum}.{$ext}";
             $filePath = $tempDir . '/' . $fileName;
 
-            $this->writeCsv($orders, $filePath);
+            if ($format === 'excel') {
+                $this->writeXlsx($orders, $filePath);
+            } else {
+                $this->writeCsv($orders, $filePath);
+            }
         }
 
         // Create ZIP
@@ -1115,6 +1119,72 @@ class ReportController extends Controller
         }
 
         fclose($handle);
+    }
+
+    private function writeXlsx($orders, $filePath)
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headers = [
+            'order_code', 'customer_name', 'customer_email', 'customer_phone',
+            'shipping_address', 'products', 'payment_type', 'delivery_status',
+            'payment_status', 'notes', 'shipping_area',
+        ];
+
+        foreach ($headers as $col => $header) {
+            $cell = $sheet->getCellByColumnAndRow($col + 1, 1);
+            $cell->setValue($header);
+            $cell->getStyle()->getFont()->setBold(true);
+        }
+
+        $rowNum = 2;
+        foreach ($orders as $order) {
+            $products = [];
+            foreach ($order->orderDetails as $detail) {
+                $attr = [];
+                if ($detail->size && $detail->size !== 'No size') {
+                    $attr['attribute'] = $detail->size;
+                }
+                if ($detail->color && $detail->color !== 'No color') {
+                    $attr['attribute'] = ($attr['attribute'] ?? '') . ' ' . $detail->color;
+                }
+                $products[] = [
+                    'product_id' => $detail->product_id,
+                    'name' => $detail->product?->name ?? '',
+                    'quantity' => $detail->qty,
+                    'price' => $detail->price,
+                    'attribute_value' => !empty($attr) ? $attr : null,
+                ];
+            }
+
+            $paymentType = $this->mapPaymentType($order->payment_type);
+            $paymentStatus = $this->mapPaymentStatus($order);
+
+            $data = [
+                $order->orderId ?? '',
+                $order->name,
+                $order->email ?? '',
+                $order->phone,
+                $order->address,
+                json_encode($products, JSON_UNESCAPED_UNICODE),
+                $paymentType,
+                $order->order_status,
+                $paymentStatus,
+                $order->notes ?? '',
+                $order->pathao_zone_name ?? $order->area ?? '',
+            ];
+
+            foreach ($data as $col => $value) {
+                $sheet->getCellByColumnAndRow($col + 1, $rowNum)->setValue($value);
+            }
+            $rowNum++;
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save($filePath);
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
     }
 
     private function mapPaymentType($type)
