@@ -1176,7 +1176,8 @@ class ReportController extends Controller
             ];
 
             foreach ($data as $col => $value) {
-                $sheet->getCellByColumnAndRow($col + 1, $rowNum)->setValue($value);
+                $cell = $sheet->getCellByColumnAndRow($col + 1, $rowNum);
+                $cell->setValueExplicit((string)($value ?? ''), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             }
             $rowNum++;
         }
