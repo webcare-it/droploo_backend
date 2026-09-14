@@ -22,60 +22,81 @@ class AllOrdersExport implements FromQuery, WithHeadings, WithMapping, WithCusto
     }
 
     public function map($order) : array {
-        $productNames = [];
-        foreach($order->orderDetails as $details){
-            if ($details->product) {
-                $productNames[] = $this->ensureUtf8($details->product->name);
+        $products = [];
+        foreach ($order->orderDetails as $detail) {
+            $attr = [];
+            if ($detail->size && $detail->size !== 'No size') {
+                $attr['attribute'] = $detail->size;
             }
+            if ($detail->color && $detail->color !== 'No color') {
+                $attr['attribute'] = ($attr['attribute'] ?? '') . ' ' . $detail->color;
+            }
+
+            $products[] = [
+                'product_id' => $detail->product_id,
+                'name' => $detail->product?->name ?? '',
+                'quantity' => $detail->qty,
+                'price' => $detail->price,
+                'attribute_value' => !empty($attr) ? $attr : null,
+            ];
         }
-        $combinedProductNames = implode(', ', $productNames);
+
+        $paymentType = $this->mapPaymentType($order->payment_type);
+        $paymentStatus = $this->mapPaymentStatus($order);
 
         return [
             $order->orderId ?? '',
             $this->ensureUtf8($order->name),
-            $order->phone,
             $this->ensureUtf8($order->email ?? ''),
+            $order->phone,
             $this->ensureUtf8($order->address),
-            $this->ensureUtf8($order->pathao_city_name ?? ''),
-            $this->ensureUtf8($order->pathao_zone_name ?? ''),
-            $order->price,
-            $order->area,
-            $order->discount ?? '',
-            $order->advance ?? '',
-            $order->qty,
-            $order->payment_type,
-            $this->ensureUtf8($order->order_status),
-            $this->ensureUtf8($order->order_type),
-            $this->ensureUtf8($order->customer_type),
-            $this->ensureUtf8($order->courier_name ?? ''),
-            $this->ensureUtf8($combinedProductNames),
-            $this->ensureUtf8($order->admin?->name ?? ''),
-            $order->created_at ? $order->created_at->format('d-m-Y H:i:s') : '',
+            json_encode($products, JSON_UNESCAPED_UNICODE),
+            $paymentType,
+            $order->order_status,
+            $paymentStatus,
+            $this->ensureUtf8($order->notes ?? ''),
+            $this->ensureUtf8($order->pathao_zone_name ?? $order->area ?? ''),
         ];
+    }
+
+    private function mapPaymentType($type)
+    {
+        $map = [
+            'cod' => 'cash_on_delivery',
+            'cash_on_delivery' => 'cash_on_delivery',
+            'wallet' => 'wallet',
+            'online' => 'online',
+            'bkash' => 'bkash',
+            'nagad' => 'nagad',
+            'rocket' => 'rocket',
+        ];
+        return $map[strtolower($type)] ?? $type;
+    }
+
+    private function mapPaymentStatus($order)
+    {
+        if ($order->order_status === 'delivered' || $order->order_status === 'complete' || $order->order_status === 'paid') {
+            return 'paid';
+        }
+        if ($order->advance && (float)$order->advance > 0) {
+            return 'partial';
+        }
+        return 'unpaid';
     }
 
     public function headings() : array {
         return [
-            'Order ID',
-            'Customer Name',
-            'Phone',
-            'Email',
-            'Address',
-            'City',
-            'Zone',
-            'Amount',
-            'Delivery Charge',
-            'Discount',
-            'Advance',
-            'Quantity',
-            'Payment Type',
-            'Order Status',
-            'Order Type',
-            'Customer Type',
-            'Courier',
-            'Product(s)',
-            'Assigned User',
-            'Order Date',
+            'order_code',
+            'customer_name',
+            'customer_email',
+            'customer_phone',
+            'shipping_address',
+            'products',
+            'payment_type',
+            'delivery_status',
+            'payment_status',
+            'notes',
+            'shipping_area',
         ];
     }
 
