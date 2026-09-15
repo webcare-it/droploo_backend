@@ -98,7 +98,7 @@ class AllOrdersExport implements FromQuery, WithHeadings, WithMapping, WithCusto
             'payment_status',
             'notes',
             'shipping_area',
-            'order_type',
+            'order_by',
         ];
     }
 
