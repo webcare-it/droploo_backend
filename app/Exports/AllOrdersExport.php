@@ -56,6 +56,7 @@ class AllOrdersExport implements FromQuery, WithHeadings, WithMapping, WithCusto
             $paymentStatus,
             $this->ensureUtf8($order->notes ?? ''),
             $this->ensureUtf8($order->pathao_zone_name ?? $order->area ?? ''),
+            $order->order_type == 'Dropshipping' ? 'Dropshipping' : 'own',
         ];
     }
 
@@ -97,6 +98,7 @@ class AllOrdersExport implements FromQuery, WithHeadings, WithMapping, WithCusto
             'payment_status',
             'notes',
             'shipping_area',
+            'order_type',
         ];
     }
 
