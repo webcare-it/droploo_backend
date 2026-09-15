@@ -1078,7 +1078,7 @@ class ReportController extends Controller
         fputcsv($handle, [
             'order_code', 'customer_name', 'customer_email', 'customer_phone',
             'shipping_address', 'products', 'payment_type', 'delivery_status',
-            'payment_status', 'notes', 'shipping_area',
+            'payment_status', 'notes', 'shipping_area', 'order_by',
         ]);
 
         foreach ($orders as $order) {
@@ -1115,6 +1115,7 @@ class ReportController extends Controller
                 $paymentStatus,
                 $order->notes ?? '',
                 $order->pathao_zone_name ?? $order->area ?? '',
+                $order->order_type == 'Dropshipping' ? 'Dropshipping' : 'own',
             ]);
         }
 
@@ -1129,7 +1130,7 @@ class ReportController extends Controller
         $headers = [
             'order_code', 'customer_name', 'customer_email', 'customer_phone',
             'shipping_address', 'products', 'payment_type', 'delivery_status',
-            'payment_status', 'notes', 'shipping_area',
+            'payment_status', 'notes', 'shipping_area', 'order_by',
         ];
 
         foreach ($headers as $col => $header) {
@@ -1173,6 +1174,7 @@ class ReportController extends Controller
                 $paymentStatus,
                 $order->notes ?? '',
                 $order->pathao_zone_name ?? $order->area ?? '',
+                $order->order_type == 'Dropshipping' ? 'Dropshipping' : 'own',
             ];
 
             foreach ($data as $col => $value) {
