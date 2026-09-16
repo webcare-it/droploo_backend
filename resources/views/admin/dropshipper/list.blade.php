@@ -12,6 +12,9 @@
                             <a href="{{ url('dropshipper/export') }}" class="btn btn-success btn-sm">
                                 <i class="fas fa-file-csv"></i> Export CSV
                             </a>
+                            <a href="{{ url('dropshipper/export/excel') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </a>
                         </div>
                     </div>
                     <div class="card-body">

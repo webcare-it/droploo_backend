@@ -321,6 +321,7 @@ Route::group(['middleware' => 'isAdmin'], function(){
     //Dropshipper Info...
     Route::get('/dropshipper-list', [\App\Http\Controllers\Admin\DropshipperController::class, 'dropshipperList']);
     Route::get('/dropshipper/export', [\App\Http\Controllers\Admin\DropshipperController::class, 'export'])->name('dropshippers.export');
+    Route::get('/dropshipper/export/excel', [\App\Http\Controllers\Admin\DropshipperController::class, 'exportExcel'])->name('dropshippers.export.excel');
     Route::get('/dropshipper-details/{id}', [\App\Http\Controllers\Admin\DropshipperController::class, 'dropshipperDetails']);
     Route::get('/dropshipper-edit/{id}', [\App\Http\Controllers\Admin\DropshipperController::class, 'dropshipperEdit']);
     Route::post('/dropshipper-update/{id}', [\App\Http\Controllers\Admin\DropshipperController::class, 'dropshipperUpdate']);

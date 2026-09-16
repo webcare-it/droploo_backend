@@ -59,10 +59,16 @@ class DropshipperController extends Controller
         return view('admin.dropshipper.orders', compact('orders', 'dropshipper'));
     }
 
-    // Export dropshippers
+    // Export dropshippers as CSV
     public function export()
     {
         return Excel::download(new DropshippersExport, 'dropshippers.csv');
+    }
+
+    // Export dropshippers as Excel
+    public function exportExcel()
+    {
+        return Excel::download(new DropshippersExport, 'dropshippers.xlsx');
     }
 
     // Delete dropshipper
