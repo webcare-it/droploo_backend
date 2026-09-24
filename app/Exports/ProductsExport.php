@@ -113,7 +113,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
             ($product->discount_price !== null) ? ($product->regular_price - $product->discount_price) : 0,
             'flat',
             $product->wholesale_price ?? '',
-            $product->stock ?? '',
+            $product->qty ?? '',
             $product->sku ?? '',
             '', // barcode
             'Pc', // unit
