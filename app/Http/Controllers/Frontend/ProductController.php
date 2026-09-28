@@ -55,7 +55,7 @@ class ProductController extends Controller
     public function allProducts ()
     {
         try {
-            $products = Product::with('productImages', 'category')->where('status', 1)->orderBy('priority', 'desc')->get();
+            $products = Product::with('productImages', 'category', 'subcategory')->where('status', 1)->orderBy('priority', 'desc')->get();
 
             if ($products->isEmpty()) {
                 return response()->json([
