@@ -184,8 +184,21 @@
                                     </tr>
                                     @php
                                         $sum = 0;
+                                        $totalWholesale = 0;
                                     @endphp
                                     @foreach ($order->orderDetails as $orderDetail)
+                                        @php
+                                            $wholesalePrice = $orderDetail->product?->wholesale_price ?? 0;
+                                            if ($orderDetail->product?->is_variable == 1) {
+                                                $variantImage = App\Models\ProductImage::where('size', $orderDetail->size)
+                                                    ->where('product_id', $orderDetail->product_id)
+                                                    ->first();
+                                                if ($variantImage && isset($variantImage->wholesale_price)) {
+                                                    $wholesalePrice = $variantImage->wholesale_price;
+                                                }
+                                            }
+                                            $totalWholesale += $wholesalePrice * $orderDetail->qty;
+                                        @endphp
                                         <tr>
                                             <td>
                                                 <img src="{{ asset('/product/images/' . $orderDetail->product?->image) }}"
@@ -239,6 +252,7 @@
                                                     onblur="productPrice({{ $orderDetail }})"
                                                     value="{{ $total = $orderDetail->price }}"
                                                     class="form-control" />
+                                                <small class="text-muted">Wholesale: {{ $wholesalePrice }}</small>
                                             </td>
                                             <td>
                                                 <input type="number" name=""
@@ -276,6 +290,17 @@
                                     @endforeach
                                 </select>
 
+                                <div class="mt-3 mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Total Wholesale</strong>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input class="form-control" type="number" readonly id="total_wholesale"
+                                                value="{{ $totalWholesale }}">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="mt-3 mb-3">
                                     <div class="row">
                                         <div class="col-md-6">
