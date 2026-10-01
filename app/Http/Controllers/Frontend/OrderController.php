@@ -205,7 +205,9 @@ class OrderController extends Controller
             }
 
             // Step 4: Calculate deduction before saving order
-            $deductAmount = $request->delivery_cost; // base delivery charge
+            $deductAmount   = $request->delivery_cost; // base delivery charge
+            $wholesaleTotal = 0;
+            $sellingTotal   = 0;
 
             foreach ($request->products as $productData) {
                 $product = Product::find($productData['id']);
@@ -226,13 +228,16 @@ class OrderController extends Controller
                         }
                     }
 
-                    // Calculate difference: if selling price < wholesale price, add to deduction
-                    $priceDifference = $wholesalePrice - $sellingPrice;
-
-                    if ($priceDifference > 0) {
-                        $deductAmount += ($priceDifference * $quantity);
-                    }
+                    $wholesaleTotal += $wholesalePrice * $quantity;
+                    $sellingTotal   += $sellingPrice * $quantity;
                 }
+            }
+
+            $payableTotal = max(0, (float)($request->price ?? $sellingTotal));
+            $shortfall    = $wholesaleTotal - $payableTotal;
+
+            if ($shortfall > 0) {
+                $deductAmount += $shortfall;
             }
 
             // Step 4.1: Validate all products before creating order
