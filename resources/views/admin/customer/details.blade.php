@@ -232,10 +232,10 @@
                                                     id="size-{{ $orderDetail?->id }}"
                                                     onchange="productSize({{ $orderDetail }})">
                                                     <option value="" selected disabled>No Size</option>
-                                                    @foreach ($variations as $size)
-                                                        <option value="{{ $size->size }}"
-                                                                {{ $size->size == $orderDetail->size ? 'selected' : '' }}>
-                                                                {{ $size->size }}</option>
+                                                    @foreach ($variations->pluck('size')->filter(fn($s) => filled($s))->unique() as $size)
+                                                        <option value="{{ $size }}"
+                                                                {{ $size == $orderDetail->size ? 'selected' : '' }}>
+                                                                {{ $size }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
