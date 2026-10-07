@@ -124,7 +124,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping, WithC
             $this->ensureUtf8($product->short_description),
             $this->ensureUtf8($product->long_description),
             $product->status ?? 1,
-            1, // is_published
+            $product->status ?? 0, // is_published
             0, // is_featured
             0, // best_selling
             0, // is_new_arrival
